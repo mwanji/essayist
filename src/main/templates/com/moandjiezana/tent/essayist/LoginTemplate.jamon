@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<html>
+	<body>
+		<h1>Essayist</h1>
+		<form action="login" method="post">
+			<div>
+				Tent address: <input type="text" name="entity" required="required" />
+			</div>
+			<input type="submit" />
+		</form>
+	</body>
+</html>

@@ -1,0 +1,28 @@
+<%import>
+java.util.*;
+com.moandjiezana.tent.client.posts.*;
+</%import>
+<%args>
+List<Post> essays;
+</%args>
+<!DOCTYPE html>
+
+<html>
+	<body>
+		<h1>Essayist</h1>
+		
+		<form action="/essayist/essays" method="post">
+			Title: <input type="text" name="title" /><br/>
+			Excerpt: <input type="text" name="excerpt" /><br/>
+			Body:<br/><textarea name="body" required="required"></textarea><br/>
+			<input type="submit" />
+		</form>
+		
+		<%for Post essay : essays %>
+		<div>
+			<a href="/essayist/<% essay.getEntity() %>/<% essay.getId() %>"><% essay.getContent().get("title") %></a>
+		</div>
+		</%for>
+		
+	</body>
+</html>
