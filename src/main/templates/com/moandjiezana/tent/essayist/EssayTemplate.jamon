@@ -1,6 +1,7 @@
 <%import>
 java.util.*;
 com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.*;
 </%import>
 <%args>
 List<Post> essays;
@@ -20,7 +21,7 @@ List<Post> essays;
 		
 		<%for Post essay : essays %>
 		<div>
-			<a href="/essayist/<% essay.getEntity() %>/<% essay.getId() %>"><% essay.getContent().get("title") %></a>
+			<a href="/essayist/<% essay.getEntity() %>/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a>
 		</div>
 		</%for>
 		

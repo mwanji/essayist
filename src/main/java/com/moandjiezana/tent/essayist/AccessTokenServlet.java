@@ -2,6 +2,7 @@ package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
+import com.moandjiezana.tent.client.posts.content.StatusContent;
 import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
@@ -29,7 +30,6 @@ public class AccessTokenServlet extends HttpServlet {
     AccessToken accessToken = tentClient.getAccessToken(authResult.registrationResponse, req.getParameter("code"));
     
     Post post = new Post();
-    post.setType("https://tent.io/types/post/status/v0.1.0");
     post.setPublishedAt(System.currentTimeMillis() / 1000);
     Permissions permissions = new Permissions();
     permissions.setPublicVisible(true);
@@ -37,7 +37,9 @@ public class AccessTokenServlet extends HttpServlet {
     post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
     HashMap<String, Object> content = new HashMap<String, Object>();
     content.put("text", "Essayist is installed");
-    post.setContent(content);
+    StatusContent status = new StatusContent();
+    status.setText("Essayist is installed");
+    post.setContent(status);
 
     tentClient.getAsync().write(post);
     

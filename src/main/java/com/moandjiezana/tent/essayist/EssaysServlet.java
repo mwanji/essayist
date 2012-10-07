@@ -2,12 +2,12 @@ package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
+import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Permissions;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -42,17 +42,16 @@ public class EssaysServlet extends HttpServlet {
     TentClient tentClient = tentClient(req);
     
     Post post = new Post();
-    post.setType("https://tent.io/types/post/essay/v0.1.0");
     post.setPublishedAt(System.currentTimeMillis() / 1000);
     Permissions permissions = new Permissions();
     permissions.setPublicVisible(true);
     post.setPermissions(permissions);
     post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
-    HashMap<String, Object> content = new HashMap<String, Object>();
-    content.put("title", req.getParameter("title"));
-    content.put("body", new PegDownProcessor().markdownToHtml(req.getParameter("body")));
-    content.put("excerpt", req.getParameter("excerpt"));
-    post.setContent(content);
+    EssayContent essay = new EssayContent();
+    essay.setTitle(req.getParameter("title"));
+    essay.setBody(new PegDownProcessor().markdownToHtml(req.getParameter("body")));
+    essay.setExcerpt(req.getParameter("excerpt"));
+    post.setContent(essay);
     
     tentClient.write(post);
   }
