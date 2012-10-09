@@ -1,29 +1,25 @@
 <%import>
-java.util.*;
+com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.*;
-com.moandjiezana.tent.client.posts.content.*;
+com.moandjiezana.tent.client.posts.content.EssayContent;
 </%import>
 <%args>
-List<Post> essays;
+Post essay;
+Profile profile;
 </%args>
+<%java>
+EssayContent content = essay.getContentAs(EssayContent.class);
+</%java>
 <!DOCTYPE html>
 
 <html>
 	<body>
 		<h1>Essayist</h1>
 		
-		<form action="/essayist/essays" method="post">
-			Title: <input type="text" name="title" /><br/>
-			Excerpt: <input type="text" name="excerpt" /><br/>
-			Body:<br/><textarea name="body" required="required"></textarea><br/>
-			<input type="submit" />
-		</form>
-		
-		<%for Post essay : essays %>
+		<h1><% content.getTitle() %></h1>
+		<h3><% profile.getBasic().getName() %></h3>
 		<div>
-			<a href="/essayist/<% essay.getEntity() %>/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a>
-		</div>
-		</%for>
-		
+		<% content.getBody() #n %>
+		</div>		
 	</body>
 </html>

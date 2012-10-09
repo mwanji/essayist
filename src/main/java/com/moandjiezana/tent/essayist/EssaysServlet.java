@@ -34,7 +34,7 @@ public class EssaysServlet extends HttpServlet {
       }
     }
     
-    new EssayTemplate().render(resp.getWriter(), essays);
+    new EssaysTemplate().render(resp.getWriter(), essays);
   }
   
   @Override
@@ -44,7 +44,7 @@ public class EssaysServlet extends HttpServlet {
     Post post = new Post();
     post.setPublishedAt(System.currentTimeMillis() / 1000);
     Permissions permissions = new Permissions();
-    permissions.setPublicVisible(true);
+    permissions.setPublic(true);
     post.setPermissions(permissions);
     post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
     EssayContent essay = new EssayContent();
@@ -54,6 +54,8 @@ public class EssaysServlet extends HttpServlet {
     post.setContent(essay);
     
     tentClient.write(post);
+    
+    resp.sendRedirect(req.getRequestURL().toString());
   }
 
   private TentClient tentClient(HttpServletRequest req) {

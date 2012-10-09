@@ -23,7 +23,13 @@ public class AccessTokenServlet extends HttpServlet {
   
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    AuthResult authResult = (AuthResult) getServletContext().getAttribute(req.getParameter("state"));
+    AuthResult authResult = (AuthResult) req.getSession().getAttribute(req.getParameter("state"));
+    
+    if (authResult == null) {
+      resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Not corresponding authentication request found.");
+     
+      return;
+    }
     
     Profile profile = authResult.profile;
     TentClient tentClient = new TentClient(profile, Collections.<String>emptyList());
@@ -32,7 +38,7 @@ public class AccessTokenServlet extends HttpServlet {
     Post post = new Post();
     post.setPublishedAt(System.currentTimeMillis() / 1000);
     Permissions permissions = new Permissions();
-    permissions.setPublicVisible(true);
+    permissions.setPublic(true);
     post.setPermissions(permissions);
     post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
     HashMap<String, Object> content = new HashMap<String, Object>();

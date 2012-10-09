@@ -1,0 +1,36 @@
+<%import>
+java.util.*;
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.*;
+</%import>
+<%args>
+List<Post> essays;
+</%args>
+<!DOCTYPE html>
+
+<html>
+	<body>
+		<h1>Essayist</h1>
+		
+		<form action="/essayist/essays" method="post">
+			Title: <input type="text" name="title" /><br/>
+			Excerpt: <input type="text" name="excerpt" /><br/>
+			Body:<br/><textarea name="body" required="required"></textarea><br/>
+			<input type="submit" />
+		</form>
+		
+		<%for Post essay : essays %>
+		<%java>
+		String prefix="";
+		if (essay.getEntity().startsWith("https://")) {
+			prefix = "s:";
+		}
+		</%java>
+		<div>
+			<a href="/essayist/essay/<% essay.getId() %>/<% prefix %><% essay.getEntity().replace("http://", "").replace("https://", "") %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a><br/>
+			<% essay.getContentAs(EssayContent.class).getExcerpt() %>
+		</div>
+		</%for>
+		
+	</body>
+</html>

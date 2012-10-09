@@ -55,10 +55,6 @@ public class LoginServlet extends HttpServlet {
     String redirectUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() + "/accessToken";
     RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app.", "http://www.moandjiezana.com/tent/essayist", new String [] { redirectUrl }, scopes);
     RegistrationResponse registrationResponse = tentClient.register(registrationRequest);
-    
-    AuthResult authResult = new AuthResult();
-    authResult.profile = profile;
-    authResult.registrationResponse = registrationResponse;
 
     AuthorizationRequest authorizationRequest = new AuthorizationRequest(registrationResponse.getMacKeyId(), registrationRequest.getRedirectUris()[0]);
     authorizationRequest.setScope("write_posts", "read_posts");
@@ -66,7 +62,11 @@ public class LoginServlet extends HttpServlet {
     authorizationRequest.setState(UUID.randomUUID().toString());
     String authorizationUrl = tentClient.buildAuthorizationUrl(registrationResponse, authorizationRequest);
     
-    getServletContext().setAttribute(authorizationRequest.getState(), authResult);
+    AuthResult authResult = new AuthResult();
+    authResult.profile = profile;
+    authResult.registrationResponse = registrationResponse;
+    req.getSession().setAttribute(authorizationRequest.getState(), authResult);
+    
     resp.sendRedirect(authorizationUrl);
   }
 }

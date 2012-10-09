@@ -6,4 +6,5 @@ import com.moandjiezana.tent.client.users.Profile;
 public class AuthResult {
   public Profile profile;
   public RegistrationResponse registrationResponse;
+  public String state;
 }

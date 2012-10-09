@@ -5,9 +5,15 @@
 		<h1>Essayist</h1>
 		<form action="login" method="post">
 			<div>
-				Tent address: <input type="text" name="entity" required="required" />
+				Login with your tent address: <input type="text" name="entity" required="required" />
+				<input type="submit" value="login" />
 			</div>
-			<input type="submit" />
+		</form>
+		<form action="user" method="post">
+			<div>
+				Read essays by tent address: <input type="text" name="entity" required="required" />
+				<input type="submit" value="read"/>
+			</div>
 		</form>
 	</body>
 </html>
