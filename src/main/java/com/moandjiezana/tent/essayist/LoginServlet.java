@@ -23,14 +23,16 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginServlet extends HttpServlet {
   
   private final Users users;
+  private final Templates templates;
 
   @Inject
-  public LoginServlet(Users users) {
+  public LoginServlet(Users users, Templates jamonContext) {
     this.users = users;
+    this.templates = jamonContext;
   }
   
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
-    new LoginTemplate().render(resp.getWriter());
+    templates.login().render(resp.getWriter());
   };
 
   @Override

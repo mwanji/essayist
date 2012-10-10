@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,6 +21,13 @@ import org.pegdown.PegDownProcessor;
 
 @Singleton
 public class EssaysServlet extends HttpServlet {
+  
+  private Templates templates;
+
+  @Inject
+  public EssaysServlet(Templates templates) {
+    this.templates = templates;
+  }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,7 +42,7 @@ public class EssaysServlet extends HttpServlet {
       }
     }
     
-    new EssaysTemplate().render(resp.getWriter(), essays);
+    templates.essays().render(resp.getWriter(), essays);
   }
   
   @Override

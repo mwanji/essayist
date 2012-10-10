@@ -8,18 +8,12 @@ Post essay;
 Profile profile;
 </%args>
 <%java>
-EssayContent content = essay.getContentAs(EssayContent.class);
+final EssayContent content = essay.getContentAs(EssayContent.class);
 </%java>
-<!DOCTYPE html>
-
-<html>
-	<body>
-		<h1>Essayist</h1>
-		
-		<h1><% content.getTitle() %></h1>
-		<h3><% profile.getBasic().getName() %></h3>
-		<div>
-		<% content.getBody() #n %>
-		</div>		
-	</body>
-</html>
+<&| Layout &>
+	<h1><% content.getTitle() %></h1>
+	<h3><a href="<% essay.getEntity() %>"><% profile.getBasic().getName() %></a></h3>
+	<div>
+	<% content.getBody() #n %>
+	</div>
+</&>

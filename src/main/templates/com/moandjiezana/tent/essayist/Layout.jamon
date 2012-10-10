@@ -1,0 +1,26 @@
+<%frag body/>
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap.min.css" />
+		<!-- script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/boostrap.min.js"></src-->
+	</head>
+	
+	<body style="padding: 60px">
+		<div class="navbar">
+		  <div class="navbar-inner navbar-fixed-top">
+		    <a class="brand" href="<% jamonContext.contextPath %>">Essayist</a>
+		    <!--ul class="nav">
+		      <li class="active"><a href="#">Home</a></li>
+		      <li><a href="#">Link</a></li>
+		      <li><a href="#">Link</a></li>
+		    </ul-->
+		  </div>
+		</div>
+		
+		<div class="container">
+		<& body &>
+		</div>
+	</body>
+</html>

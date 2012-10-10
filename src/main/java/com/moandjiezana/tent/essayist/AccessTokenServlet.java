@@ -26,7 +26,7 @@ public class AccessTokenServlet extends HttpServlet {
     AuthResult authResult = (AuthResult) req.getSession().getAttribute(req.getParameter("state"));
     
     if (authResult == null) {
-      resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Not corresponding authentication request found.");
+      resp.sendError(HttpServletResponse.SC_FORBIDDEN, "No corresponding authentication request found.");
      
       return;
     }
