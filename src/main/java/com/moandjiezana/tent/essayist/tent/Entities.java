@@ -6,7 +6,7 @@ public class Entities {
     String prefix = entity.startsWith("https://") ? "s:" : "";
     String urlEntity = entity.replace("http://", "").replace("https://", "");
     if (urlEntity.endsWith("/")) {
-      urlEntity.substring(0, urlEntity.length() - 1);
+      urlEntity = urlEntity.substring(0, urlEntity.length() - 1);
     }
 
     return prefix + urlEntity;
