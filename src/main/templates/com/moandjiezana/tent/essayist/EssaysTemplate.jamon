@@ -9,19 +9,10 @@ List<Post> essays;
 </%args>
 
 <&| Layout &>
-<%if jamonContext.isLoggedIn() %>
-<form action="/essayist/essays" method="post">
-	Title: <input type="text" name="title" /><br/>
-	Excerpt: <input type="text" name="excerpt" /><br/>
-	Body:<br/><textarea name="body" required="required"></textarea><br/>
-	<input type="submit" />
-</form>
-</%if>
-
 <%for Post essay : essays %>
 <div>
-	<a href="/essayist/essay/<% Entities.getEntityForUrl(essay.getEntity()) %>/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a><br/>
-	<% essay.getContentAs(EssayContent.class).getExcerpt() %>
+	<h2><a href="<% jamonContext.contextPath %>/<% Entities.getEntityForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a></h2>
+	<p><% essay.getContentAs(EssayContent.class).getExcerpt() %></p>
 </div>
 </%for>
 </&>

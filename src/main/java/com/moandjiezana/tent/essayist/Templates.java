@@ -27,4 +27,8 @@ public class Templates {
   public EssayTemplate essay() {
     return new EssayTemplate().setJamonContext(jamonContext.get());
   }
+
+  public NewEssayTemplate newEssay() {
+    return new NewEssayTemplate().setJamonContext(jamonContext.get());
+  }
 }

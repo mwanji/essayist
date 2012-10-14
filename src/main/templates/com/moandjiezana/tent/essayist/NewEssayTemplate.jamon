@@ -1,0 +1,16 @@
+<%import>
+java.util.*;
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.*;
+com.moandjiezana.tent.essayist.tent.*;
+</%import>
+
+<&| Layout &>
+<form action="<% jamonContext.contextPath %>/new" method="post">
+	Title: <input type="text" name="title" /><br/>
+	Excerpt: <input type="text" name="excerpt" /><br/>
+	Body (as <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>):<br/>
+	<textarea name="body" required="required" class="span8"></textarea><br/>
+	<input type="submit" />
+</form>
+</&>

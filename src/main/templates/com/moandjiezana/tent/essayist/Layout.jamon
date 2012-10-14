@@ -1,3 +1,6 @@
+<%import>
+com.moandjiezana.tent.client.users.*;
+</%import>
 <%frag body/>
 <!DOCTYPE html>
 
@@ -8,15 +11,31 @@
 	</head>
 	
 	<body style="padding: 60px">
-		<div class="navbar">
-		  <div class="navbar-inner navbar-fixed-top">
-		    <a class="brand" href="<% jamonContext.contextPath %>">Essayist</a>
-		    <!--ul class="nav">
-		      <li class="active"><a href="#">Home</a></li>
-		      <li><a href="#">Link</a></li>
-		      <li><a href="#">Link</a></li>
-		    </ul-->
-		  </div>
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist</a>
+					<%if jamonContext.isLoggedIn() %>
+					<ul class="nav">
+						<li><a href="<% jamonContext.contextPath %>/read">Read</a></li>
+		        	</ul>
+					<ul class="nav">
+						<li><a href="<% jamonContext.contextPath %>/new">Write</a></li>
+		        	</ul>
+					<ul class="nav pull-right">
+						<li><a href="<% jamonContext.contextPath %>/logout">Log out</a></li>
+		        	</ul>
+					<%else>
+					<ul class="nav">
+						<li><a href="<% jamonContext.contextPath %>/read">Read</a></li>
+		        	</ul>
+					<ul class="nav pull-right">
+			        	<li><a href="<% jamonContext.contextPath() %>">Log in / Join with Tent</a></li>
+		        	</ul>
+		     		</%if>
+					</ul>
+				</div>
+			</div>
 		</div>
 		
 		<div class="container">

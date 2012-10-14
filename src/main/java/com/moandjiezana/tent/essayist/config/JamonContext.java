@@ -26,4 +26,8 @@ public class JamonContext {
     
     return session.getAttribute(User.class.getName()) != null;
   }
+  
+  public String contextPath() {
+    return contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
+  }
 }

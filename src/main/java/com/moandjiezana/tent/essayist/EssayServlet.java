@@ -6,6 +6,7 @@ import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.tent.Entities;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,24 +19,35 @@ import javax.servlet.http.HttpServletResponse;
 public class EssayServlet extends HttpServlet {
   
   private Templates templates;
+  private Users users;
 
   @Inject
-  public EssayServlet(Templates templates) {
+  public EssayServlet(Users users, Templates templates) {
+    this.users = users;
     this.templates = templates;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String path = req.getPathInfo();
-    int lastSlash = path.lastIndexOf('/');
-    String entityRaw = path.substring(0, lastSlash);
-    String essayId = path.substring(lastSlash + 1);
+    String[] parts = req.getPathInfo().split("/essay/");
+    String authorEntity = Entities.expandFromUrl(parts[0]);
+    String essayId = parts[1];
     
-    TentClient tentClient = new TentClient(Entities.expandFromUrl(entityRaw));
-    tentClient.discover();
-    Profile profile = tentClient.getProfile();
-    Post post = tentClient.getPost(essayId);
+    User user = users.getByEntityOrNull(authorEntity);
+
+    TentClient authorTentClient;
+    if (user != null) {
+      authorTentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());
+    } else {
+      authorTentClient = new TentClient(authorEntity);
+      authorTentClient.discover();
+      Profile profile = authorTentClient.getProfile();
+      user = new User(profile, null);
+      users.save(user);
+    }
     
-    templates.essay().render(resp.getWriter(), post, profile);
+    Post post = authorTentClient.getPost(essayId);
+    
+    templates.essay().render(resp.getWriter(), post, user.getProfile());
   }
 }

@@ -2,15 +2,12 @@ package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
-import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Permissions;
-import com.moandjiezana.tent.essayist.auth.AuthResult;
 import com.moandjiezana.tent.essayist.tent.Entities;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,39 +19,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.pegdown.PegDownProcessor;
 
 @Singleton
-public class EssaysServlet extends HttpServlet {
+public class NewEssayServlet extends HttpServlet {
   
   private Templates templates;
-  private Users users;
 
   @Inject
-  public EssaysServlet(Users users, Templates templates) {
-    this.users = users;
+  public NewEssayServlet(Templates templates) {
     this.templates = templates;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String pathInfo = req.getPathInfo();
-    int lastSlashIndex = pathInfo.lastIndexOf('/');
-    
-    String entity = Entities.expandFromUrl(pathInfo.substring(0, lastSlashIndex));
-    
-    TentClient tentClient = getTentClientFromSessionOrLogin(req);
-    
-    if (tentClient == null) {
-      tentClient = new TentClient(entity);
-      tentClient.getProfile();
-    }
-    
-    List<Post> essays = tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")));
-    
-    templates.essays().render(resp.getWriter(), essays);
+    templates.newEssay().render(resp.getWriter());
   }
   
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    TentClient tentClient = getTentClientFromSessionOrLogin(req);
+    User user = (User) req.getSession().getAttribute(User.class.getName());
+    TentClient tentClient = tentClient(req);
     
     Post post = new Post();
     post.setPublishedAt(System.currentTimeMillis() / 1000);
@@ -70,24 +52,11 @@ public class EssaysServlet extends HttpServlet {
     
     tentClient.write(post);
     
-    resp.sendRedirect(req.getRequestURL().toString());
+    resp.sendRedirect(req.getContextPath() + "/" + Entities.getEntityForUrl(user.getProfile().getCore().getEntity()) + "/essays");
   }
 
-  private TentClient getTentClientFromSessionOrLogin(HttpServletRequest req) {
+  private TentClient tentClient(HttpServletRequest req) {
     User user = (User) req.getSession().getAttribute(User.class.getName());
-    
-    if (user == null) {
-      AuthResult authResult = (AuthResult) req.getSession().getAttribute(req.getParameter("state"));
-      if (authResult != null) {
-        user = users.getByEntityOrNull(authResult.profile.getCore().getEntity());
-        req.getSession().setAttribute(User.class.getName(), user);
-        req.getSession().removeAttribute("state");
-      }
-    }
-    
-    if (user == null) {
-      return null;
-    }
     
     TentClient tentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());
     tentClient.getAsync().setAccessToken(user.getAccessToken());

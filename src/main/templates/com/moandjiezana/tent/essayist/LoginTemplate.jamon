@@ -1,11 +1,13 @@
 <&| Layout &>
-	<form action="login" method="post">
+	<%if !jamonContext.isLoggedIn() %>
+	<form action="<% jamonContext.contextPath %>/login" method="post">
 		<div>
 			Login with your tent address: <input type="text" name="entity" required="required" />
 			<input type="submit" value="login" />
 		</div>
 	</form>
-	<form action="user" method="post">
+	</%if>
+	<form action="<% jamonContext.contextPath %>/user" method="post">
 		<div>
 			Read essays by tent address: <input type="text" name="entity" required="required" />
 			<input type="submit" value="read" />

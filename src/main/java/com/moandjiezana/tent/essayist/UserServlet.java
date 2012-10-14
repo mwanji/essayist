@@ -43,6 +43,6 @@ public class UserServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    resp.sendRedirect(req.getRequestURI() + "/" + Entities.getEntityForUrl(req.getParameter("entity")));
+    resp.sendRedirect(req.getContextPath() + "/" + Entities.getEntityForUrl(req.getParameter("entity")) + "/essays");
   }
 }
