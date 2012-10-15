@@ -47,7 +47,7 @@ public class EssaysServlet extends HttpServlet {
       tentClient.getProfile();
     }
     
-    List<Post> essays = tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")));
+    List<Post> essays = tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")).entity(entity));
     
     templates.essays().render(resp.getWriter(), essays);
   }

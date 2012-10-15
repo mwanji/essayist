@@ -59,7 +59,7 @@ public class LoginServlet extends HttpServlet {
     RegistrationResponse registrationResponse;
     String redirectUri;
     
-    if (user != null) {
+    if (user != null && user.getRegistration() != null) {
       tentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());
       tentClient.getAsync().setAccessToken(user.getAccessToken());
       tentClient.getAsync().setRegistrationResponse(user.getRegistration());

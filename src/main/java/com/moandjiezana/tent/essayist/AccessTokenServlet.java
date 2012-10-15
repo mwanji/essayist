@@ -44,7 +44,14 @@ public class AccessTokenServlet extends HttpServlet {
     TentClient tentClient = new TentClient(profile, Collections.<String>emptyList());
     tentClient.getAsync().setRegistrationResponse(authResult.registrationResponse);
     AccessToken accessToken = tentClient.getAccessToken(authResult.registrationResponse, req.getParameter("code"));
-    User user = new User(profile, authResult.registrationResponse, accessToken);
+    
+    User existingUser = users.getByEntityOrNull(profile.getCore().getEntity());
+    User user;
+    if (existingUser != null) {
+      user = new User(existingUser.getId(), profile, authResult.registrationResponse, accessToken);
+    } else {
+      user = new User(profile, authResult.registrationResponse, accessToken);
+    }
     
     users.save(user);
     

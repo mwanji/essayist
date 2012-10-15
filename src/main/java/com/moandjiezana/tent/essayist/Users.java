@@ -65,7 +65,15 @@ public class Users {
   
   public void save(User user) {
     try {
-      queryRunner.update("INSERT INTO AUTHORIZATIONS(ENTITY, PROFILE, REGISTRATION, ACCESSTOKEN) VALUES(?,?,?,?)", user.getProfile().getCore().getEntity(), gson.toJson(user.getProfile()), gson.toJson(user.getRegistration()), gson.toJson(user.getAccessToken()));
+      String profileJson = gson.toJson(user.getProfile());
+      String registrationJson = gson.toJson(user.getRegistration());
+      String accessTokenJson = gson.toJson(user.getAccessToken());
+      
+      if (user.getId() != null) {
+        queryRunner.update("UPDATE AUTHORIZATIONS SET PROFILE=?, REGISTRATION=?, ACCESSTOKEN=? WHERE ID=?", profileJson, registrationJson, accessTokenJson, user.getId());
+      } else {
+        queryRunner.update("INSERT INTO AUTHORIZATIONS(ENTITY, PROFILE, REGISTRATION, ACCESSTOKEN) VALUES(?,?,?,?)", user.getProfile().getCore().getEntity(), profileJson, registrationJson, accessTokenJson);
+      }
     } catch (SQLException e) {
       throw Throwables.propagate(e);
     }
