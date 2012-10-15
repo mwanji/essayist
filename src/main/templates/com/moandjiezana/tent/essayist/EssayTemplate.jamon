@@ -2,6 +2,8 @@
 com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.posts.content.EssayContent;
+
+java.util.*;
 </%import>
 <%args>
 Post essay;
@@ -12,7 +14,7 @@ final EssayContent content = essay.getContentAs(EssayContent.class);
 </%java>
 <&| Layout &>
 	<h1><% content.getTitle() %></h1>
-	<h3><a href="<% essay.getEntity() %>"><% profile.getBasic().getName() %></a></h3>
+	<h4><a href="<% essay.getEntity() %>"><% profile.getBasic().getName() %></a> <small><% new Date(essay.getPublishedAt() * 1000) %></small></h4>
 	<div>
 	<% content.getBody() #n %>
 	</div>

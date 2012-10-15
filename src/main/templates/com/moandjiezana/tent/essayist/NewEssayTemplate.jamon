@@ -6,11 +6,33 @@ com.moandjiezana.tent.essayist.tent.*;
 </%import>
 
 <&| Layout &>
-<form action="<% jamonContext.contextPath %>/new" method="post">
-	Title: <input type="text" name="title" /><br/>
-	Excerpt: <input type="text" name="excerpt" /><br/>
-	Body (as <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>):<br/>
-	<textarea name="body" required="required" class="span8"></textarea><br/>
-	<input type="submit" />
+<form action="" method="post" class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label">
+			Title
+		</label>
+		<div class="controls">
+			<input type="text" name="title" class="span8" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">
+			Excerpt
+		</label>
+		<div class="controls">
+			<input type="text" name="excerpt" class="span8" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">
+			Body (as <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>)
+		</label>
+		<div class="controls">
+			<textarea name="body" required="required" rows="15" class="span8"></textarea><br/>
+		</div>
+	</div>
+	<div class="form-actions">
+		<button type="submit" value="Publish" class="btn btn-success"><i class="icon-globe icon-white"></i> Publish</button>
+	</div>
 </form>
 </&>

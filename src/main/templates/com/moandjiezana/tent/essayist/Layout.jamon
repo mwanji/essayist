@@ -1,7 +1,10 @@
 <%import>
-com.moandjiezana.tent.client.users.*;
+com.moandjiezana.tent.essayist.tent.*;
 </%import>
 <%frag body/>
+<%args>
+boolean showNav = true;
+</%args>
 <!DOCTYPE html>
 
 <html>
@@ -15,12 +18,13 @@ com.moandjiezana.tent.client.users.*;
 			<div class="navbar-inner">
 				<div class="container">
 					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist</a>
+					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">
 						<li><a href="<% jamonContext.contextPath %>/read">Read</a></li>
 		        	</ul>
 					<ul class="nav">
-						<li><a href="<% jamonContext.contextPath %>/new">Write</a></li>
+						<li><a href="<% jamonContext.contextPath %>/<% Entities.getEntityForUrl(jamonContext.getSessionProfile().getCore().getEntity()) %>/essays/write">Write</a></li>
 		        	</ul>
 					<ul class="nav pull-right">
 						<li><a href="<% jamonContext.contextPath %>/logout">Log out</a></li>
@@ -32,6 +36,7 @@ com.moandjiezana.tent.client.users.*;
 					<ul class="nav pull-right">
 			        	<li><a href="<% jamonContext.contextPath() %>">Log in / Join with Tent</a></li>
 		        	</ul>
+		     		</%if>
 		     		</%if>
 					</ul>
 				</div>

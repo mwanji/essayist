@@ -1,5 +1,6 @@
 package com.moandjiezana.tent.essayist.config;
 
+import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.User;
 
 import javax.inject.Inject;
@@ -25,6 +26,10 @@ public class JamonContext {
     }
     
     return session.getAttribute(User.class.getName()) != null;
+  }
+  
+  public Profile getSessionProfile() {
+    return ((User) req.getSession(false).getAttribute(User.class.getName())).getProfile();
   }
   
   public String contextPath() {

@@ -85,7 +85,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serve("/logout").with(LogoutServlet.class);
         serve("/accessToken").with(AccessTokenServlet.class);
         serve("/user", "/user/*").with(UserServlet.class);
-        serve("/new").with(NewEssayServlet.class);
+        serveRegex("/(.*)/essays/write").with(NewEssayServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
       }
