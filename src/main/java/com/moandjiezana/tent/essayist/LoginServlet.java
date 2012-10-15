@@ -6,7 +6,6 @@ import com.moandjiezana.tent.client.apps.RegistrationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
-import com.moandjiezana.tent.essayist.tent.Entities;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -34,11 +33,21 @@ public class LoginServlet extends HttpServlet {
   }
   
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
+
     if (req.getSession(false) != null) {
       User user = (User) req.getSession().getAttribute(User.class.getName());
       
+      if (user == null) {
+        AuthResult authResult = (AuthResult) req.getSession().getAttribute(req.getParameter("state"));
+        if (authResult != null) {
+          user = users.getByEntityOrNull(authResult.profile.getCore().getEntity());
+          req.getSession().setAttribute(User.class.getName(), user);
+          req.getSession().removeAttribute("state");
+        }
+      }
+      
       if (user != null) {
-        resp.sendRedirect(req.getContextPath() + "/" + Entities.getEntityForUrl(user.getProfile().getCore().getEntity() + "/essays"));
+        resp.sendRedirect(req.getContextPath() + "/read");
         
         return;
       }
@@ -74,7 +83,7 @@ public class LoginServlet extends HttpServlet {
       
       String baseUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
       String afterAuthorizationUrl = baseUrl + "/accessToken";
-      String afterLoginUrl = baseUrl + "/" + Entities.getEntityForUrl(entity) + "/essays";
+      String afterLoginUrl = baseUrl;
       
       RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app.", "http://www.moandjiezana.com/tent/essayist", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
       registrationResponse = tentClient.register(registrationRequest);

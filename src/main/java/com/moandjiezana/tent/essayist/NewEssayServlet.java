@@ -52,7 +52,7 @@ public class NewEssayServlet extends HttpServlet {
     
     tentClient.write(post);
     
-    resp.sendRedirect(req.getContextPath() + "/" + Entities.getEntityForUrl(user.getProfile().getCore().getEntity()) + "/essays");
+    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(user.getProfile().getCore().getEntity()) + "/essays");
   }
 
   private TentClient tentClient(HttpServletRequest req) {

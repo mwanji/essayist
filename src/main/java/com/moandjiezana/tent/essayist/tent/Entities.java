@@ -2,7 +2,7 @@ package com.moandjiezana.tent.essayist.tent;
 
 public class Entities {
 
-  public static String getEntityForUrl(String entity) {
+  public static String getForUrl(String entity) {
     String prefix = entity.startsWith("http://") ? "h:" : "";
     String urlEntity = entity.replace("http://", "").replace("https://", "");
     if (urlEntity.endsWith("/")) {

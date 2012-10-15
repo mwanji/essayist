@@ -8,10 +8,10 @@ com.moandjiezana.tent.essayist.tent.*;
 List<Post> essays;
 </%args>
 
-<&| Layout &>
+<&| Layout; active = !essays.isEmpty() ? Entities.getForUrl(essays.get(0).getEntity()) + "/essays" : null; &>
 <%for Post essay : essays %>
 <div>
-	<h2><a href="<% jamonContext.contextPath %>/<% Entities.getEntityForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a></h2>
+	<h2><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a></h2>
 	<p><% essay.getContentAs(EssayContent.class).getExcerpt() %></p>
 </div>
 </%for>

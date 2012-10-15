@@ -1,16 +1,29 @@
+<!DOCTYPE html>
+
 <%import>
 com.moandjiezana.tent.essayist.tent.*;
 </%import>
 <%frag body/>
 <%args>
 boolean showNav = true;
+String active = null;
 </%args>
-<!DOCTYPE html>
+
+<%def navItem>
+<%args>
+String label;
+String url;
+</%args>
+<li <%if (active != null && active.equals(url)) || url.equals(jamonContext.getPath()) %>class="active"</%if>><a href="<% jamonContext.contextPath %>/<% url %>"><% label %></a></li>
+</%def>
+
 
 <html>
 	<head>
 		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap.min.css" />
-		<!-- script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/boostrap.min.js"></src-->
+		<!-- link href='http://fonts.googleapis.com/css?family=Alegreya:400italic,400,700' rel='stylesheet' type='text/css'>
+		
+		<script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/boostrap.min.js"></src-->
 	</head>
 	
 	<body style="padding: 60px">
@@ -21,20 +34,19 @@ boolean showNav = true;
 					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">
-						<li><a href="<% jamonContext.contextPath %>/read">Read</a></li>
-		        	</ul>
-					<ul class="nav">
-						<li><a href="<% jamonContext.contextPath %>/<% Entities.getEntityForUrl(jamonContext.getSessionProfile().getCore().getEntity()) %>/essays/write">Write</a></li>
+						<& navItem: "Read"; "read" &>
+						<& navItem: "Write"; "write" &>
+						<& navItem: "Written"; Entities.getForUrl(jamonContext.getSessionProfile().getCore().getEntity()) + "/essays" &>
 		        	</ul>
 					<ul class="nav pull-right">
-						<li><a href="<% jamonContext.contextPath %>/logout">Log out</a></li>
+						<& navItem: "Log out"; "logout"; &>
 		        	</ul>
 					<%else>
 					<ul class="nav">
-						<li><a href="<% jamonContext.contextPath %>/read">Read</a></li>
+						<& navItem: "Read"; "read" &>
 		        	</ul>
 					<ul class="nav pull-right">
-			        	<li><a href="<% jamonContext.contextPath() %>">Log in / Join with Tent</a></li>
+						<& navItem: "Log in / Join with Tent"; "" &>
 		        	</ul>
 		     		</%if>
 		     		</%if>

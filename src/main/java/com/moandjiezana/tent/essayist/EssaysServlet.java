@@ -5,7 +5,6 @@ import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Permissions;
-import com.moandjiezana.tent.essayist.auth.AuthResult;
 import com.moandjiezana.tent.essayist.tent.Entities;
 
 import java.io.IOException;
@@ -76,17 +75,15 @@ public class EssaysServlet extends HttpServlet {
   private TentClient getTentClientFromSessionOrLogin(HttpServletRequest req) {
     User user = (User) req.getSession().getAttribute(User.class.getName());
     
-    if (user == null) {
-      AuthResult authResult = (AuthResult) req.getSession().getAttribute(req.getParameter("state"));
-      if (authResult != null) {
-        user = users.getByEntityOrNull(authResult.profile.getCore().getEntity());
-        req.getSession().setAttribute(User.class.getName(), user);
-        req.getSession().removeAttribute("state");
-      }
-    }
+    String pathInfo = req.getPathInfo();
+    int lastSlashIndex = pathInfo.lastIndexOf('/');
+    String entity = Entities.expandFromUrl(pathInfo.substring(0, lastSlashIndex));
     
-    if (user == null) {
-      return null;
+    if (user == null || !entity.equals(user.getProfile().getCore().getEntity())) {
+      TentClient tentClient = new TentClient(entity);
+      tentClient.getProfile();
+      
+      return tentClient;
     }
     
     TentClient tentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());

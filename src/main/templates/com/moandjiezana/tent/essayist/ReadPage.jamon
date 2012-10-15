@@ -1,0 +1,12 @@
+<&| Layout &>
+	<div class="row">
+		<div class="span12">
+			<form action="<% jamonContext.contextPath %>/read" method="post" class="form-inline">
+				<div>
+					<input type="text" name="entity" required="required" placeholder="https://another.tent.address" />
+					<input type="submit" value="Read" class="btn" />
+				</div>
+			</form>
+		</div>
+	</div>
+</&>

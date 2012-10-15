@@ -68,6 +68,6 @@ public class AccessTokenServlet extends HttpServlet {
     tentClient.write(post);
     
     req.getSession().setAttribute(User.class.getName(), user);
-    resp.sendRedirect(req.getContextPath() + "/" + Entities.getEntityForUrl(profile.getCore().getEntity()) + "/essays");
+    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(profile.getCore().getEntity()) + "/essays");
   }
 }

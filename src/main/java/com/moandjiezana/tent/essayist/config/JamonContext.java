@@ -1,5 +1,6 @@
 package com.moandjiezana.tent.essayist.config;
 
+import com.google.common.base.Splitter;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.User;
 
@@ -34,5 +35,14 @@ public class JamonContext {
   
   public String contextPath() {
     return contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
+  }
+  
+  public String getPath() {
+    String path = "";
+    for (String part : Splitter.on('/').omitEmptyStrings().split(req.getRequestURI())) {
+      path = part;
+    }
+
+    return path;
   }
 }

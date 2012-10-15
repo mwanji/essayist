@@ -14,7 +14,7 @@ import com.moandjiezana.tent.essayist.EssaysServlet;
 import com.moandjiezana.tent.essayist.LoginServlet;
 import com.moandjiezana.tent.essayist.LogoutServlet;
 import com.moandjiezana.tent.essayist.NewEssayServlet;
-import com.moandjiezana.tent.essayist.UserServlet;
+import com.moandjiezana.tent.essayist.ReadServlet;
 import com.moandjiezana.tent.essayist.db.migrations.Migration_1;
 
 import java.io.IOException;
@@ -84,8 +84,8 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serve("/", "/login").with(LoginServlet.class);
         serve("/logout").with(LogoutServlet.class);
         serve("/accessToken").with(AccessTokenServlet.class);
-        serve("/user", "/user/*").with(UserServlet.class);
-        serveRegex("/(.*)/essays/write").with(NewEssayServlet.class);
+        serve("/read").with(ReadServlet.class);
+        serve("/write").with(NewEssayServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
       }
