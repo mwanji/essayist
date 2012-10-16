@@ -55,7 +55,6 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
     poolProperties.setUrl(properties.getProperty("db.url"));
     poolProperties.setDriverClassName(properties.getProperty("db.driverClassName"));
     poolProperties.setInitialSize(Integer.parseInt(properties.getProperty("db.initialSize")));
-    poolProperties.setJdbcInterceptors(properties.getProperty("db.jdbcInterceptors"));
     
     DataSource dataSource = new DataSource(poolProperties);
     
@@ -88,6 +87,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serve("/write").with(NewEssayServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
+        filter("/*").through(Utf8Filter.class);
       }
     }, new AbstractModule() {
       @Override
