@@ -20,8 +20,8 @@ public class Templates {
     return new LoginTemplate().setJamonContext(jamonContext.get());
   }
   
-  public EssaysTemplate essays() {
-    return new EssaysTemplate().setJamonContext(jamonContext.get());
+  public EssaysTemplate essays(String active) {
+    return new EssaysTemplate().setActive(active).setJamonContext(jamonContext.get());
   }
   
   public EssayTemplate essay() {

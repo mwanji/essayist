@@ -8,7 +8,6 @@ import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.tent.Entities;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,21 +38,18 @@ public class EssaysServlet extends HttpServlet {
     
     String entity = Entities.expandFromUrl(pathInfo.substring(0, lastSlashIndex));
     
-    TentClient tentClient = getTentClientFromSessionOrLogin(req);
+    TentClient tentClient = getTentClientFromSessionOrUrl(req);
     
-    if (tentClient == null) {
-      tentClient = new TentClient(entity);
-      tentClient.getProfile();
-    }
+    String active = req.getSession().getAttribute(User.class.getName()) != null && entity.equals(tentClient.getProfile().getCore().getEntity()) ? "Written" : "Read";
     
     List<Post> essays = tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")).entity(entity));
     
-    templates.essays().render(resp.getWriter(), essays);
+    templates.essays(active).render(resp.getWriter(), essays);
   }
   
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    TentClient tentClient = getTentClientFromSessionOrLogin(req);
+    TentClient tentClient = getTentClientFromSessionOrUrl(req);
     
     Post post = new Post();
     post.setPublishedAt(System.currentTimeMillis() / 1000);
@@ -72,7 +68,7 @@ public class EssaysServlet extends HttpServlet {
     resp.sendRedirect(req.getRequestURL().toString());
   }
 
-  private TentClient getTentClientFromSessionOrLogin(HttpServletRequest req) {
+  private TentClient getTentClientFromSessionOrUrl(HttpServletRequest req) {
     User user = (User) req.getSession().getAttribute(User.class.getName());
     
     String pathInfo = req.getPathInfo();
@@ -86,7 +82,7 @@ public class EssaysServlet extends HttpServlet {
       return tentClient;
     }
     
-    TentClient tentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());
+    TentClient tentClient = new TentClient(user.getProfile());
     tentClient.getAsync().setAccessToken(user.getAccessToken());
     
     return tentClient;

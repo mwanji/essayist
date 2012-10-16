@@ -6,13 +6,14 @@ com.moandjiezana.tent.essayist.tent.*;
 </%import>
 <%args>
 List<Post> essays;
+String active = "Read";
 </%args>
 
-<&| Layout; active = !essays.isEmpty() ? Entities.getForUrl(essays.get(0).getEntity()) + "/essays" : null; &>
+<&| Layout; active = active; &>
 <%for Post essay : essays %>
 <div>
 	<h2><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a></h2>
-	<p><% essay.getContentAs(EssayContent.class).getExcerpt() %></p>
+	<p class="bodyText"><% essay.getContentAs(EssayContent.class).getExcerpt() %></p>
 </div>
 </%for>
 </&>

@@ -14,23 +14,38 @@ String active = null;
 String label;
 String url;
 </%args>
-<li <%if (active != null && active.equals(url)) || url.equals(jamonContext.getPath()) %>class="active"</%if>><a href="<% jamonContext.contextPath %>/<% url %>"><% label %></a></li>
+<li <%if (active != null && active.equals(label)) || url.equals(jamonContext.getPath()) %>class="active"</%if>><a href="<% jamonContext.contextPath %>/<% url %>"><% label %></a></li>
 </%def>
 
 
 <html>
 	<head>
 		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap.min.css" />
-		<!-- link href='http://fonts.googleapis.com/css?family=Alegreya:400italic,400,700' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Alegreya:400italic,400,700' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Alegreya+SC:700' rel='stylesheet' type='text/css'>
 		
-		<script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/boostrap.min.js"></src-->
+		<style>
+			h1, h2, h3, h4 {
+				font-family: 'Alegreya SC', Georgia, serif;
+			}
+			
+			h3 small {
+				font-size: 15px;
+			}
+			
+			.bodyText {
+				font-family: 'Alegreya', Georgia, serif; font-size: 1.5em;
+			}
+		</style>
+		
+		<!-- script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/boostrap.min.js"></src-->
 	</head>
 	
 	<body style="padding: 60px">
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
-					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist</a>
+					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist <% Character.valueOf('\u03B1') %></a>
 					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">
