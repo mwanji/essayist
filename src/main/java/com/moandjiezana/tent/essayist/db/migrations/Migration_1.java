@@ -19,7 +19,7 @@ public class Migration_1 implements Migration {
   public void up() {
     createTable(table("AUTHORIZATIONS", 
         column("ID", Define.DataTypes.BIGINT, primarykey(), autoincrement(), notnull()),
-        column("ENTITY", VARCHAR, notnull(), Define.length(65000)),
+        column("ENTITY", VARCHAR, notnull(), Define.length(1000)),
         column("PROFILE", LONGVARCHAR),
         column("REGISTRATION", LONGVARCHAR),
         column("ACCESSTOKEN", LONGVARCHAR)));
