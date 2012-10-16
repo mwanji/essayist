@@ -6,7 +6,6 @@ import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.tent.Entities;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -37,7 +36,7 @@ public class EssayServlet extends HttpServlet {
 
     TentClient authorTentClient;
     if (user != null) {
-      authorTentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());
+      authorTentClient = new TentClient(user.getProfile());
     } else {
       authorTentClient = new TentClient(authorEntity);
       authorTentClient.discover();

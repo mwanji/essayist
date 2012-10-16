@@ -7,7 +7,6 @@ import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.tent.Entities;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -58,7 +57,7 @@ public class NewEssayServlet extends HttpServlet {
   private TentClient tentClient(HttpServletRequest req) {
     User user = (User) req.getSession().getAttribute(User.class.getName());
     
-    TentClient tentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());
+    TentClient tentClient = new TentClient(user.getProfile());
     tentClient.getAsync().setAccessToken(user.getAccessToken());
     
     return tentClient;

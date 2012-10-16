@@ -8,7 +8,6 @@ import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -52,7 +51,7 @@ public class LoginServlet extends HttpServlet {
         return;
       }
     }
-    
+
     templates.login().render(resp.getWriter());
   };
 
@@ -69,7 +68,7 @@ public class LoginServlet extends HttpServlet {
     String redirectUri;
     
     if (user != null && user.getRegistration() != null) {
-      tentClient = new TentClient(user.getProfile(), Collections.<String>emptyList());
+      tentClient = new TentClient(user.getProfile());
       tentClient.getAsync().setAccessToken(user.getAccessToken());
       tentClient.getAsync().setRegistrationResponse(user.getRegistration());
       redirectUri = user.getRegistration().getRedirectUris()[1];
