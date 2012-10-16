@@ -12,11 +12,13 @@ public class JamonContext {
 
   private final HttpServletRequest req;
   public final String contextPath;
+  public final String currentUrl;
   
   @Inject
   public JamonContext(HttpServletRequest req) {
     this.req = req;
     this.contextPath = req.getContextPath();
+    this.currentUrl = req.getRequestURL().toString();
   }
   
   public boolean isLoggedIn() {
