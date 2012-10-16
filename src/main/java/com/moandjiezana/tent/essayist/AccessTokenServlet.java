@@ -1,16 +1,12 @@
 package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.client.TentClient;
-import com.moandjiezana.tent.client.posts.Post;
-import com.moandjiezana.tent.client.posts.content.StatusContent;
-import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.oauth.AccessToken;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,7 +37,7 @@ public class AccessTokenServlet extends HttpServlet {
     }
     
     Profile profile = authResult.profile;
-    TentClient tentClient = new TentClient(profile, Collections.<String>emptyList());
+    TentClient tentClient = new TentClient(profile);
     tentClient.getAsync().setRegistrationResponse(authResult.registrationResponse);
     AccessToken accessToken = tentClient.getAccessToken(authResult.registrationResponse, req.getParameter("code"));
     
@@ -54,18 +50,6 @@ public class AccessTokenServlet extends HttpServlet {
     }
     
     users.save(user);
-    
-    Post post = new Post();
-    post.setPublishedAt(System.currentTimeMillis() / 1000);
-    Permissions permissions = new Permissions();
-    permissions.setPublic(true);
-    post.setPermissions(permissions);
-    post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
-    StatusContent status = new StatusContent();
-    status.setText("Essayist is installed");
-    post.setContent(status);
-
-    tentClient.write(post);
     
     req.getSession().setAttribute(User.class.getName(), user);
     resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(profile.getCore().getEntity()) + "/essays");
