@@ -3,14 +3,14 @@
 	<div class="hero-unit">
 		<h1>&gt; 256 chars</h1>
 		<p>
-			Read and write long-form writing hosted on any <a href="http://tent.io">Tent</a> server.
+			Long-form writing hosted on any <a href="http://tent.io">Tent</a> server.
 		</p>
 	</div>
 	<div class="row">
 		<div class="span6">
 			<form action="<% jamonContext.contextPath %>/login" method="post" class="form-inline">
 				<div>
-					<input type="text" name="entity" required="required" placeholder="https://your.tent.address" />
+					<input type="url" name="entity" required="required" placeholder="https://your.tent.address" />
 					<input type="submit" value="login or join" class="btn" />
 				</div>
 			</form>
@@ -21,7 +21,7 @@
 		<div class="span6">
 			<form action="<% jamonContext.contextPath %>/read" method="post" class="form-inline">
 				<div>
-					<input type="text" name="entity" required="required" placeholder="https://another.tent.address" />
+					<input type="url" name="entity" required="required" placeholder="https://another.tent.address" />
 					<input type="submit" value="read" class="btn" />
 				</div>
 			</form>
@@ -30,7 +30,7 @@
 	<%else>
 		<form action="<% jamonContext.contextPath %>/read" method="post" class="form-inline">
 			<div>
-				<input type="text" name="entity" required="required" placeholder="https://another.tent.address" />
+				<input type="url" name="entity" required="required" placeholder="https://another.tent.address" />
 				<input type="submit" value="read" class="btn" />
 			</div>
 		</form>
