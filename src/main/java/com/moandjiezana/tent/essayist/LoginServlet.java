@@ -32,7 +32,6 @@ public class LoginServlet extends HttpServlet {
   }
   
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
-
     if (req.getSession(false) != null) {
       User user = (User) req.getSession().getAttribute(User.class.getName());
       
@@ -42,6 +41,19 @@ public class LoginServlet extends HttpServlet {
           user = users.getByEntityOrNull(authResult.profile.getCore().getEntity());
           req.getSession().setAttribute(User.class.getName(), user);
           req.getSession().removeAttribute("state");
+        } else if ("server_error".equals(req.getParameter("error"))) {
+          String entity = (String) req.getSession().getAttribute("entity");
+          users.delete(entity);
+
+          
+          TentClient tentClient = new TentClient(entity);
+          RegistrationResponse registrationResponse = register(tentClient, req);
+          String redirectUri = registrationResponse.getRedirectUris()[0];
+          String authorizationUrl = authorize(tentClient, registrationResponse, redirectUri, req);
+          
+          resp.sendRedirect(authorizationUrl);
+
+          return;
         }
       }
       
@@ -75,20 +87,31 @@ public class LoginServlet extends HttpServlet {
       registrationResponse = user.getRegistration();
     } else {
       tentClient = new TentClient(entity);
-      tentClient.getProfile();
-      
-      Map<String, String> scopes = new HashMap<String, String>();
-      scopes.put("write_posts", "Will post Essays and optionally Statuses");
-      
-      String baseUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
-      String afterAuthorizationUrl = baseUrl + "/accessToken";
-      String afterLoginUrl = baseUrl;
-      
-      RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app.", "http://www.moandjiezana.com/tent/essayist", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
-      registrationResponse = tentClient.register(registrationRequest);
+      registrationResponse = register(tentClient, req);
       redirectUri = registrationResponse.getRedirectUris()[0];
     }
 
+    String authorizationUrl = authorize(tentClient, registrationResponse, redirectUri, req);
+    
+    resp.sendRedirect(authorizationUrl);
+  }
+  
+  private RegistrationResponse register(TentClient tentClient, HttpServletRequest req) {
+    tentClient.getProfile();
+    
+    Map<String, String> scopes = new HashMap<String, String>();
+    scopes.put("write_posts", "Will post Essays and optionally Statuses");
+    
+    String baseUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+    String afterAuthorizationUrl = baseUrl + "/accessToken";
+    String afterLoginUrl = baseUrl;
+    
+    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist on localhost", "A blogging app.", "http://www.moandjiezana.com/tent/essayist", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
+    
+    return tentClient.register(registrationRequest);
+  }
+  
+  private String authorize(TentClient tentClient, RegistrationResponse registrationResponse, String redirectUri, HttpServletRequest req) {
     AuthorizationRequest authorizationRequest = new AuthorizationRequest(registrationResponse.getMacKeyId(), redirectUri);
     authorizationRequest.setScope("write_posts", "read_posts");
     authorizationRequest.setTentPostTypes(Post.Types.essay("v0.1.0"), Post.Types.status("v0.1.0"), Post.Types.photo("v0.1.0"));
@@ -99,7 +122,7 @@ public class LoginServlet extends HttpServlet {
     authResult.profile = tentClient.getProfile();
     authResult.registrationResponse = registrationResponse;
     req.getSession().setAttribute(authorizationRequest.getState(), authResult);
-    
-    resp.sendRedirect(authorizationUrl);
+    req.getSession().setAttribute("entity", tentClient.getProfile().getCore().getEntity());
+    return authorizationUrl;
   }
 }

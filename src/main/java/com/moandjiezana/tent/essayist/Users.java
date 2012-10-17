@@ -78,4 +78,12 @@ public class Users {
       throw Throwables.propagate(e);
     }
   }
+
+  public void delete(String entity) {
+    try {
+      queryRunner.update("delete from AUTHORIZATIONS where ENTITY=?", entity);
+    } catch (SQLException e) {
+      throw Throwables.propagate(e);
+    }
+  }
 }
