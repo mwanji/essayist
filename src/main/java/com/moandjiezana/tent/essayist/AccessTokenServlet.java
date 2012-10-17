@@ -3,7 +3,6 @@ package com.moandjiezana.tent.essayist;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
-import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.oauth.AccessToken;
 
 import java.io.IOException;
@@ -52,6 +51,6 @@ public class AccessTokenServlet extends HttpServlet {
     users.save(user);
     
     req.getSession().setAttribute(User.class.getName(), user);
-    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(profile.getCore().getEntity()) + "/essays");
+    resp.sendRedirect(req.getContextPath() + "/read");
   }
 }
