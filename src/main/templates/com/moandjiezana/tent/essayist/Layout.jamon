@@ -20,11 +20,22 @@ String url;
 
 <html>
 	<head>
+		<title>Essayist</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
 		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap.min.css" />
 		<link href='http://fonts.googleapis.com/css?family=Alegreya:400italic,400,700' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Alegreya+SC:700' rel='stylesheet' type='text/css'>
-		
-		<style>
+		<style type="text/css">
+			body {
+				padding-top: 60px;
+			}
+			
+			body, li {
+				line-height: 25px;
+			}
+			
 			h1, h2, h3, h4 {
 				font-family: 'Alegreya SC', Georgia, serif;
 			}
@@ -37,11 +48,16 @@ String url;
 				font-family: 'Alegreya', Georgia, serif; font-size: 1.5em;
 			}
 		</style>
+		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap-responsive.min.css" />
 		
-		<!-- script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/boostrap.min.js"></src-->
+		<!--[if lt IE 9]>
+		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		
+		<!--script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/bootstrap.min.js"></script-->
 	</head>
 	
-	<body style="padding: 60px">
+	<body>
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
