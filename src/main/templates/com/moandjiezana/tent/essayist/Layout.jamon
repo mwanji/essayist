@@ -62,10 +62,12 @@ String url;
 			<div class="navbar-inner">
 				<div class="container">
 					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist <% Character.valueOf('\u03B1') %></a>
+					<ul class="nav">
+						<& navItem: "Read"; "read" &>
+		        	</ul>
 					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">
-						<& navItem: "Read"; "read" &>
 						<& navItem: "Write"; "write" &>
 						<& navItem: "Written"; Entities.getForUrl(jamonContext.getSessionProfile().getCore().getEntity()) + "/essays" &>
 		        	</ul>
@@ -73,9 +75,6 @@ String url;
 						<& navItem: "Log out"; "logout"; &>
 		        	</ul>
 					<%else>
-					<ul class="nav">
-						<& navItem: "Read"; "read" &>
-		        	</ul>
 					<ul class="nav pull-right">
 						<& navItem: "Log in / Join with Tent"; "" &>
 		        	</ul>
