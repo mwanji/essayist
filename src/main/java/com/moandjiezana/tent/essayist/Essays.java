@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 
+import org.slf4j.LoggerFactory;
+
 public class Essays {
   
   public List<Post> getEssays(List<User> users, TentClient tentClient) {
@@ -28,7 +30,7 @@ public class Essays {
       try {
         posts.addAll(postFuture.get());
       } catch (Exception e) {
-        throw Throwables.propagate(e);
+        LoggerFactory.getLogger(Essays.class).error("Could not load Post", Throwables.getRootCause(e));
       }
     }
     
