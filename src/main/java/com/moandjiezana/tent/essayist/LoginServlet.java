@@ -106,7 +106,7 @@ public class LoginServlet extends HttpServlet {
     String afterAuthorizationUrl = baseUrl + "/accessToken";
     String afterLoginUrl = baseUrl;
     
-    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist on localhost", "A blogging app.", "http://www.moandjiezana.com/tent/essayist", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
+    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app.", "http://www.moandjiezana.com/tent/essayist", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
     
     return tentClient.register(registrationRequest);
   }
