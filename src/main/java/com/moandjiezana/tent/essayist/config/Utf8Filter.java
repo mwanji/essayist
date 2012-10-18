@@ -1,5 +1,7 @@
 package com.moandjiezana.tent.essayist.config;
 
+import com.google.common.base.Charsets;
+
 import java.io.IOException;
 
 import javax.inject.Singleton;
@@ -17,8 +19,9 @@ public class Utf8Filter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest) request;
+    req.setCharacterEncoding(Charsets.UTF_8.toString());
     if (!"application/json".equals(req.getHeader("Accept"))) {
-      response.setContentType("text/html;charset=utf-8");
+      response.setContentType("text/html;charset=" + Charsets.UTF_8);
     }
     
     chain.doFilter(request, response);
