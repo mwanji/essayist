@@ -1,0 +1,20 @@
+<%import>
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.users.Profile;
+com.moandjiezana.tent.client.posts.content.*;
+com.moandjiezana.tent.essayist.tent.*;
+java.text.SimpleDateFormat;
+java.util.*;
+</%import>
+<%args>
+Post essay;
+Profile profile;
+</%args>
+<%java>
+final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+</%java>
+<div>
+	<h2><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a></h2>
+	<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% profile.getBasic().getName() %></a> <small><% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %></small></h3>
+	<p class="bodyText"><% essay.getContentAs(EssayContent.class).getExcerpt() %></p>
+</div>

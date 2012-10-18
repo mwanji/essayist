@@ -1,3 +1,15 @@
+<%import>
+java.util.*;
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.users.Profile;
+</%import>
+<%args>
+List<Post> essays = Collections.<Post>emptyList();
+Map<String, Profile> profiles;
+</%args>
+<%java>
+
+</%java>
 <&| Layout &>
 	<div class="row">
 		<div class="span12">
@@ -7,6 +19,9 @@
 					<input type="submit" value="Read" class="btn" />
 				</div>
 			</form>
+			<%for Post essay : essays %>
+			<& partials/EssayLink; essay = essay; profile = profiles.get(essay.getEntity()) &>
+			</%for>
 		</div>
 	</div>
 </&>

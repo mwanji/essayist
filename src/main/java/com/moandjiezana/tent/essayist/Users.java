@@ -11,13 +11,18 @@ import com.moandjiezana.tent.oauth.AccessToken;
 
 import java.io.BufferedReader;
 import java.sql.Clob;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 
 @Singleton
@@ -44,23 +49,22 @@ public class Users {
       throw Throwables.propagate(e);
     }
   }
-
-  private <T> T convert(Object value, Class<T> objectClass) {
-    String s;
-    if (value instanceof String) {
-      s = (String) value;
-    } else {
-      Clob clob = (Clob) value;
-      
-      try {
-        s = CharStreams.toString(new BufferedReader(clob.getCharacterStream()));
-      } catch (Exception e) {
-        throw Throwables.propagate(e);
-      }
+  
+  public List<User> getAll() {
+    try {
+      return queryRunner.query("select * from AUTHORIZATIONS", new BeanListHandler<User>(User.class, new BasicRowProcessor(new BeanProcessor() {
+        @Override
+        protected Object processColumn(ResultSet rs, int index, Class<?> propType) throws SQLException {
+          if (Long.class.equals(propType)) {
+            return super.processColumn(rs, index, propType);
+          }
+          
+          return gson.fromJson(rs.getString(index), propType);
+        }
+      })));
+    } catch (SQLException e) {
+      throw Throwables.propagate(e);
     }
-    
-    
-    return gson.fromJson(s, objectClass);
   }
   
   public void save(User user) {
@@ -85,5 +89,23 @@ public class Users {
     } catch (SQLException e) {
       throw Throwables.propagate(e);
     }
+  }
+  
+  private <T> T convert(Object value, Class<T> objectClass) {
+    String s;
+    if (value instanceof String) {
+      s = (String) value;
+    } else {
+      Clob clob = (Clob) value;
+      
+      try {
+        s = CharStreams.toString(new BufferedReader(clob.getCharacterStream()));
+      } catch (Exception e) {
+        throw Throwables.propagate(e);
+      }
+    }
+    
+    
+    return gson.fromJson(s, objectClass);
   }
 }
