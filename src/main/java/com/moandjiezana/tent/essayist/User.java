@@ -10,6 +10,8 @@ public class User {
   private AccessToken accessToken;
   private Long id;
   
+  public User() {}
+  
   public User(Profile profile, AccessToken accessToken) {
     this(null, profile, null, accessToken);
   }
@@ -28,16 +30,32 @@ public class User {
   public Long getId() {
     return id;
   }
+  
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public Profile getProfile() {
     return profile;
+  }
+  
+  public void setProfile(Profile profile) {
+    this.profile = profile;
   }
 
   public AccessToken getAccessToken() {
     return accessToken;
   }
+  
+  public void setAccessToken(AccessToken accessToken) {
+    this.accessToken = accessToken;
+  }
 
   public RegistrationResponse getRegistration() {
     return registration;
+  }
+  
+  public void setRegistration(RegistrationResponse registration) {
+    this.registration = registration;
   }
 }
