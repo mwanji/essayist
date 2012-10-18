@@ -2,9 +2,9 @@ package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
-import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.tent.Entities;
+import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
 
 import java.io.IOException;
 
@@ -43,9 +43,11 @@ public class NewEssayServlet extends HttpServlet {
     permissions.setPublic(true);
     post.setPermissions(permissions);
     post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
-    EssayContent essay = new EssayContent();
+    EssayistPostContent essay = new EssayistPostContent();
     essay.setTitle(req.getParameter("title"));
     essay.setBody(new PegDownProcessor().markdownToHtml(req.getParameter("body")));
+    essay.setRaw(req.getParameter("body"));
+    essay.setType("markdown");
     essay.setExcerpt(req.getParameter("excerpt"));
     post.setContent(essay);
     
