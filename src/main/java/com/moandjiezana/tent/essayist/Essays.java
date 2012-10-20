@@ -1,10 +1,11 @@
 package com.moandjiezana.tent.essayist;
 
 import com.google.common.base.Throwables;
-import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.TentClientAsync;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,33 +15,42 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Essays {
   
-  public List<Post> getEssays(List<User> users, TentClient tentClient) {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Essays.class);
+
+  public List<Post> getEssays(List<User> users) {
     CopyOnWriteArrayList<Future<List<Post>>> futurePosts = new CopyOnWriteArrayList<Future<List<Post>>>();
     
-    for (User user : users) {
-      futurePosts.add(new TentClientAsync(user.getProfile()).getPosts(new PostQuery().entity(user.getProfile().getCore().getEntity()).postTypes(Post.Types.essay("v0.1.0"))));
-    }
+    AsyncHttpClient httpClient = new AsyncHttpClient(new JDKAsyncHttpProvider(TentClientAsync.getDefaultAsyncHttpClientConfigBuilder().build()));
     
-    List<Post> posts = new ArrayList<Post>(futurePosts.size());
-    for (Future<List<Post>> postFuture : futurePosts) {
-      try {
-        posts.addAll(postFuture.get());
-      } catch (Exception e) {
-        LoggerFactory.getLogger(Essays.class).error("Could not load Post", Throwables.getRootCause(e));
+    try {
+      for (User user : users) {
+        futurePosts.add(new TentClientAsync(user.getProfile(), httpClient).getPosts(new PostQuery().entity(user.getProfile().getCore().getEntity()).postTypes(Post.Types.essay("v0.1.0"))));
       }
-    }
-    
-    Collections.sort(posts, new Comparator<Post>() {
-      @Override
-      public int compare(Post post1, Post post2) {
-        return new Date(post2.getPublishedAt()).compareTo(new Date(post1.getPublishedAt()));
+      
+      List<Post> posts = new ArrayList<Post>(futurePosts.size());
+      for (Future<List<Post>> futurePost : futurePosts) {
+        try {
+          posts.addAll(futurePost.get());
+        } catch (Exception e) {
+          LOGGER.error("Could not load Post", Throwables.getRootCause(e));
+        }
       }
-    });
-    
-    return posts;
+      
+      Collections.sort(posts, new Comparator<Post>() {
+        @Override
+        public int compare(Post post1, Post post2) {
+          return new Date(post2.getPublishedAt()).compareTo(new Date(post1.getPublishedAt()));
+        }
+      });
+      
+      return posts;
+    } finally {
+      httpClient.close();
+    }
   }
 }
