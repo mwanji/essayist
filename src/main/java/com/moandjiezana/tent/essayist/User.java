@@ -12,6 +12,10 @@ public class User {
   
   public User() {}
   
+  public User(Profile profile) {
+    this(null, profile, null, null);
+  }
+  
   public User(Profile profile, AccessToken accessToken) {
     this(null, profile, null, accessToken);
   }
