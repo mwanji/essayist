@@ -47,6 +47,10 @@ String url;
 			.bodyText {
 				font-family: 'Alegreya', Georgia, serif; font-size: 1.5em;
 			}
+			
+			.essaySummary {
+				border-bottom: 1px solid #eee;
+			}
 		</style>
 		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap-responsive.min.css" />
 		
@@ -62,12 +66,10 @@ String url;
 			<div class="navbar-inner">
 				<div class="container">
 					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist <% Character.valueOf('\u03B1') %></a>
-					<ul class="nav">
-						<& navItem: "Read"; "read" &>
-		        	</ul>
 					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">
+						<& navItem: "My Feed"; "read" &>
 						<& navItem: "Write"; "write" &>
 						<& navItem: "Written"; Entities.getForUrl(jamonContext.getSessionProfile().getCore().getEntity()) + "/essays" &>
 		        	</ul>
@@ -80,6 +82,9 @@ String url;
 		        	</ul>
 		     		</%if>
 		     		</%if>
+					<ul class="nav">
+						<& navItem: "Site Feed"; "global" &>
+		        	</ul>
 					</ul>
 				</div>
 			</div>

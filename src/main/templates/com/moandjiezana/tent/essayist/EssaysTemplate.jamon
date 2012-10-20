@@ -1,19 +1,28 @@
 <%import>
 java.util.*;
 com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.content.*;
 com.moandjiezana.tent.essayist.tent.*;
 </%import>
 <%args>
 List<Post> essays;
+Profile profile;
 String active = "Read";
 </%args>
-
 <&| Layout; active = active; &>
-<%for Post essay : essays %>
-<div>
-	<h2><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a></h2>
-	<p class="bodyText"><% essay.getContentAs(EssayContent.class).getExcerpt() %></p>
-</div>
-</%for>
+	<div class="row">
+		<div class="span2">
+			<%if profile.getBasic() != null && profile.getBasic().getAvatarUrl() != null %>
+			<img src="<% profile.getBasic().getAvatarUrl() %>" />
+			</%if>
+		</div>
+		<div class="span10">
+			<h3><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(profile.getCore().getEntity()) %>/essays"><% profile.getBasic() != null ? profile.getBasic().getName() : profile.getCore().getEntity() %></a></h3>
+		</div>	
+	</div>
+	
+	<%for Post essay : essays %>
+	<& partials/EssayLink; essay = essay; &>
+	</%for>
 </&>

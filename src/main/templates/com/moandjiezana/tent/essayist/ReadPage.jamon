@@ -19,9 +19,9 @@ Map<String, Profile> profiles;
 					<input type="submit" value="Read" class="btn" />
 				</div>
 			</form>
-			<%for Post essay : essays %>
-			<& partials/EssayLink; essay = essay; profile = profiles.get(essay.getEntity()) &>
-			</%for>
 		</div>
 	</div>
+	<%for Post essay : essays %>
+	<& partials/EssayLink; essay = essay; profile = profiles.get(essay.getEntity()) &>
+	</%for>
 </&>

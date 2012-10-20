@@ -8,13 +8,23 @@ java.util.*;
 </%import>
 <%args>
 Post essay;
-Profile profile;
+Profile profile = null;
 </%args>
 <%java>
 final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+final EssayContent essayContent = essay.getContentAs(EssayContent.class);
 </%java>
-<div>
-	<h2><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essay.getContentAs(EssayContent.class).getTitle() %></a></h2>
-	<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% profile.getBasic() != null ? profile.getBasic().getName() : essay.getEntity() %></a> <small><% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %></small></h3>
-	<p class="bodyText"><% essay.getContentAs(EssayContent.class).getExcerpt() %></p>
+<div class="essaySummary row-fluid">
+	<%if profile != null %>
+	<div class="span2">
+		<%if profile.getBasic() != null && profile.getBasic().getAvatarUrl() != null %>
+		<img src="<% profile.getBasic().getAvatarUrl() %>" />
+		</%if>
+	</div>
+	</%if>
+	<div class="span10">
+		<h3><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essayContent.getTitle() %></a></h3>
+		<%if profile != null %><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% profile.getBasic() != null ? profile.getBasic().getName() : essay.getEntity() %></a></%if> <% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %>
+		<p class="bodyText"><% essayContent.getExcerpt() %></p>
+	</div>
 </div>

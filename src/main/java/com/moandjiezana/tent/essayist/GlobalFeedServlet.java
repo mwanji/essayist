@@ -18,14 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Singleton
-public class ReadServlet extends HttpServlet {
+public class GlobalFeedServlet extends HttpServlet {
   
   private final Templates templates;
   private Essays essays;
   private Users users;
 
   @Inject
-  public ReadServlet(Users users, Essays essays, Templates templates) {
+  public GlobalFeedServlet(Users users, Essays essays, Templates templates) {
     this.users = users;
     this.essays = essays;
     this.templates = templates;
@@ -40,7 +40,7 @@ public class ReadServlet extends HttpServlet {
 //    tentClient.getAsync().setAccessToken(user.getAccessToken());
 //    tentClient.getAsync().setRegistrationResponse(user.getRegistration());
     List<User> allUsers = users.getAll();
-    essays = this.essays.getEssays(allUsers, null);
+    essays = this.essays.getEssays(allUsers);
     
     Map<String, Profile> profiles = new HashMap<String, Profile>();
     for (User aUser : allUsers) {

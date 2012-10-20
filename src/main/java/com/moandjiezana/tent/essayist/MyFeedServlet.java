@@ -1,0 +1,119 @@
+package com.moandjiezana.tent.essayist;
+
+import com.moandjiezana.tent.client.TentClient;
+import com.moandjiezana.tent.client.TentClientAsync;
+import com.moandjiezana.tent.client.posts.Post;
+import com.moandjiezana.tent.client.posts.PostQuery;
+import com.moandjiezana.tent.client.users.Profile;
+import com.moandjiezana.tent.essayist.tent.Entities;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Singleton
+public class MyFeedServlet extends HttpServlet {
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(MyFeedServlet.class);
+  private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+  
+  private final Templates templates;
+  private Essays essays;
+  private Users users;
+
+  @Inject
+  public MyFeedServlet(Users users, Essays essays, Templates templates) {
+    this.users = users;
+    this.essays = essays;
+    this.templates = templates;
+  }
+  
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    User user = (User) req.getSession().getAttribute(User.class.getName());
+    
+    TentClient tentClient = new TentClient(user.getProfile());
+    tentClient.getAsync().setAccessToken(user.getAccessToken());
+    tentClient.getAsync().setRegistrationResponse(user.getRegistration());
+    List<Post> essays = tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")));
+    List<User> allUsers = users.getAll();
+    
+    final Map<String, Profile> profiles = new ConcurrentHashMap<String, Profile>();
+    
+    for (User aUser : allUsers) {
+      profiles.put(aUser.getProfile().getCore().getEntity(), aUser.getProfile());
+    }
+    
+    List<Callable<Profile>> missingUsers = new ArrayList<Callable<Profile>>();
+    int missingUsersCount = 0;
+    
+    for (Post essay : essays) {
+      if (!profiles.containsKey(essay.getEntity())) {
+        missingUsersCount++;
+      }
+    }
+    
+    final AsyncHttpClient httpClient = new AsyncHttpClient(new JDKAsyncHttpProvider(TentClientAsync.getDefaultAsyncHttpClientConfigBuilder().build()));
+    final CountDownLatch countDownLatch = new CountDownLatch(missingUsersCount);
+    
+    for (final Post essay : essays) {
+      if (profiles.containsKey(essay.getEntity())) {
+        continue;
+      }
+      
+      missingUsers.add(new Callable<Profile>() {
+        @Override
+        public Profile call() throws Exception {
+          try {
+            TentClient tentClientAsync = new TentClient(new TentClientAsync(essay.getEntity(), httpClient));
+            Profile profile = tentClientAsync.getProfile();
+            users.save(new User(profile));
+            profiles.put(essay.getEntity(), profile);
+            
+            return profile;
+          } finally {
+            countDownLatch.countDown();
+          }
+        }
+      });
+    }
+
+    try {
+      if (!missingUsers.isEmpty()) {
+        try {
+          EXECUTOR.invokeAll(missingUsers);
+          countDownLatch.await();
+        } catch (Exception e) {
+          LOGGER.error("Problem while fetching missing profiles", e);
+        }
+      }
+    } finally {
+      httpClient.close();
+    }
+    
+    templates.read().setEssays(essays).render(resp.getWriter(), profiles);
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(req.getParameter("entity")) + "/essays");
+  }
+}
