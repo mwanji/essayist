@@ -23,6 +23,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.servlet.ServletContextEvent;
+
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -32,6 +34,7 @@ import org.slf4j.LoggerFactory;
 public class EssayistServletContextListener extends GuiceServletContextListener {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(EssayistServletContextListener.class);
+  private DataSource dataSource;
 
   @Override
   protected Injector getInjector() {
@@ -39,8 +42,8 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
     Properties defaultProperties = new Properties();
     try {
       defaultProperties.load(getClass().getResourceAsStream("/essayist-defaults.properties"));
-    } catch (IOException e1) {
-      throw Throwables.propagate(e1);
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
     }
     
     Properties properties = new Properties(defaultProperties);
@@ -57,7 +60,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
     poolProperties.setDriverClassName(properties.getProperty("db.driverClassName"));
     poolProperties.setInitialSize(Integer.parseInt(properties.getProperty("db.initialSize")));
     
-    DataSource dataSource = new DataSource(poolProperties);
+    dataSource = new DataSource(poolProperties);
     
     Connection connection = null;
     try {
@@ -97,6 +100,14 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         bind(QueryRunner.class).toInstance(queryRunner);
       }
     });
+  }
+  
+  @Override
+  public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    super.contextDestroyed(servletContextEvent);
+    if (dataSource != null) {
+      dataSource.close();
+    }
   }
 
 }
