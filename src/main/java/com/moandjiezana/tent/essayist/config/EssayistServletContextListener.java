@@ -93,6 +93,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
         filter("/*").through(Utf8Filter.class);
+        filter("/*").through(HttpMethodFilter.class);
       }
     }, new AbstractModule() {
       @Override
