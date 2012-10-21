@@ -9,12 +9,13 @@ java.util.*;
 <%args>
 Post essay;
 Profile profile;
+String active = "My Feed";
 </%args>
 <%java>
 final EssayContent content = essay.getContentAs(EssayContent.class);
 final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
 </%java>
-<&| Layout; active = "Read" &>
+<&| Layout; active = active &>
 	<h1><% content.getTitle() %> <small><a href="<% jamonContext.currentUrl %>" style="text-decoration: none"><% Character.valueOf('\u2693') %></a></small></h1>
 	<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% Entities.getName(profile) %></a> <small><% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %></small></h3>
 	<div class="bodyText">

@@ -58,7 +58,12 @@ public class EssayServlet extends HttpServlet {
     EssayistPostContent essayContent = post.getContentAs(EssayistPostContent.class);
     essayContent.setBody(csrf.stripScripts(essayContent.getBody()));
     
-    templates.essay().render(resp.getWriter(), post, user.getProfile());
+    EssayTemplate essayPage = templates.essay();
+    if (sessions.get().getUser().owns(post)) {
+      essayPage.setActive("Written");
+    }
+    
+    essayPage.render(resp.getWriter(), post, user.getProfile());
   }
   
   @Override

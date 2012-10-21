@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,11 +25,13 @@ public class EssaysServlet extends HttpServlet {
   
   private Templates templates;
   private Users users;
+  private Provider<EssayistSession> sessions;
 
   @Inject
-  public EssaysServlet(Users users, Templates templates) {
+  public EssaysServlet(Users users, Templates templates, Provider<EssayistSession> sessions) {
     this.users = users;
     this.templates = templates;
+    this.sessions = sessions;
   }
 
   @Override
@@ -40,7 +43,7 @@ public class EssaysServlet extends HttpServlet {
     
     TentClient tentClient = getTentClientFromSessionOrUrl(req);
     
-    String active = req.getSession().getAttribute(User.class.getName()) != null && entity.equals(tentClient.getProfile().getCore().getEntity()) ? "Written" : "Read";
+    String active = sessions.get().isLoggedIn() && entity.equals(sessions.get().getUser().getProfile().getCore().getEntity()) ? "Written" : "My Feed";
     
     List<Post> essays = tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")).entity(entity));
     
@@ -69,13 +72,13 @@ public class EssaysServlet extends HttpServlet {
   }
 
   private TentClient getTentClientFromSessionOrUrl(HttpServletRequest req) {
-    User user = (User) req.getSession().getAttribute(User.class.getName());
+    User user = sessions.get().getUser();
     
     String pathInfo = req.getPathInfo();
     int lastSlashIndex = pathInfo.lastIndexOf('/');
     String entity = Entities.expandFromUrl(pathInfo.substring(0, lastSlashIndex));
     
-    if (user == null || !entity.equals(user.getProfile().getCore().getEntity())) {
+    if (!sessions.get().isLoggedIn() || !entity.equals(user.getProfile().getCore().getEntity())) {
       TentClient tentClient = new TentClient(entity);
       tentClient.getProfile();
       

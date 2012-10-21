@@ -9,7 +9,7 @@ com.google.common.base.Strings;
 <%args>
 List<Post> essays;
 Profile profile;
-String active = "Read";
+String active = "My Feed";
 </%args>
 <&| Layout; active = active; &>
 	<div class="row">
