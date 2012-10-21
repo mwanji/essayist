@@ -14,7 +14,7 @@ String active = null;
 String label;
 String url;
 </%args>
-<li <%if (active != null && active.equals(label)) || url.equals(jamonContext.getPath()) %>class="active"</%if>><a href="<% jamonContext.contextPath %>/<% url %>"><% label %></a></li>
+<li <%if (active != null && active.equals(label)) || url.equals(jamonContext.getLastPathSegment()) %>class="active"</%if>><a href="<% jamonContext.contextPath %>/<% url %>"><% label %></a></li>
 </%def>
 
 

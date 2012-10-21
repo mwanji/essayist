@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -38,17 +39,19 @@ public class MyFeedServlet extends HttpServlet {
   private final Templates templates;
   private Essays essays;
   private Users users;
+  private Provider<EssayistSession> sessions;
 
   @Inject
-  public MyFeedServlet(Users users, Essays essays, Templates templates) {
+  public MyFeedServlet(Users users, Essays essays, Provider<EssayistSession> sessions, Templates templates) {
     this.users = users;
     this.essays = essays;
+    this.sessions = sessions;
     this.templates = templates;
   }
   
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    User user = (User) req.getSession().getAttribute(User.class.getName());
+    User user = sessions.get().getUser();
     
     TentClient tentClient = new TentClient(user.getProfile());
     tentClient.getAsync().setAccessToken(user.getAccessToken());

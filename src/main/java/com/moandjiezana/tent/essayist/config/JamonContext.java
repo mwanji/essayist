@@ -2,46 +2,48 @@ package com.moandjiezana.tent.essayist.config;
 
 import com.google.common.base.Splitter;
 import com.moandjiezana.tent.client.users.Profile;
+import com.moandjiezana.tent.essayist.EssayistSession;
 import com.moandjiezana.tent.essayist.User;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 public class JamonContext {
 
+  private static final Splitter SLASH = Splitter.on('/').omitEmptyStrings();
+  
   private final HttpServletRequest req;
   public final String contextPath;
   public final String currentUrl;
+  private EssayistSession session;
   
   @Inject
-  public JamonContext(HttpServletRequest req) {
+  public JamonContext(EssayistSession session, HttpServletRequest req) {
+    this.session = session;
     this.req = req;
     this.contextPath = req.getContextPath();
     this.currentUrl = req.getRequestURL().toString();
   }
   
   public boolean isLoggedIn() {
-    HttpSession session = req.getSession(false);
-    
-    if (session == null) {
-      return false;
-    }
-    
-    return session.getAttribute(User.class.getName()) != null;
+    return session.isLoggedIn();
   }
   
   public Profile getSessionProfile() {
-    return ((User) req.getSession(false).getAttribute(User.class.getName())).getProfile();
+    return getCurrentUser().getProfile();
+  }
+  
+  public User getCurrentUser() {
+    return session.getUser();
   }
   
   public String contextPath() {
     return contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
   }
   
-  public String getPath() {
+  public String getLastPathSegment() {
     String path = "";
-    for (String part : Splitter.on('/').omitEmptyStrings().split(req.getRequestURI())) {
+    for (String part : SLASH.split(req.getRequestURI())) {
       path = part;
     }
 

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,27 +25,31 @@ public class LoginServlet extends HttpServlet {
   
   private final Users users;
   private final Templates templates;
+  private final Essays essays;
+  private Provider<EssayistSession> sessions;
 
   @Inject
-  public LoginServlet(Users users, Templates jamonContext) {
+  public LoginServlet(Users users, Essays essays, Provider<EssayistSession> sessions, Templates jamonContext) {
     this.users = users;
+    this.essays = essays;
+    this.sessions = sessions;
     this.templates = jamonContext;
   }
   
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
     if (req.getSession(false) != null) {
       User user = (User) req.getSession().getAttribute(User.class.getName());
+      EssayistSession session = sessions.get();
       
-      if (user == null) {
+      if (!session.isLoggedIn()) {
         AuthResult authResult = (AuthResult) req.getSession().getAttribute(req.getParameter("state"));
         if (authResult != null) {
           user = users.getByEntityOrNull(authResult.profile.getCore().getEntity());
-          req.getSession().setAttribute(User.class.getName(), user);
+          session.setUser(user);
           req.getSession().removeAttribute("state");
         } else if ("server_error".equals(req.getParameter("error"))) {
           String entity = (String) req.getSession().getAttribute("entity");
           users.delete(entity);
-
           
           TentClient tentClient = new TentClient(entity);
           RegistrationResponse registrationResponse = register(tentClient, req);
@@ -63,7 +68,7 @@ public class LoginServlet extends HttpServlet {
         return;
       }
     }
-
+    
     templates.login().render(resp.getWriter());
   };
 

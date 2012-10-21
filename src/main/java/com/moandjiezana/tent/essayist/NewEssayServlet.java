@@ -9,6 +9,7 @@ import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
 import java.io.IOException;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,9 +22,11 @@ import org.pegdown.PegDownProcessor;
 public class NewEssayServlet extends HttpServlet {
   
   private Templates templates;
+  private Provider<EssayistSession> sessions;
 
   @Inject
-  public NewEssayServlet(Templates templates) {
+  public NewEssayServlet(Provider<EssayistSession> sessions, Templates templates) {
+    this.sessions = sessions;
     this.templates = templates;
   }
 
@@ -34,7 +37,6 @@ public class NewEssayServlet extends HttpServlet {
   
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    User user = (User) req.getSession().getAttribute(User.class.getName());
     TentClient tentClient = tentClient(req);
     
     Post post = new Post();
@@ -53,11 +55,11 @@ public class NewEssayServlet extends HttpServlet {
     
     tentClient.write(post);
     
-    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(user.getProfile().getCore().getEntity()) + "/essays");
+    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(tentClient.getProfile().getCore().getEntity()) + "/essays");
   }
 
   private TentClient tentClient(HttpServletRequest req) {
-    User user = (User) req.getSession().getAttribute(User.class.getName());
+    User user = sessions.get().getUser();
     
     TentClient tentClient = new TentClient(user.getProfile());
     tentClient.getAsync().setAccessToken(user.getAccessToken());
