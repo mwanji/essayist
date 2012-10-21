@@ -24,7 +24,15 @@ final EssayContent essayContent = essay.getContentAs(EssayContent.class);
 	</%if>
 	<div class="span10">
 		<h3><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essayContent.getTitle() %></a></h3>
-		<%if profile != null %><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% profile.getBasic() != null ? profile.getBasic().getName() : essay.getEntity() %></a></%if> <% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %>
+		<%if profile != null %><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% Entities.getName(profile, essay.getEntity()) %></a></%if> <% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %>
 		<p class="bodyText"><% essayContent.getExcerpt() %></p>
+		<%if jamonContext.getCurrentUser().owns(essay) %>
+		<div>
+			<form action="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>" method="post">
+				<button class="btn btn-danger"><i class="icon-trash icon-white"></i> Delete</button>
+				<input type="hidden" name="_method" value="DELETE" />
+			</form>
+		</div>
+		</%if>
 	</div>
 </div>
