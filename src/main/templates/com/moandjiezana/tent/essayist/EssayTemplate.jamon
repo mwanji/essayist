@@ -2,6 +2,7 @@
 com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.posts.content.EssayContent;
+com.moandjiezana.tent.essayist.tent.*;
 java.text.SimpleDateFormat;
 java.util.*;
 </%import>
@@ -15,7 +16,7 @@ final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
 </%java>
 <&| Layout; active = "Read" &>
 	<h1><% content.getTitle() %> <small><a href="<% jamonContext.currentUrl %>" style="text-decoration: none"><% Character.valueOf('\u2693') %></a></small></h1>
-	<h3><small>by</small> <a href="<% essay.getEntity() %>"><% profile.getBasic().getName() %></a> <small><% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %></small></h3>
+	<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% Entities.getName(profile) %></a> <small><% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %></small></h3>
 	<div class="bodyText">
 	<% content.getBody() #n %>
 	</div>

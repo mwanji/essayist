@@ -4,6 +4,7 @@ com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.content.*;
 com.moandjiezana.tent.essayist.tent.*;
+com.google.common.base.Strings;
 </%import>
 <%args>
 List<Post> essays;
@@ -18,7 +19,12 @@ String active = "Read";
 			</%if>
 		</div>
 		<div class="span10">
-			<h3><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(profile.getCore().getEntity()) %>/essays"><% profile.getBasic() != null ? profile.getBasic().getName() : profile.getCore().getEntity() %></a></h3>
+			<h3><a href="<% profile.getCore().getEntity() %>"><% Entities.getName(profile) %></a></h3>
+			<%if profile.getBasic() != null && !Strings.isNullOrEmpty(profile.getBasic().getBio()) %>
+			<p>
+				<% profile.getBasic().getBio() %>
+			</p>
+			</%if>
 		</div>	
 	</div>
 	
