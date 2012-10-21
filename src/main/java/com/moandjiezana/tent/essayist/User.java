@@ -1,6 +1,7 @@
 package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
+import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.oauth.AccessToken;
 
@@ -29,6 +30,10 @@ public class User {
     this.profile = profile;
     this.registration = registration;
     this.accessToken = accessToken;
+  }
+  
+  public boolean owns(Post post) {
+    return profile.getCore().getEntity().equals(post.getEntity());
   }
 
   public Long getId() {
