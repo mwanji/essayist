@@ -33,12 +33,8 @@ public class GlobalFeedServlet extends HttpServlet {
   
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    User user = (User) req.getSession().getAttribute(User.class.getName());
     List<Post> essays = Collections.emptyList();
     
-//    TentClient tentClient = new TentClient(user.getProfile());
-//    tentClient.getAsync().setAccessToken(user.getAccessToken());
-//    tentClient.getAsync().setRegistrationResponse(user.getRegistration());
     List<User> allUsers = users.getAll();
     essays = this.essays.getEssays(allUsers);
     
