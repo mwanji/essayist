@@ -55,9 +55,9 @@ public class NewEssayServlet extends HttpServlet {
     essay.setExcerpt(req.getParameter("excerpt"));
     post.setContent(essay);
     
-    tentClient.write(post);
+    Post newPost = tentClient.write(post);
     
-    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(tentClient.getProfile().getCore().getEntity()) + "/essays");
+    resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(tentClient.getProfile().getCore().getEntity()) + "/essay/" + newPost.getId());
   }
 
   private TentClient tentClient(HttpServletRequest req) {
