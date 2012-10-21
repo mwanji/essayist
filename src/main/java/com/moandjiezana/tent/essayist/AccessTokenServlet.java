@@ -8,6 +8,7 @@ import com.moandjiezana.tent.oauth.AccessToken;
 import java.io.IOException;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,10 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 public class AccessTokenServlet extends HttpServlet {
   
   private Users users;
+  private Provider<EssayistSession> sessions;
 
   @Inject
-  public AccessTokenServlet(Users users) {
+  public AccessTokenServlet(Users users, Provider<EssayistSession> sessions) {
     this.users = users;
+    this.sessions = sessions;
   }
   
   @Override
@@ -50,7 +53,7 @@ public class AccessTokenServlet extends HttpServlet {
     
     users.save(user);
     
-    req.getSession().setAttribute(User.class.getName(), user);
+    sessions.get().setUser(user);
     resp.sendRedirect(req.getContextPath() + "/read");
   }
 }
