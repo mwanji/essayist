@@ -5,6 +5,8 @@ import com.eroi.migrate.Engine;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
@@ -16,14 +18,18 @@ import com.moandjiezana.tent.essayist.LoginServlet;
 import com.moandjiezana.tent.essayist.LogoutServlet;
 import com.moandjiezana.tent.essayist.MyFeedServlet;
 import com.moandjiezana.tent.essayist.NewEssayServlet;
+import com.moandjiezana.tent.essayist.auth.Authenticated;
+import com.moandjiezana.tent.essayist.auth.AuthenticationInterceptor;
 import com.moandjiezana.tent.essayist.db.migrations.Migration_1;
 
 import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServlet;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -99,6 +105,14 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
       @Override
       protected void configure() {
         bind(QueryRunner.class).toInstance(queryRunner);
+        
+        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor();
+        @SuppressWarnings("rawtypes")
+        Matcher<Class> servletSubclassMatcher = Matchers.subclassesOf(HttpServlet.class);
+        Matcher<AnnotatedElement> authenticationAnnotationMatcher = Matchers.annotatedWith(Authenticated.class);
+        
+        bindInterceptor(servletSubclassMatcher.and(authenticationAnnotationMatcher), new AuthenticationInterceptor.MethodOfAuthenticatedClassMatcher(), authenticationInterceptor);
+        bindInterceptor(servletSubclassMatcher, authenticationAnnotationMatcher, authenticationInterceptor);
       }
     });
   }

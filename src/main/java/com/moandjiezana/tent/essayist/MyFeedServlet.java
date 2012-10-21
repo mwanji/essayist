@@ -5,6 +5,7 @@ import com.moandjiezana.tent.client.TentClientAsync;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.users.Profile;
+import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
@@ -50,6 +51,7 @@ public class MyFeedServlet extends HttpServlet {
   }
   
   @Override
+  @Authenticated
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     User user = sessions.get().getUser();
     

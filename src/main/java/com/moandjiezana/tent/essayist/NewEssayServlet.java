@@ -3,6 +3,7 @@ package com.moandjiezana.tent.essayist;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.users.Permissions;
+import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
 
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.pegdown.PegDownProcessor;
 
 @Singleton
+@Authenticated
 public class NewEssayServlet extends HttpServlet {
   
   private Templates templates;
