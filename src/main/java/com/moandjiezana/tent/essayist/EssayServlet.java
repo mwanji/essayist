@@ -4,7 +4,9 @@ import com.google.common.base.Throwables;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.users.Profile;
+import com.moandjiezana.tent.essayist.security.Csrf;
 import com.moandjiezana.tent.essayist.tent.Entities;
+import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
 
 import java.io.IOException;
 
@@ -19,15 +21,17 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public class EssayServlet extends HttpServlet {
   
-  private Templates templates;
-  private Users users;
-  private Provider<EssayistSession> sessions;
+  private final Templates templates;
+  private final Users users;
+  private final Provider<EssayistSession> sessions;
+  private final Csrf csrf;
 
   @Inject
-  public EssayServlet(Users users, Provider<EssayistSession> sessions, Templates templates) {
+  public EssayServlet(Users users, Provider<EssayistSession> sessions, Templates templates, Csrf csrf) {
     this.users = users;
     this.sessions = sessions;
     this.templates = templates;
+    this.csrf = csrf;
   }
 
   @Override
@@ -50,6 +54,9 @@ public class EssayServlet extends HttpServlet {
     }
     
     Post post = authorTentClient.getPost(essayId);
+    
+    EssayistPostContent essayContent = post.getContentAs(EssayistPostContent.class);
+    essayContent.setBody(csrf.stripScripts(essayContent.getBody()));
     
     templates.essay().render(resp.getWriter(), post, user.getProfile());
   }
