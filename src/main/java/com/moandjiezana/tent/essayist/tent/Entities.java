@@ -1,5 +1,8 @@
 package com.moandjiezana.tent.essayist.tent;
 
+import com.google.common.base.Strings;
+import com.moandjiezana.tent.client.users.Profile;
+
 public class Entities {
 
   public static String getForUrl(String entity) {
@@ -25,5 +28,13 @@ public class Entities {
     }
     
     return expandedEntity;
+  }
+  
+  public static String getName(Profile profile) {
+    return getName(profile, profile.getCore().getEntity());
+  }
+  
+  public static String getName(Profile profile, String fallback) {
+    return profile.getBasic() != null && !Strings.isNullOrEmpty(profile.getBasic().getName()) ? profile.getBasic().getName() : fallback;
   }
 }
