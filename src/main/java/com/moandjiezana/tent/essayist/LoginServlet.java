@@ -105,13 +105,13 @@ public class LoginServlet extends HttpServlet {
     tentClient.getProfile();
     
     Map<String, String> scopes = new HashMap<String, String>();
-    scopes.put("write_posts", "Will post Essays and optionally Statuses");
+    scopes.put("write_posts", "Will post Essays and optionally Statuses to announce or comment on Essays.");
     
     String baseUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
     String afterAuthorizationUrl = baseUrl + "/accessToken";
     String afterLoginUrl = baseUrl;
     
-    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app.", "http://www.moandjiezana.com/tent/essayist", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
+    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app for when you need more than 256 characters.", "http://essayist.mndj.me", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
     
     return tentClient.register(registrationRequest);
   }
