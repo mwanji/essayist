@@ -4,6 +4,10 @@ import com.google.common.base.Strings;
 import com.moandjiezana.tent.client.users.Profile;
 
 public class Entities {
+  
+  public static String stripScheme(String entity) {
+    return entity.replace("http://", "").replace("https://", "");
+  }
 
   public static String getForUrl(String entity) {
     String prefix = entity.startsWith("http://") ? "h:" : "";
