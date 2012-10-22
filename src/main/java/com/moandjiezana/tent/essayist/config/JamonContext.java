@@ -12,14 +12,17 @@ public class JamonContext {
 
   private static final Splitter SLASH = Splitter.on('/').omitEmptyStrings();
   
-  private final HttpServletRequest req;
   public final String contextPath;
+  public final Routes routes;
+  
+  private final HttpServletRequest req;
   public final String currentUrl;
-  private EssayistSession session;
+  private final EssayistSession session;
   
   @Inject
-  public JamonContext(EssayistSession session, HttpServletRequest req) {
+  public JamonContext(EssayistSession session, Routes routes, HttpServletRequest req) {
     this.session = session;
+    this.routes = routes;
     this.req = req;
     this.contextPath = req.getContextPath();
     this.currentUrl = req.getRequestURL().toString();
