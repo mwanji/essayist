@@ -92,6 +92,9 @@ String url;
 		
 		<div class="container">
 		<& body &>
+		<div>
+			<small>Version: 20121025</small>
+		</div>
 		</div>
 	</body>
 </html>
