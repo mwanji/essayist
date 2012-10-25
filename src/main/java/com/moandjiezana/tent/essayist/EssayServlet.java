@@ -3,12 +3,14 @@ package com.moandjiezana.tent.essayist;
 import com.google.common.base.Throwables;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
+import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.security.Csrf;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -40,30 +42,40 @@ public class EssayServlet extends HttpServlet {
     String authorEntity = Entities.expandFromUrl(parts[0]);
     String essayId = parts[1];
     
-    User user = users.getByEntityOrNull(authorEntity);
+    User author = users.getByEntityOrNull(authorEntity);
 
-    TentClient authorTentClient;
-    if (user != null) {
-      authorTentClient = new TentClient(user.getProfile());
+    TentClient tentClient;
+    
+    User user = sessions.get().getUser();
+    /*if (sessions.get().isLoggedIn()) {
+      tentClient = new TentClient(user.getProfile());
+      tentClient.getAsync().setAccessToken(user.getAccessToken());
+      tentClient.getAsync().setRegistrationResponse(user.getRegistration());
+    } else */if (author != null) {
+      tentClient = new TentClient(author.getProfile());
     } else {
-      authorTentClient = new TentClient(authorEntity);
-      authorTentClient.discover();
-      Profile profile = authorTentClient.getProfile();
-      user = new User(profile, null);
-      users.save(user);
+      tentClient = new TentClient(authorEntity);
+      tentClient.discover();
+      Profile profile = tentClient.getProfile();
+      author = new User(profile);
+      users.save(author);
     }
     
-    Post post = authorTentClient.getPost(essayId);
+    Post post = tentClient.getPost(essayId);
     
     EssayistPostContent essayContent = post.getContentAs(EssayistPostContent.class);
     essayContent.setBody(csrf.stripScripts(essayContent.getBody()));
     
     EssayTemplate essayPage = templates.essay();
-    if (sessions.get().getUser().owns(post)) {
+    if (user.owns(post)) {
       essayPage.setActive("Written");
     }
     
-    essayPage.render(resp.getWriter(), post, user.getProfile());
+    tentClient.getAsync().setAccessToken(author.getAccessToken());
+    tentClient.getAsync().setRegistrationResponse(author.getRegistration());
+    List<Post> comments = tentClient.getPosts(new PostQuery().mentionedPost(essayId));
+    
+    essayPage.render(resp.getWriter(), post, author.getProfile(), comments);
   }
   
   @Override
@@ -90,5 +102,10 @@ public class EssayServlet extends HttpServlet {
     }
     
     resp.sendRedirect(req.getContextPath() + "/" + authorEntity + "/essays");
+  }
+  
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
   }
 }

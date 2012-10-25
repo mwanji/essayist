@@ -2,6 +2,7 @@
 com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.posts.content.EssayContent;
+com.moandjiezana.tent.client.posts.content.StatusContent;
 com.moandjiezana.tent.essayist.tent.*;
 java.text.SimpleDateFormat;
 java.util.*;
@@ -10,10 +11,12 @@ java.util.*;
 Post essay;
 Profile profile;
 String active = "My Feed";
+List<Post> comments;
 </%args>
 <%java>
 final EssayContent content = essay.getContentAs(EssayContent.class);
 final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd MMMM yyyy 'at' HH:mm ZZZZ");
 </%java>
 <&| Layout; active = active &>
 	<h1><% content.getTitle() %> <small><a href="<% jamonContext.currentUrl %>" style="text-decoration: none"><% Character.valueOf('\u2693') %></a></small></h1>
@@ -21,4 +24,38 @@ final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
 	<div class="bodyText">
 	<% content.getBody() #n %>
 	</div>
+	<%if jamonContext.isLoggedIn() || !comments.isEmpty() %>
+	<div class="row">
+		<div class="span12">
+			<h3>Comments</h3>
+		</div>
+	</div>
+	</%if>
+	<%if jamonContext.isLoggedIn() %>
+	<form action="<% jamonContext.routes.comment(essay) %>" method="post">
+		<div class="row">
+			<div class="span6">
+				<textarea name="comment" rows="3" required="required" class="span6"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span6">
+				<input type="submit" value="Comment" class="btn pull-right" />
+			</div>
+		</div>
+	</form>
+	</%if>
+	
+	<%if !comments.isEmpty() %>
+	<div class="row">
+		<%for Post comment : comments %>
+		<div class="span12">
+			<strong><% Entities.stripScheme(comment.getEntity()) %></strong> <% dateTimeFormat.format(new Date(comment.getPublishedAt() * 1000)) %><br/>
+			<p>
+				<% comment.getContentAs(StatusContent.class).getText() %>
+			</p>
+		</div>
+		</%for>
+	</div>
+	</%if>
 </&>

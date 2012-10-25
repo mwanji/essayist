@@ -11,6 +11,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
 import com.moandjiezana.tent.essayist.AccessTokenServlet;
+import com.moandjiezana.tent.essayist.CommentsServlet;
 import com.moandjiezana.tent.essayist.EssayServlet;
 import com.moandjiezana.tent.essayist.EssaysServlet;
 import com.moandjiezana.tent.essayist.GlobalFeedServlet;
@@ -97,6 +98,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serve("/global").with(GlobalFeedServlet.class);
         serve("/write").with(NewEssayServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
+        serveRegex("/(.*)/essay/(.*)/comment").with(CommentsServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
         filter("/*").through(Utf8Filter.class);
         filter("/*").through(HttpMethodFilter.class);
