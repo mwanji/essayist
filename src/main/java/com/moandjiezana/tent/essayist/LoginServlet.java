@@ -8,6 +8,8 @@ import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -101,17 +103,18 @@ public class LoginServlet extends HttpServlet {
     resp.sendRedirect(authorizationUrl);
   }
   
-  private RegistrationResponse register(TentClient tentClient, HttpServletRequest req) {
+  private RegistrationResponse register(TentClient tentClient, HttpServletRequest req) throws MalformedURLException {
     tentClient.getProfile();
     
     Map<String, String> scopes = new HashMap<String, String>();
     scopes.put("write_posts", "Will post Essays and optionally Statuses to announce or comment on Essays.");
     
-    String baseUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+    URL url = new URL(req.getRequestURL().toString());
+    String baseUrl = url.getProtocol() + "://" + url.getAuthority() + req.getContextPath();
     String afterAuthorizationUrl = baseUrl + "/accessToken";
     String afterLoginUrl = baseUrl;
     
-    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app for when you need more than 256 characters.", "http://essayist.mndj.me", new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
+    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app for when you need more than 256 characters.", baseUrl, new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
     
     return tentClient.register(registrationRequest);
   }

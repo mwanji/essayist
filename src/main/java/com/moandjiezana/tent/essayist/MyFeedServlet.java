@@ -1,14 +1,11 @@
 package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.client.TentClient;
-import com.moandjiezana.tent.client.TentClientAsync;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.tent.Entities;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class MyFeedServlet extends HttpServlet {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(MyFeedServlet.class);
-  private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+  public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
   
   private final Templates templates;
   private Essays essays;
@@ -76,7 +73,6 @@ public class MyFeedServlet extends HttpServlet {
       }
     }
     
-    final AsyncHttpClient httpClient = new AsyncHttpClient(new JDKAsyncHttpProvider(TentClientAsync.getDefaultAsyncHttpClientConfigBuilder().build()));
     final CountDownLatch countDownLatch = new CountDownLatch(missingUsersCount);
     
     for (final Post essay : essays) {
@@ -88,7 +84,7 @@ public class MyFeedServlet extends HttpServlet {
         @Override
         public Profile call() throws Exception {
           try {
-            TentClient tentClientAsync = new TentClient(new TentClientAsync(essay.getEntity(), httpClient));
+            TentClient tentClientAsync = new TentClient(essay.getEntity());
             Profile profile = tentClientAsync.getProfile();
             users.save(new User(profile));
             profiles.put(essay.getEntity(), profile);
@@ -101,17 +97,13 @@ public class MyFeedServlet extends HttpServlet {
       });
     }
 
-    try {
-      if (!missingUsers.isEmpty()) {
-        try {
-          EXECUTOR.invokeAll(missingUsers);
-          countDownLatch.await();
-        } catch (Exception e) {
-          LOGGER.error("Problem while fetching missing profiles", e);
-        }
+    if (!missingUsers.isEmpty()) {
+      try {
+        EXECUTOR.invokeAll(missingUsers);
+        countDownLatch.await();
+      } catch (Exception e) {
+        LOGGER.error("Problem while fetching missing profiles", e);
       }
-    } finally {
-      httpClient.close();
     }
     
     templates.read().setEssays(essays).render(resp.getWriter(), profiles);
