@@ -5,6 +5,8 @@ import com.google.common.io.CharStreams;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.moandjiezana.essayist.utils.Tasks;
+import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.oauth.AccessToken;
@@ -24,15 +26,21 @@ import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class Users {
   
+  private static final Logger LOGGER = LoggerFactory.getLogger(Users.class);
+  
   private final QueryRunner queryRunner;
   private final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+  private Tasks tasks;
   
   @Inject
-  public Users(QueryRunner queryRunner) {
+  public Users(Tasks tasks, QueryRunner queryRunner) {
+    this.tasks = tasks;
     this.queryRunner = queryRunner;
   }
 
@@ -89,6 +97,20 @@ public class Users {
     } catch (SQLException e) {
       throw Throwables.propagate(e);
     }
+  }
+  
+  public void fetch(final String entity) {
+    tasks.run(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          Profile updatedProfile = new TentClient(entity).getProfile();
+          save(new User(updatedProfile));
+        } catch (Exception e) {
+          LOGGER.error("Could not fetch Profile", Throwables.getRootCause(e));
+        }
+      }
+    });
   }
   
   private <T> T convert(Object value, Class<T> objectClass) {

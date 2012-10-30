@@ -9,30 +9,48 @@ java.util.*;
 <%args>
 Post essay;
 Profile profile = null;
+boolean showProfile = true;
 </%args>
 <%java>
 final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
 final EssayContent essayContent = essay.getContentAs(EssayContent.class);
+String entityForUrl = Entities.getForUrl(essay.getEntity());
+String entityName = Entities.getName(profile, essay.getEntity());
+String authorPageUrl = jamonContext.contextPath + "/" + entityForUrl + "/essays";
+String formattedPublicationDate = dateFormat.format(new Date(essay.getPublishedAt() * 1000));
 </%java>
-<div class="essaySummary row-fluid">
-	<%if profile != null %>
-	<div class="span2">
-		<%if profile.getBasic() != null && profile.getBasic().getAvatarUrl() != null %>
-		<img src="<% profile.getBasic().getAvatarUrl() %>" />
-		</%if>
-	</div>
-	</%if>
-	<div class="span10">
-		<h3><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>"><% essayContent.getTitle() %></a></h3>
-		<%if profile != null %><a href="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essays"><% Entities.getName(profile, essay.getEntity()) %></a></%if> <% dateFormat.format(new Date(essay.getPublishedAt() * 1000)) %>
-		<p class="bodyText"><% essayContent.getExcerpt() %></p>
-		<%if jamonContext.getCurrentUser().owns(essay) %>
-		<div>
-			<form action="<% jamonContext.contextPath %>/<% Entities.getForUrl(essay.getEntity()) %>/essay/<% essay.getId() %>" method="post">
-				<button class="btn btn-danger"><i class="icon-trash icon-white"></i> Delete</button>
-				<input type="hidden" name="_method" value="DELETE" />
-			</form>
+<div data-essay="container" data-essay-author="<% entityForUrl %>" data-essay-id="<% essay.getId() %>">
+	<div class="row" data-essay="summary" class="separator">
+		<%if showProfile %>
+		<div class="span2">
+			<%if profile != null && profile.getBasic() != null && profile.getBasic().getAvatarUrl() != null %>
+			<a href="<% authorPageUrl %>"><img src="<% profile.getBasic().getAvatarUrl() %>" style="border: none"/></a>
+			</%if>
 		</div>
 		</%if>
+		<div class="span10">
+			<h3><a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essay/<% essay.getId() %>" data-essay="link"><% essayContent.getTitle() %></a></h3>
+			<%if showProfile %><a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a></%if> <% formattedPublicationDate %>
+			<p class="excerpt"><% essayContent.getExcerpt() %></p>
+			<%if jamonContext.getCurrentUser().owns(essay) %>
+			<div>
+				<form action="<% jamonContext.contextPath %>/<% entityForUrl %>/essay/<% essay.getId() %>" method="post">
+					<button class="btn btn-danger"><i class="icon-trash icon-white"></i> Delete</button>
+					<input type="hidden" name="_method" value="DELETE" />
+				</form>
+			</div>
+			</%if>
+		</div>
+	</div>
+	
+	<div class="row" data-essay="full" style="display: none">
+		<div class="span12">
+			<h1><% essayContent.getTitle() %> <small><a href="<% jamonContext.currentUrl %>" style="text-decoration: none"><% Character.valueOf('\u2693') %></a></small></h1>
+			<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a> <small><% formattedPublicationDate %></small></h3>
+			<blockquote class="muted"><% essayContent.getExcerpt() %></blockquote>
+			<div class="bodyText">
+			<% jamonContext.csrf.stripScripts(essayContent.getBody()) #n %>
+			</div>
+		</div>
 	</div>
 </div>

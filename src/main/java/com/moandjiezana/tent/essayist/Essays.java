@@ -1,6 +1,7 @@
 package com.moandjiezana.tent.essayist;
 
 import com.google.common.base.Throwables;
+import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.TentClientAsync;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;
@@ -44,5 +45,17 @@ public class Essays {
     });
     
     return posts;
+  }
+  
+  public List<Post> getFeed(User user) {
+    TentClient tentClient = new TentClient(user.getProfile());
+    tentClient.getAsync().setAccessToken(user.getAccessToken());
+    tentClient.getAsync().setRegistrationResponse(user.getRegistration());
+    
+    return tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")));
+  }
+  
+  public Post get(String essayId) {
+    return null;
   }
 }

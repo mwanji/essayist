@@ -39,6 +39,6 @@ public class Entities {
   }
   
   public static String getName(Profile profile, String fallback) {
-    return profile.getBasic() != null && !Strings.isNullOrEmpty(profile.getBasic().getName()) ? profile.getBasic().getName() : fallback;
+    return profile != null && profile.getBasic() != null && !Strings.isNullOrEmpty(profile.getBasic().getName()) ? profile.getBasic().getName() : fallback;
   }
 }

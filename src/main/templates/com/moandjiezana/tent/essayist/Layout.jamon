@@ -2,6 +2,7 @@
 
 <%import>
 com.moandjiezana.tent.essayist.tent.*;
+com.moandjiezana.tent.essayist.config.*;
 </%import>
 <%frag body/>
 <%args>
@@ -48,7 +49,7 @@ String url;
 				font-family: 'Alegreya', Georgia, serif; font-size: 1.5em;
 			}
 			
-			.essaySummary {
+			.separator {
 				border-bottom: 1px solid #eee;
 			}
 		</style>
@@ -59,6 +60,7 @@ String url;
 		<![endif]-->
 		
 		<!--script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/bootstrap.min.js"></script-->
+		<script src="<% jamonContext.routes.assets("essayist.js") %>"></script>
 	</head>
 	
 	<body>
@@ -90,11 +92,11 @@ String url;
 			</div>
 		</div>
 		
-		<div class="container">
+		<div id="main" class="container">
 		<& body &>
-		<div>
-			<small>Version: 20121025</small>
 		</div>
+		<div class="container">
+			<small>Version: 20121025</small>
 		</div>
 	</body>
 </html>

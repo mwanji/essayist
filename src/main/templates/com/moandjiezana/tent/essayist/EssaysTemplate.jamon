@@ -12,7 +12,7 @@ Profile profile;
 String active = "My Feed";
 </%args>
 <&| Layout; active = active; &>
-	<div class="row">
+	<div class="row" data-essay="intro">
 		<div class="span2">
 			<%if profile.getBasic() != null && profile.getBasic().getAvatarUrl() != null %>
 			<img src="<% profile.getBasic().getAvatarUrl() %>" />
@@ -29,6 +29,6 @@ String active = "My Feed";
 	</div>
 	
 	<%for Post essay : essays %>
-	<& partials/EssayLink; essay = essay; &>
+	<& partials/EssayLink; essay = essay; profile = profile; showProfile = false; &>
 	</%for>
 </&>

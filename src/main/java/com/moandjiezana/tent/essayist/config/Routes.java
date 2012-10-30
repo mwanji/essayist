@@ -17,6 +17,10 @@ public class Routes {
     this.req = req;
   }
   
+  public String assets(String asset) {
+    return req.getContextPath() + "/assets/" + asset;
+  }
+  
   public String essay(Post essay) {
     return req.getContextPath() + "/" + Entities.getForUrl(essay.getEntity()) + "/essay/" + essay.getId();
   }

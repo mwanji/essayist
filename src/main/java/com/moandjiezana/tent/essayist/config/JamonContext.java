@@ -4,6 +4,7 @@ import com.google.common.base.Splitter;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.EssayistSession;
 import com.moandjiezana.tent.essayist.User;
+import com.moandjiezana.tent.essayist.security.Csrf;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ public class JamonContext {
   
   public final String contextPath;
   public final Routes routes;
+  public final Csrf csrf = new Csrf();
   
   private final HttpServletRequest req;
   public final String currentUrl;
