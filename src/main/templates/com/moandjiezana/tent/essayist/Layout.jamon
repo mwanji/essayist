@@ -96,7 +96,7 @@ String url;
 		<& body &>
 		</div>
 		<div class="container">
-			<small>Version: 20121025</small>
+			<small>Version: 20121030</small>
 		</div>
 	</body>
 </html>
