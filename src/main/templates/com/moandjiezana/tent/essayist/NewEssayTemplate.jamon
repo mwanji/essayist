@@ -3,36 +3,65 @@ java.util.*;
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.posts.content.*;
 com.moandjiezana.tent.essayist.tent.*;
+com.moandjiezana.essayist.posts.*;
 </%import>
+<%args>
+Post essay = null;
+Post metadata = null;
+</%args>
+<%java>
+final EssayContent content = essay != null ? essay.getContentAs(EssayContent.class) : null;
+final EssayistMetadataContent metadataContent;
+final String raw;
+if (metadata != null) {
+	metadataContent = metadata.getContentAs(EssayistMetadataContent.class);
+	raw = metadataContent.getRaw();
+} else {
+	metadataContent = null;
+	raw = "";
+}
+</%java>
 
 <&| Layout &>
-<form action="" method="post" class="form-horizontal">
-	<div class="control-group">
-		<label class="control-label">
-			Title
-		</label>
-		<div class="controls">
-			<input type="text" name="title" class="span8" />
-		</div>
+<div class="row">
+	<div class="span12">
+		<form action="" method="post" class="form-horizontal">
+			<div class="control-group">
+				<label class="control-label">
+					Title
+				</label>
+				<div class="controls">
+					<input type="text" name="title" value="<%if content != null %><% content.getTitle() %></%if>" class="span8" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					Excerpt
+				</label>
+				<div class="controls">
+					<input type="text" name="excerpt" value="<%if content != null %><% content.getExcerpt() %></%if>" class="span8" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					Body (use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>)
+				</label>
+				<div class="controls">
+					<textarea name="body" required="required" rows="15" class="span8"><% raw %></textarea><br/>
+				</div>
+			</div>
+			<div class="form-actions">
+				<%if essay != null %>
+				<input type="hidden" name="_method" value="PUT" />
+				</%if>
+				<button id="newEssayPreviewTrigger" type="button" class="btn" style="display: none">Preview</button>
+				<button type="submit" class="btn btn-success"><i class="icon-globe icon-white"></i> Publish</button>
+			</div>
+		</form>
 	</div>
-	<div class="control-group">
-		<label class="control-label">
-			Excerpt
-		</label>
-		<div class="controls">
-			<input type="text" name="excerpt" class="span8" />
-		</div>
-	</div>
-	<div class="control-group">
-		<label class="control-label">
-			Body (as <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>)
-		</label>
-		<div class="controls">
-			<textarea name="body" required="required" rows="15" class="span8"></textarea><br/>
-		</div>
-	</div>
-	<div class="form-actions">
-		<button type="submit" value="Publish" class="btn btn-success"><i class="icon-globe icon-white"></i> Publish</button>
-	</div>
-</form>
+</div>
+
+<div class="row">
+<div id="preview" class="span7 offset3"></div>
+</div>
 </&>

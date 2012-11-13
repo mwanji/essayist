@@ -1,0 +1,14 @@
+<%import>
+com.moandjiezana.tent.client.posts.*;
+</%import>
+<%args>
+Post essay;
+</%args>
+<form action="<% jamonContext.routes.comment(essay) %>" method="post">
+	<div>
+		<textarea name="comment" rows="3" required="required" placeholder="Comment on this essay" class="span7"></textarea>
+	</div>
+	<div>
+		<input type="submit" value="Comment" class="btn pull-right" />
+	</div>
+</form>

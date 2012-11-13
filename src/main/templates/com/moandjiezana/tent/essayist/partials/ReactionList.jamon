@@ -1,0 +1,10 @@
+<%import>
+com.moandjiezana.tent.client.posts.*;
+java.util.*;
+</%import>
+<%args>
+List<Post> reactions;
+</%args>
+<%for Post reaction : reactions %>
+	<& ReactionTemplate; reaction=reaction &>
+</%for>

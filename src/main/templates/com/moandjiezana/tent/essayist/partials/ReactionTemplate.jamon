@@ -1,0 +1,30 @@
+<%import>
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.*;
+com.moandjiezana.essayist.posts.*;
+com.moandjiezana.tent.essayist.tent.*;
+java.util.*;
+java.text.SimpleDateFormat;
+</%import>
+<%args>
+Post reaction;
+</%args>
+<%java>
+final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd MMMM yyyy HH:mm ZZZZ");
+String displayEntity = Entities.stripScheme(reaction.getEntity());
+String formattedDate = dateTimeFormat.format(new Date(reaction.getPublishedAt() * 1000));
+</%java>
+<div data-reaction-author="<% reaction.getEntity() %>" data-reaction-id="<% reaction.getId() %>">
+<%if Post.Types.equalsIgnoreVersion(Post.Types.status("v0.1.0"), reaction.getType()) %>
+	<i class="icon-comment"></i> <a href="<% reaction.getEntity() %>"><% displayEntity %></a> commented <small class="muted"><% formattedDate %></small><br/>
+	<p>
+		<% reaction.getContentAs(StatusContent.class).getText() %>
+	</p>
+<%elseif Post.Types.equalsIgnoreVersion(Favorite.URI, reaction.getType()) %>
+	<i class="icon-star"></i> Favourited by <a href="<% reaction.getEntity() %>"><% displayEntity %></a> <small class="muted"><% formattedDate %></small>
+<%elseif Post.Types.equalsIgnoreVersion(Bookmark.URI, reaction.getType()) %>
+	<i class="icon-map-marker"></i> Bookmarked by <a href="<% reaction.getEntity() %>"><% displayEntity %></a> <small class="muted"><% formattedDate %></small>
+<%elseif Post.Types.equalsIgnoreVersion(Post.Types.repost("v0.1.0"), reaction.getType()) %>
+	<i class="icon-retweet"></i> Reposted by <a href="<% reaction.getEntity() %>"><% displayEntity %></a> <small class="muted"><% formattedDate %></small>
+</%if>
+</div>

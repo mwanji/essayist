@@ -1,0 +1,28 @@
+<%import>
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.*;
+com.moandjiezana.tent.essayist.tent.*;
+java.util.*;
+</%import>
+<%args>
+List<Post> reactions = null;
+Post essay;
+boolean autoLoad = false;
+</%args>
+<div class="row">
+	<div class="span7">
+		<h3>Reactions</h3>
+		<%if jamonContext.isLoggedIn() %>
+		<& CommentForm; essay=essay; &>
+		</%if>
+	</div>
+</div>
+<div class="row">
+	<div class="span7">
+		<div data-essay="reactions" data-essay-author="<% Entities.getForUrl(essay.getEntity()) %>" data-essay-id="<% essay.getId() %>" data-essay-loaded="<% reactions != null %>" data-essay-autoLoad="<% autoLoad %>">
+		<%if reactions != null %>
+		<& ReactionList; reactions=reactions &>
+		</%if>
+		</div>
+	</div>
+</div>

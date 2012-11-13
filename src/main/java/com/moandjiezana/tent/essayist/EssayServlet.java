@@ -66,16 +66,19 @@ public class EssayServlet extends HttpServlet {
     EssayistPostContent essayContent = post.getContentAs(EssayistPostContent.class);
     essayContent.setBody(csrf.stripScripts(essayContent.getBody()));
     
-    EssayTemplate essayPage = templates.essay();
+    EssayPage essayPage = templates.essay();
     if (user.owns(post)) {
       essayPage.setActive("Written");
     }
+
+    if (Boolean.parseBoolean(req.getParameter("reactions"))) {
+      tentClient.getAsync().setAccessToken(author.getAccessToken());
+      tentClient.getAsync().setRegistrationResponse(author.getRegistration());
+      List<Post> reactions = tentClient.getPosts(new PostQuery().mentionedPost(essayId));
+      essayPage.setReactions(reactions);
+    }
     
-    tentClient.getAsync().setAccessToken(author.getAccessToken());
-    tentClient.getAsync().setRegistrationResponse(author.getRegistration());
-    List<Post> comments = tentClient.getPosts(new PostQuery().mentionedPost(essayId));
-    
-    essayPage.render(resp.getWriter(), post, author.getProfile(), comments);
+    essayPage.render(resp.getWriter(), post, author.getProfile());
   }
   
   @Override

@@ -13,6 +13,12 @@ public class User {
   
   public User() {}
   
+  public User(String entity) {
+    this.profile = new Profile();
+    this.profile.setCore(new Profile.Core());
+    this.profile.getCore().setEntity(entity);
+  }
+  
   public User(Profile profile) {
     this(null, profile, null, null);
   }

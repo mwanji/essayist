@@ -1,4 +1,4 @@
-function init() {
+function initNavigation() {
   var essayContainers = document.querySelectorAll("[data-essay=container]");
   var i;
   
@@ -36,9 +36,37 @@ function init() {
     event.preventDefault();
     event.stopPropagation();
     
+    var container = null;
+    var currentTarget = event.target;
+    while (container === null) {
+      currentTarget = currentTarget.parentNode;
+      if (currentTarget.dataset.essay === "container") {
+        container = currentTarget;
+      }
+    }
+    
+    var scrollPosition = document.body.scrollTop;
     displaySection("essay", event.currentTarget);
     
-    history.pushState({ essayId: event.currentTarget.dataset.essayId, essayAuthor: event.currentTarget.dataset.essayAuthor }, "essay title", event.target.href);
+    var reactionsContainer = container.querySelector('[data-essay="reactions"]');
+    fetchReactions(reactionsContainer);
+//    if (reactionsContainer.dataset.essayLoaded === "false") {
+//      var spinner = new Spinner().spin(container.querySelector('[data-essay="reactionsSpinner"]'));
+//      var xhr = new XMLHttpRequest();
+//      xhr.onreadystatechange = function () {
+//        if (xhr.readyState === 4) {
+//          spinner.stop();
+//          reactionsContainer.innerHTML = xhr.responseText;
+//          reactionsContainer.dataset.essayLoaded = "true";
+//        }
+//      };
+//      xhr.open("GET", E.contextPath + "/" + container.dataset.essayAuthor + "/essay/" + container.dataset.essayId + "/reactions", true);
+//      xhr.setRequestHeader("Accept", "text/html");
+//      xhr.setRequestHeader("X-Essayist-Partial", "true");
+//      xhr.send();
+//    }
+    
+    history.pushState({ essayId: event.currentTarget.dataset.essayId, essayAuthor: event.currentTarget.dataset.essayAuthor, scrollPosition: scrollPosition }, "essay title", event.target.href);
     
     return false;
   };
@@ -47,6 +75,7 @@ function init() {
     var essayContainer;
     if (window.location.href.indexOf("/essays") > -1 || window.location.href.indexOf("/global") > -1 || window.location.href.indexOf("/read") > -1) {
       displaySection("list", document);
+      window.scrollTo(0);
     } else if (event.state !== null) {
       essayContainer = document.querySelector("[data-essay-author=\"" + event.state.essayAuthor + "\"][data-essay-id=\"" + event.state.essayId + "\"]");
       displaySection("essay", essayContainer);
@@ -60,6 +89,62 @@ function init() {
   window.addEventListener("popstate", essayPopStateHandler, false);
 }
 
-if (history.pushState !== undefined) {
-  document.addEventListener("DOMContentLoaded", init, false);
+function initPreview() {
+  var trigger = document.querySelector("#newEssayPreviewTrigger");
+  
+  if (trigger === null) {
+    return;
+  }
+  
+  trigger.style.display = "inline";
+  
+  var body = document.querySelector("textarea[name='body']");
+  
+  var updatePreview =  function () {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        document.querySelector("#preview").innerHTML = xhr.responseText;
+      }
+    };
+    xhr.open("POST", E.contextPath + "/preview", true);
+    xhr.setRequestHeader("Accept", "text/html");
+    xhr.setRequestHeader("X-Essayist-Partial", "true");
+    xhr.send(body.value);
+  };
+  
+  trigger.addEventListener("click", updatePreview, false);
+  body.addEventListener("keyup", _.debounce(updatePreview, 2000), false);
+}
+
+function initReactions() {
+  var reactionsContainers = document.querySelectorAll('[data-essay="reactions"][data-essay-autoLoad="true"]');
+  var i;
+  for (i = 0; i < reactionsContainers.length; i++) {
+    fetchReactions(reactionsContainers[i]);
+  }
+}
+
+function fetchReactions(reactionsContainer) {
+  if (reactionsContainer.dataset.essayLoaded === "false") {
+    var spinner = new Spinner().spin(reactionsContainer);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        spinner.stop();
+        reactionsContainer.innerHTML = xhr.responseText;
+        reactionsContainer.dataset.essayLoaded = "true";
+      }
+    };
+    xhr.open("GET", E.contextPath + "/" + reactionsContainer.dataset.essayAuthor + "/essay/" + reactionsContainer.dataset.essayId + "/reactions", true);
+    xhr.setRequestHeader("Accept", "text/html");
+    xhr.setRequestHeader("X-Essayist-Partial", "true");
+    xhr.send();
+  }
+}
+
+if (history.pushState !== undefined && document.querySelector !== undefined && XMLHttpRequest !== undefined) {
+  document.addEventListener("DOMContentLoaded", initNavigation, false);
+  document.addEventListener("DOMContentLoaded", initPreview, false);
+  document.addEventListener("DOMContentLoaded", initReactions, false);
 }

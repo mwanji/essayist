@@ -1,6 +1,7 @@
 package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.tent.essayist.config.JamonContext;
+import com.moandjiezana.tent.essayist.partials.ReactionList;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -20,12 +21,12 @@ public class Templates {
     return new LoginTemplate().setJamonContext(jamonContext.get());
   }
   
-  public EssaysTemplate essays(String active) {
-    return new EssaysTemplate().setActive(active).setJamonContext(jamonContext.get());
+  public EssaysPage essays(String active) {
+    return new EssaysPage().setActive(active).setJamonContext(jamonContext.get());
   }
   
-  public EssayTemplate essay() {
-    return new EssayTemplate().setJamonContext(jamonContext.get());
+  public EssayPage essay() {
+    return new EssayPage().setJamonContext(jamonContext.get());
   }
 
   public NewEssayTemplate newEssay() {
@@ -34,5 +35,13 @@ public class Templates {
 
   public ReadPage read() {
     return new ReadPage().setJamonContext(jamonContext.get());
+  }
+  
+  public ReactionList reactions() {
+    return new ReactionList().setJamonContext(jamonContext.get());
+  }
+
+  public NonEditableEssayPage nonEditableEssay() {
+    return new NonEditableEssayPage().setJamonContext(jamonContext.get());
   }
 }

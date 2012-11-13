@@ -25,9 +25,9 @@ String url;
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
-		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap.min.css" />
-		<link href='http://fonts.googleapis.com/css?family=Alegreya:400italic,400,700' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Alegreya+SC:700' rel='stylesheet' type='text/css'>
+		<% jamonContext.routes.assets("application.css", "bootstrap-2.1.1/css/bootstrap.min.css") #n %>
+		<link href='http://fonts.googleapis.com/css?family=PT+Serif' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
 		<style type="text/css">
 			body {
 				padding-top: 60px;
@@ -38,29 +38,40 @@ String url;
 			}
 			
 			h1, h2, h3, h4 {
-				font-family: 'Alegreya SC', Georgia, serif;
+				font-family: 'PT Sans', Georgia, serif;
 			}
 			
 			h3 small {
-				font-size: 15px;
+				font-size: 0.6em;
 			}
 			
 			.bodyText {
-				font-family: 'Alegreya', Georgia, serif; font-size: 1.5em;
+				font-family: 'PT Serif', Georgia, serif; font-size: 1.1em; line-height: 1.5;
 			}
 			
 			.separator {
 				border-bottom: 1px solid #eee;
+				margin-bottom: 10px;
+				padding-bottom: 5px;
+			}
+			
+			.form-inline {
+				display: inline;	
 			}
 		</style>
-		<link rel="stylesheet" href="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/css/bootstrap-responsive.min.css" />
+		<% jamonContext.routes.asset("bootstrap-2.1.1/css/bootstrap-responsive.min.css") #n %>
+		<script>
+			var E = {
+				contextPath: "<% jamonContext.contextPath %>"
+			};
+		</script>
+		<% jamonContext.routes.assets("application.js", "underscore-1.4.2/underscore.min.js", "spin/spin.min.js", "essayist.js") #n %>
 		
 		<!--[if lt IE 9]>
 		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		
 		<!--script src="<% jamonContext.contextPath %>/assets/bootstrap-2.1.1/js/bootstrap.min.js"></script-->
-		<script src="<% jamonContext.routes.assets("essayist.js") %>"></script>
 	</head>
 	
 	<body>
@@ -87,7 +98,6 @@ String url;
 					<ul class="nav">
 						<& navItem: "Site Feed"; "global" &>
 		        	</ul>
-					</ul>
 				</div>
 			</div>
 		</div>
@@ -96,7 +106,11 @@ String url;
 		<& body &>
 		</div>
 		<div class="container">
-			<small>Version: 20121030</small>
+			<div class="row">
+				<div class="span12">
+					<small class="muted">Version: 20121114</small>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

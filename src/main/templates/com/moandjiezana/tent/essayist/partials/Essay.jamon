@@ -1,0 +1,50 @@
+<%import>
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.*;
+com.moandjiezana.tent.essayist.tent.Entities;
+</%import>
+<%args>
+Post essay;
+String entityForUrl;
+String entityName;
+String essayId;
+String formattedPublicationDate;
+boolean display = false;
+</%args>
+<%java>
+EssayContent essayContent = essay.getContentAs(EssayContent.class);
+String essayUrl = jamonContext.routes.essay(essay);
+</%java>
+<div class="row">
+	<div class="span7">
+		<h1><% Entities.essayTitle(essayContent) %> <a href="<% essayUrl %>" style="text-decoration: none"><% Character.valueOf('\u2693') %></a></h1>
+		<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a> <small><% formattedPublicationDate %></small></h3>
+		<p class="muted"><% essayContent.getExcerpt() %></p>
+		<div class="bodyText">
+		<% jamonContext.csrf.stripScripts(essayContent.getBody()) #n %>
+		</div>
+		<%if jamonContext.isLoggedIn() %>
+		<div>
+			<form action="<% essayUrl %>/favorite" method="post" class="form-inline" data-essay-action="favorite">
+				<button type="submit" class="btn" title="Favourite"><i class="icon-star-empty"></i></button>
+			</form>
+			<form action="<% essayUrl %>/bookmark" method="post" class="form-inline" data-essay-action="bookmark">
+				<input type="hidden" name="title" value="<% essayContent.getTitle() %>" />
+				<input type="hidden" name="name" value="<% entityName %>" />
+				<input type="hidden" name="description" value="<% essayContent.getExcerpt() %>" />
+				<button type="submit" class="btn" title="Bookmark"><i class="icon-map-marker"></i></button>
+			</form>
+			<form action="<% essayUrl %>/repost" method="post" class="form-inline" data-essay-action="repost">
+				<button type="submit" class="btn" title="Repost"><i class="icon-retweet"></i></button>
+			</form>
+			<%if jamonContext.getCurrentUser().owns(essay) %>
+			<a href="<% jamonContext.contextPath %>/write/<% essay.getId() %>" class="btn btn-primary"><i class="icon-pencil icon-white"></i></a>
+			<form action="<% jamonContext.routes.essay(essay) %>" method="post" class="form-inline">
+				<button class="btn btn-danger"><i class="icon-trash icon-white"></i></button>
+				<input type="hidden" name="_method" value="DELETE" />
+			</form>
+			</%if>
+		</div>
+		</%if>
+	</div>
+</div>

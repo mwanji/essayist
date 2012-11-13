@@ -1,5 +1,8 @@
 package com.moandjiezana.tent.essayist;
 
+import com.moandjiezana.essayist.posts.Bookmark;
+import com.moandjiezana.essayist.posts.EssayistMetadataContent;
+import com.moandjiezana.essayist.posts.Favorite;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.apps.AuthorizationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationRequest;
@@ -107,7 +110,8 @@ public class LoginServlet extends HttpServlet {
     tentClient.getProfile();
     
     Map<String, String> scopes = new HashMap<String, String>();
-    scopes.put("write_posts", "Will post Essays and optionally Statuses to announce or comment on Essays.");
+    scopes.put("write_posts", "Allows you to write Essays and re-post, bookmark or favorite other people's Essays.");
+    scopes.put("read_posts", "Read Essays and your reactions to Essays.");
     
     URL url = new URL(req.getRequestURL().toString());
     String baseUrl = url.getProtocol() + "://" + url.getAuthority() + req.getContextPath();
@@ -122,7 +126,7 @@ public class LoginServlet extends HttpServlet {
   private String authorize(TentClient tentClient, RegistrationResponse registrationResponse, String redirectUri, HttpServletRequest req) {
     AuthorizationRequest authorizationRequest = new AuthorizationRequest(registrationResponse.getMacKeyId(), redirectUri);
     authorizationRequest.setScope("write_posts", "read_posts");
-    authorizationRequest.setTentPostTypes(Post.Types.essay("v0.1.0"), Post.Types.status("v0.1.0"), Post.Types.photo("v0.1.0"));
+    authorizationRequest.setTentPostTypes(Post.Types.essay("v0.1.0"), Post.Types.status("v0.1.0"), Post.Types.photo("v0.1.0"), Post.Types.repost("v0.1.0"), EssayistMetadataContent.URI, Bookmark.URI, Favorite.URI);
     authorizationRequest.setState(UUID.randomUUID().toString());
     String authorizationUrl = tentClient.buildAuthorizationUrl(authorizationRequest);
     
@@ -131,6 +135,7 @@ public class LoginServlet extends HttpServlet {
     authResult.registrationResponse = registrationResponse;
     req.getSession().setAttribute(authorizationRequest.getState(), authResult);
     req.getSession().setAttribute("entity", tentClient.getProfile().getCore().getEntity());
+    
     return authorizationUrl;
   }
 }

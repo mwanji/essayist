@@ -11,14 +11,15 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
 import com.moandjiezana.tent.essayist.AccessTokenServlet;
-import com.moandjiezana.tent.essayist.CommentsServlet;
+import com.moandjiezana.tent.essayist.EssayActionServlet;
 import com.moandjiezana.tent.essayist.EssayServlet;
 import com.moandjiezana.tent.essayist.EssaysServlet;
 import com.moandjiezana.tent.essayist.GlobalFeedServlet;
 import com.moandjiezana.tent.essayist.LoginServlet;
 import com.moandjiezana.tent.essayist.LogoutServlet;
 import com.moandjiezana.tent.essayist.MyFeedServlet;
-import com.moandjiezana.tent.essayist.NewEssayServlet;
+import com.moandjiezana.tent.essayist.PreviewServlet;
+import com.moandjiezana.tent.essayist.WriteServlet;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.auth.AuthenticationInterceptor;
 import com.moandjiezana.tent.essayist.db.migrations.Migration_1;
@@ -66,6 +67,9 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
     poolProperties.setUrl(properties.getProperty("db.url"));
     poolProperties.setDriverClassName(properties.getProperty("db.driverClassName"));
     poolProperties.setInitialSize(Integer.parseInt(properties.getProperty("db.initialSize")));
+    poolProperties.setTestWhileIdle(true);
+    poolProperties.setTestOnBorrow(true);
+    poolProperties.setValidationQuery("SELECT 1");
     
     dataSource = new DataSource(poolProperties);
     
@@ -96,9 +100,10 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serve("/accessToken").with(AccessTokenServlet.class);
         serve("/read").with(MyFeedServlet.class);
         serve("/global").with(GlobalFeedServlet.class);
-        serve("/write").with(NewEssayServlet.class);
+        serve("/write", "/write/*").with(WriteServlet.class);
+        serve("/preview").with(PreviewServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
-        serveRegex("/(.*)/essay/(.*)/comment").with(CommentsServlet.class);
+        serveRegex("/(.*)/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
         filter("/*").through(Utf8Filter.class);
         filter("/*").through(HttpMethodFilter.class);

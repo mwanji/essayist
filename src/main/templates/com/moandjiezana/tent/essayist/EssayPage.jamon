@@ -1,0 +1,26 @@
+<%import>
+com.moandjiezana.tent.client.users.Profile;
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.EssayContent;
+com.moandjiezana.tent.client.posts.content.StatusContent;
+com.moandjiezana.tent.essayist.tent.*;
+com.moandjiezana.essayist.posts.*;
+java.text.SimpleDateFormat;
+java.util.*;
+</%import>
+<%args>
+Post essay;
+Profile profile;
+String active = "My Feed";
+List<Post> reactions = null;
+</%args>
+<%java>
+final EssayContent content = essay.getContentAs(EssayContent.class);
+final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd MMMM yyyy HH:mm ZZZZ");
+</%java>
+<&| Layout; active = active &>
+	<& partials/Essay; essay=essay; entityForUrl=Entities.getForUrl(essay.getEntity()); entityName=Entities.getName(profile); essayId=essay.getId(); formattedPublicationDate=dateFormat.format(new Date(essay.getPublishedAt() * 1000)); display=true; &> 
+	 
+	<& partials/Reactions; reactions=reactions; essay=essay; autoLoad=true; &>
+</&>

@@ -48,4 +48,11 @@ public class CsrfTest {
     
     assertEquals(table, new Csrf().stripScripts(table));
   }
+  
+  @Test
+  public void should_allow_emphasis() {
+    String emphasis = "<em>emphas</em>ised";
+    
+    assertEquals(emphasis, new Csrf().stripScripts(emphasis));
+  }
 }

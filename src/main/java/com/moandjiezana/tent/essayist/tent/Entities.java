@@ -1,6 +1,7 @@
 package com.moandjiezana.tent.essayist.tent;
 
 import com.google.common.base.Strings;
+import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Profile;
 
 public class Entities {
@@ -40,5 +41,19 @@ public class Entities {
   
   public static String getName(Profile profile, String fallback) {
     return profile != null && profile.getBasic() != null && !Strings.isNullOrEmpty(profile.getBasic().getName()) ? profile.getBasic().getName() : fallback;
+  }
+  
+  public static String essayTitle(EssayContent essay) {
+    if (!Strings.isNullOrEmpty(essay.getTitle())) {
+      return essay.getTitle();
+    }
+    
+    String title = Strings.nullToEmpty(!Strings.isNullOrEmpty(essay.getExcerpt()) ? essay.getExcerpt() : essay.getBody());
+    String shortTitle = title.substring(0, Math.min(40, title.length()));
+    if (title.length() > 40) {
+      shortTitle += "...";
+    }
+    
+    return shortTitle;
   }
 }

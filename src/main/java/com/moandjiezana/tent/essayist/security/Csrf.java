@@ -12,7 +12,7 @@ public class Csrf {
     .allowCommonInlineFormattingElements()
     .allowStandardUrlProtocols()
     .allowStyling()
-    .allowElements("iframe", "img", "a", "table", "thead", "tbody", "tr", "th", "td")
+    .allowElements("iframe", "img", "a", "table", "thead", "tbody", "tr", "th", "td", "em")
     .allowAttributes("width", "height", "title").globally()
     .allowAttributes("src", "frameborder", "webkitAllowFullScreen", "mozallowfullscreen", "allowFullScreen").onElements("iframe")
     .allowAttributes("src", "alt").onElements("img")

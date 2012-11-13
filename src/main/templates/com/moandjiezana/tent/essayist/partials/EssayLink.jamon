@@ -4,6 +4,7 @@ com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.content.*;
 com.moandjiezana.tent.essayist.tent.*;
 java.text.SimpleDateFormat;
+com.google.common.base.Strings;
 java.util.*;
 </%import>
 <%args>
@@ -20,7 +21,7 @@ String authorPageUrl = jamonContext.contextPath + "/" + entityForUrl + "/essays"
 String formattedPublicationDate = dateFormat.format(new Date(essay.getPublishedAt() * 1000));
 </%java>
 <div data-essay="container" data-essay-author="<% entityForUrl %>" data-essay-id="<% essay.getId() %>">
-	<div class="row" data-essay="summary" class="separator">
+	<div class="row separator" data-essay="summary">
 		<%if showProfile %>
 		<div class="span2">
 			<%if profile != null && profile.getBasic() != null && profile.getBasic().getAvatarUrl() != null %>
@@ -29,12 +30,13 @@ String formattedPublicationDate = dateFormat.format(new Date(essay.getPublishedA
 		</div>
 		</%if>
 		<div class="span10">
-			<h3><a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essay/<% essay.getId() %>" data-essay="link"><% essayContent.getTitle() %></a></h3>
+			<h3><a href="<% jamonContext.routes.essay(essay) %>" data-essay="link"><% Entities.essayTitle(essayContent) %></a></h3>
 			<%if showProfile %><a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a></%if> <% formattedPublicationDate %>
 			<p class="excerpt"><% essayContent.getExcerpt() %></p>
 			<%if jamonContext.getCurrentUser().owns(essay) %>
 			<div>
-				<form action="<% jamonContext.contextPath %>/<% entityForUrl %>/essay/<% essay.getId() %>" method="post">
+				<a href="<% jamonContext.contextPath %>/write/<% essay.getId() %>" class="btn"><i class="icon-pencil"></i> Edit</a>
+				<form action="<% jamonContext.routes.essay(essay) %>" method="post" style="display: inline">
 					<button class="btn btn-danger"><i class="icon-trash icon-white"></i> Delete</button>
 					<input type="hidden" name="_method" value="DELETE" />
 				</form>
@@ -43,14 +45,9 @@ String formattedPublicationDate = dateFormat.format(new Date(essay.getPublishedA
 		</div>
 	</div>
 	
-	<div class="row" data-essay="full" style="display: none">
-		<div class="span12">
-			<h1><% essayContent.getTitle() %> <small><a href="<% jamonContext.currentUrl %>" style="text-decoration: none"><% Character.valueOf('\u2693') %></a></small></h1>
-			<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a> <small><% formattedPublicationDate %></small></h3>
-			<blockquote class="muted"><% essayContent.getExcerpt() %></blockquote>
-			<div class="bodyText">
-			<% jamonContext.csrf.stripScripts(essayContent.getBody()) #n %>
-			</div>
-		</div>
+	<div data-essay="full" style="display: none">
+		<& Essay; essay=essay; entityForUrl=entityForUrl; entityName=entityName; essayId=essay.getId(); formattedPublicationDate=formattedPublicationDate &>
+		
+		<& Reactions; essay=essay &>
 	</div>
 </div>
