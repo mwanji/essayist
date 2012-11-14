@@ -50,21 +50,6 @@ function initNavigation() {
     
     var reactionsContainer = container.querySelector('[data-essay="reactions"]');
     fetchReactions(reactionsContainer);
-//    if (reactionsContainer.dataset.essayLoaded === "false") {
-//      var spinner = new Spinner().spin(container.querySelector('[data-essay="reactionsSpinner"]'));
-//      var xhr = new XMLHttpRequest();
-//      xhr.onreadystatechange = function () {
-//        if (xhr.readyState === 4) {
-//          spinner.stop();
-//          reactionsContainer.innerHTML = xhr.responseText;
-//          reactionsContainer.dataset.essayLoaded = "true";
-//        }
-//      };
-//      xhr.open("GET", E.contextPath + "/" + container.dataset.essayAuthor + "/essay/" + container.dataset.essayId + "/reactions", true);
-//      xhr.setRequestHeader("Accept", "text/html");
-//      xhr.setRequestHeader("X-Essayist-Partial", "true");
-//      xhr.send();
-//    }
     
     history.pushState({ essayId: event.currentTarget.dataset.essayId, essayAuthor: event.currentTarget.dataset.essayAuthor, scrollPosition: scrollPosition }, "essay title", event.target.href);
     
@@ -91,20 +76,31 @@ function initNavigation() {
 
 function initPreview() {
   var trigger = document.querySelector("#newEssayPreviewTrigger");
-  
   if (trigger === null) {
     return;
   }
-  
   trigger.style.display = "inline";
   
+  var spinner = new Spinner();
+  var spinning = false;
+  var preview = document.querySelector("#preview");
   var body = document.querySelector("textarea[name='body']");
   
+  var startSpinner = function () {
+    if (!spinning) {
+      spinner.spin(preview);
+      spinning = true;
+    }
+  };
+  
   var updatePreview =  function () {
+    spinner.spin(preview);
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
-        document.querySelector("#preview").innerHTML = xhr.responseText;
+        spinner.stop();
+        spinning = false;
+        preview.innerHTML = xhr.responseText;
       }
     };
     xhr.open("POST", E.contextPath + "/preview", true);
@@ -115,6 +111,7 @@ function initPreview() {
   
   trigger.addEventListener("click", updatePreview, false);
   body.addEventListener("keyup", _.debounce(updatePreview, 2000), false);
+  body.addEventListener("keyup", startSpinner, false);
 }
 
 function initReactions() {
