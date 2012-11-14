@@ -151,6 +151,7 @@ public class WriteServlet extends HttpServlet {
     
     TentClient tentClient = new TentClient(user.getProfile());
     tentClient.getAsync().setAccessToken(user.getAccessToken());
+    tentClient.getAsync().setRegistrationResponse(user.getRegistration());
     
     return tentClient;
   }
