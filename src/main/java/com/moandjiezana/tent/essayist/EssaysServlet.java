@@ -6,6 +6,7 @@ import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.tent.Entities;
+import com.moandjiezana.tent.essayist.text.TextTransformation;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,18 +19,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.pegdown.PegDownProcessor;
-
 @Singleton
 public class EssaysServlet extends HttpServlet {
   
   private Templates templates;
   private Users users;
   private Provider<EssayistSession> sessions;
+  private TextTransformation textTransformation;
 
   @Inject
-  public EssaysServlet(Users users, Templates templates, Provider<EssayistSession> sessions) {
+  public EssaysServlet(Users users, TextTransformation textTransformation, Templates templates, Provider<EssayistSession> sessions) {
     this.users = users;
+    this.textTransformation = textTransformation;
     this.templates = templates;
     this.sessions = sessions;
   }
@@ -62,7 +63,7 @@ public class EssaysServlet extends HttpServlet {
     post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
     EssayContent essay = new EssayContent();
     essay.setTitle(req.getParameter("title"));
-    essay.setBody(new PegDownProcessor().markdownToHtml(req.getParameter("body")));
+    essay.setBody(textTransformation.transformEssay(req.getParameter("body")));
     essay.setExcerpt(req.getParameter("excerpt"));
     post.setContent(essay);
     

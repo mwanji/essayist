@@ -19,7 +19,7 @@ final EssayContent content = essay.getContentAs(EssayContent.class);
 final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
 final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd MMMM yyyy HH:mm ZZZZ");
 </%java>
-<&| Layout; active = active &>
+<&| Layout; active = active; title = Entities.essayTitle(content) &>
 	<& partials/Essay; essay=essay; entityForUrl=Entities.getForUrl(essay.getEntity()); entityName=Entities.getName(profile); essayId=essay.getId(); formattedPublicationDate=dateFormat.format(new Date(essay.getPublishedAt() * 1000)); display=true; &> 
 	 
 	<& partials/Reactions; reactions=reactions; essay=essay; autoLoad=true; &>

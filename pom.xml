@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>owasp-java-html-sanitizer</groupId>
 			<artifactId>owasp-java-html-sanitizer</artifactId>
-			<version>r117</version>
+			<version>r129</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -142,6 +142,11 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>13.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.moandjiezana.tent</groupId>
+			<artifactId>tent-text</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

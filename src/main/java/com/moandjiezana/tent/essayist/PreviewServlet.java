@@ -2,7 +2,7 @@ package com.moandjiezana.tent.essayist;
 
 import com.google.common.io.CharStreams;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
-import com.moandjiezana.tent.essayist.security.Csrf;
+import com.moandjiezana.tent.essayist.text.TextTransformation;
 
 import java.io.IOException;
 
@@ -13,25 +13,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.pegdown.PegDownProcessor;
-
 @Singleton
 @Authenticated
 public class PreviewServlet extends HttpServlet {
   
-  private final Csrf csrf;
+  private final TextTransformation textTransformation;
 
   @Inject
-  public PreviewServlet(Csrf csrf) {
-    this.csrf = csrf;
+  public PreviewServlet(TextTransformation textTransformation) {
+    this.textTransformation = textTransformation;
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String body = CharStreams.toString(req.getReader());
-    String html = new PegDownProcessor().markdownToHtml(body);
-    String sanitized = csrf.stripScripts(html);
+    String essay = textTransformation.transformEssay(body);
     
-    resp.getWriter().write(sanitized);
+    resp.getWriter().write(essay);
   }
 }

@@ -3,6 +3,7 @@ package com.moandjiezana.tent.essayist.security;
 import javax.inject.Singleton;
 
 import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
 
 @Singleton
 public class Csrf {
@@ -13,12 +14,21 @@ public class Csrf {
     .allowStandardUrlProtocols()
     .allowStyling()
     .allowElements("iframe", "img", "a", "table", "thead", "tbody", "tr", "th", "td", "em")
-    .allowAttributes("width", "height", "title").globally()
+    .allowAttributes("width", "height", "title", "class").globally()
     .allowAttributes("src", "frameborder", "webkitAllowFullScreen", "mozallowfullscreen", "allowFullScreen").onElements("iframe")
     .allowAttributes("src", "alt").onElements("img")
-    .allowAttributes("href").onElements("a");
+    .allowAttributes("href", "rel").onElements("a");
+  
+  private final PolicyFactory restrictive = new HtmlPolicyBuilder()
+    .allowStandardUrlProtocols()
+    .allowElements("a")
+    .allowAttributes("href", "class", "rel").onElements("a").toFactory();
 
-  public String stripScripts(String html) {
+  public String permissive(String html) {
     return allowScripts.toFactory().sanitize(html);
+  }
+  
+  public String restrictive(String html) {
+    return restrictive.sanitize(html);
   }
 }

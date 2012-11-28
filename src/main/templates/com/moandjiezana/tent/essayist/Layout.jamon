@@ -8,6 +8,7 @@ com.moandjiezana.tent.essayist.config.*;
 <%args>
 boolean showNav = true;
 String active = null;
+String title = "Essayist";
 </%args>
 
 <%def navItem>
@@ -21,7 +22,7 @@ String url;
 
 <html>
 	<head>
-		<title>Essayist</title>
+		<title><% title %></title>
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		

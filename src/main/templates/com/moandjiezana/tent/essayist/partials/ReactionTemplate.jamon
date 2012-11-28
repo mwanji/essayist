@@ -18,7 +18,7 @@ String formattedDate = dateTimeFormat.format(new Date(reaction.getPublishedAt() 
 <%if Post.Types.equalsIgnoreVersion(Post.Types.status("v0.1.0"), reaction.getType()) %>
 	<i class="icon-comment"></i> <a href="<% reaction.getEntity() %>"><% displayEntity %></a> commented <small class="muted"><% formattedDate %></small><br/>
 	<p>
-		<% reaction.getContentAs(StatusContent.class).getText() %>
+		<% jamonContext.textTransformation.transformComment(reaction.getContentAs(StatusContent.class).getText()) #n %>
 	</p>
 <%elseif Post.Types.equalsIgnoreVersion(Favorite.URI, reaction.getType()) %>
 	<i class="icon-star"></i> Favourited by <a href="<% reaction.getEntity() %>"><% displayEntity %></a> <small class="muted"><% formattedDate %></small>

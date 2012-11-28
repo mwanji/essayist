@@ -2,10 +2,14 @@ function initNavigation() {
   var essayContainers = document.querySelectorAll("[data-essay=container]");
   var i;
   
-  var displaySection = function (section, target) {
+  var displaySection = function (section, target, title) {
     var j;
     var detailDisplay = section === "essay" ? "block" : "none";
     var listDisplay = section === "list" ? "block" : "none";
+    
+    if (title !== undefined) {
+      document.title = title;
+    }
     
     if (target !== document) {
       target.querySelector("[data-essay=summary]").style.display = listDisplay;
@@ -46,12 +50,12 @@ function initNavigation() {
     }
     
     var scrollPosition = document.body.scrollTop;
-    displaySection("essay", event.currentTarget);
+    displaySection("essay", event.currentTarget, event.target.text);
     
     var reactionsContainer = container.querySelector('[data-essay="reactions"]');
     fetchReactions(reactionsContainer);
     
-    history.pushState({ essayId: event.currentTarget.dataset.essayId, essayAuthor: event.currentTarget.dataset.essayAuthor, scrollPosition: scrollPosition }, "essay title", event.target.href);
+    history.pushState({ essayId: event.currentTarget.dataset.essayId, essayAuthor: event.currentTarget.dataset.essayAuthor, essayTitle: event.target.text, scrollPosition: scrollPosition }, "essay title", event.target.href);
     
     return false;
   };
@@ -59,11 +63,10 @@ function initNavigation() {
   var essayPopStateHandler = function (event) {
     var essayContainer;
     if (window.location.href.indexOf("/essays") > -1 || window.location.href.indexOf("/global") > -1 || window.location.href.indexOf("/read") > -1) {
-      displaySection("list", document);
-      window.scrollTo(0);
+      displaySection("list", document, "Essayist");
     } else if (event.state !== null) {
       essayContainer = document.querySelector("[data-essay-author=\"" + event.state.essayAuthor + "\"][data-essay-id=\"" + event.state.essayId + "\"]");
-      displaySection("essay", essayContainer);
+      displaySection("essay", essayContainer, event.state.essayTitle);
     }
   };
   

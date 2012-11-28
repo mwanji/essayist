@@ -64,7 +64,7 @@ public class EssayServlet extends HttpServlet {
     Post post = tentClient.getPost(essayId);
     
     EssayistPostContent essayContent = post.getContentAs(EssayistPostContent.class);
-    essayContent.setBody(csrf.stripScripts(essayContent.getBody()));
+    essayContent.setBody(csrf.permissive(essayContent.getBody()));
     
     EssayPage essayPage = templates.essay();
     if (user.owns(post)) {

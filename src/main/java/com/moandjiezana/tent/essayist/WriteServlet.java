@@ -11,6 +11,7 @@ import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.config.Routes;
 import com.moandjiezana.tent.essayist.tent.Entities;
+import com.moandjiezana.tent.essayist.text.TextTransformation;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,8 +24,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.pegdown.PegDownProcessor;
-
 @Singleton
 @Authenticated
 public class WriteServlet extends HttpServlet {
@@ -33,9 +32,11 @@ public class WriteServlet extends HttpServlet {
   private Provider<EssayistSession> sessions;
   private Tasks tasks;
   private Provider<Routes> routes;
+  private TextTransformation textTransformation;
 
   @Inject
-  public WriteServlet(Provider<EssayistSession> sessions, Templates templates, Provider<Routes> routes, Tasks tasks) {
+  public WriteServlet(TextTransformation textTransformation, Provider<EssayistSession> sessions, Templates templates, Provider<Routes> routes, Tasks tasks) {
+    this.textTransformation = textTransformation;
     this.sessions = sessions;
     this.templates = templates;
     this.routes = routes;
@@ -71,7 +72,7 @@ public class WriteServlet extends HttpServlet {
     EssayContent essay = new EssayContent();
     essay.setTitle(req.getParameter("title"));
     final String body = req.getParameter("body");
-    essay.setBody(new PegDownProcessor().markdownToHtml(body));
+    essay.setBody(textTransformation.transformEssay(body));
     essay.setExcerpt(req.getParameter("excerpt"));
     post.setContent(essay);
     
@@ -89,27 +90,11 @@ public class WriteServlet extends HttpServlet {
     tentClient.write(metadataPost);
     
     resp.sendRedirect(req.getContextPath() + "/" + Entities.getForUrl(tentClient.getProfile().getCore().getEntity()) + "/essay/" + newPost.getId());
-
-//    tasks.run(new Runnable() {
-//      @Override
-//      public void run() {
-//        } else {
-//          Post originalPost = posts.get(0);
-//          
-//          Post newPost = newPost();
-//          
-//          EssayistMetadataContent content = originalPost.getContentAs(EssayistMetadataContent.class);
-//          content.setRaw(body);
-//        }
-//        
-//      }
-//    });
   }
 
   @Override
   protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     TentClient tentClient = newTentClient();
-//    List<Post> posts = tentClient.getPosts(new PostQuery().mentionedPost(essayId).postTypes(EssayistMetadataContent.URI));
     
     String essayId = req.getPathInfo().substring(1);
     Post post = newPost();
@@ -118,7 +103,7 @@ public class WriteServlet extends HttpServlet {
     EssayContent essay = new EssayContent();
     essay.setTitle(req.getParameter("title"));
     final String body = req.getParameter("body");
-    essay.setBody(new PegDownProcessor().markdownToHtml(body));
+    essay.setBody(textTransformation.transformEssay(body));
     essay.setExcerpt(req.getParameter("excerpt"));
     post.setContent(essay);
     
