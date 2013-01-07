@@ -25,10 +25,10 @@ String url;
 		<title><% title %></title>
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+
 		<% jamonContext.routes.assets("application.css", "bootstrap-2.1.1/css/bootstrap.min.css") #n %>
-		<link href='http://fonts.googleapis.com/css?family=PT+Serif' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+		<link href="http://fonts.googleapis.com/css?family=PT+Serif" rel="stylesheet" type="text/css">
+		<link href="http://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet" type="text/css">
 		<style type="text/css">
 			body {
 				padding-top: 60px;

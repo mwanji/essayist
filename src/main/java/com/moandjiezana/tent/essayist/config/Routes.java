@@ -25,9 +25,9 @@ public class Routes {
     String url = req.getContextPath() + "/assets/" + asset;
     
     if (asset.endsWith(".css")) {
-      return "<link rel=\"stylesheet\" href=\"" + url + "\" />";
+      return "<link href=\"" + url + "\"  rel=\"stylesheet\" type=\"text/css\" >";
     } else if (asset.endsWith(".js")) {
-      return "<script src=\"" + url + "\"></script>";
+      return "<script src=\"" + url + "\" type=\"text/javascript\"></script>";
     }
     
     throw new IllegalArgumentException("Unknown asset type: " + asset);
