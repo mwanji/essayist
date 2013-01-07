@@ -40,7 +40,7 @@ public class Routes {
       tags.add(asset(asset2));
     }
     
-    return Joiner.on('\n').join(tags);
+    return Joiner.on("\n").join(tags);
   }
   
   public String essay(Post essay) {
