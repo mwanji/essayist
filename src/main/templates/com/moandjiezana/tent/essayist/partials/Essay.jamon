@@ -21,7 +21,7 @@ String essayUrl = jamonContext.routes.essay(essay);
 		<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a> <small><% formattedPublicationDate %></small></h3>
 		<p class="muted"><% essayContent.getExcerpt() %></p>
 		<div class="bodyText">
-		<% jamonContext.csrf.stripScripts(essayContent.getBody()) #n %>
+		<% jamonContext.csrf.permissive(essayContent.getBody()) #n %>
 		</div>
 		<%if jamonContext.isLoggedIn() %>
 		<div>
