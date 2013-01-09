@@ -20,7 +20,7 @@ public class Utf8Filter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest) request;
     req.setCharacterEncoding(Charsets.UTF_8.toString());
-    if (!"application/json".equals(req.getHeader("Accept"))) {
+    if (!"application/json".equals(req.getHeader("Accept")) && !req.getRequestURI().startsWith("/assets")) {
       response.setContentType("text/html;charset=" + Charsets.UTF_8);
     }
     
