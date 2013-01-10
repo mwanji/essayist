@@ -42,6 +42,11 @@ String url;
 				font-family: 'PT Sans', Georgia, serif;
 			}
 			
+			h1 a {
+				text-decoration: none;
+				font-family: 'Apple Symbols', Symbola, Code2000, Menlo;
+			}
+
 			h3 small {
 				font-size: 0.6em;
 			}
@@ -82,7 +87,7 @@ String url;
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
-					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist <% Character.valueOf('\u03B1') %></a>
+					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist<% Character.valueOf('\u00A0') %><% Character.valueOf('\u03B1') %></a>
 					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">
