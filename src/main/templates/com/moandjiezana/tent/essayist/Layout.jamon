@@ -44,7 +44,7 @@ String url;
 			
 			h1 a {
 				text-decoration: none;
-				font-family: 'Apple Symbols', Menlo;
+				font-family: 'Apple Symbols', Symbola, Code2000, Menlo;
 			}
 
 			h3 small {
