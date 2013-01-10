@@ -1,6 +1,6 @@
 # Essayist
 
-A blogging app for the tent.io protocol
+A blogging app for the tent.io protocol. A public instance is available here: http://essayist.mndj.me.
 
 ## Quick start:
 
