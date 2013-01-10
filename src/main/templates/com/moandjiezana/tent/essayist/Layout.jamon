@@ -57,7 +57,10 @@ String url;
 			}
 			
 			.form-inline {
-				display: inline;	
+				display: inline;
+			}
+			.row p {
+				word-break: break-all;
 			}
 		</style>
 		<% jamonContext.routes.asset("bootstrap-2.1.1/css/bootstrap-responsive.min.css") #n %>
