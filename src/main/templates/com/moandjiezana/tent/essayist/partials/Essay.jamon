@@ -17,7 +17,7 @@ String essayUrl = jamonContext.routes.essay(essay);
 </%java>
 <div class="row">
 	<div class="span7">
-		<h1><% Entities.essayTitle(essayContent) %> <a href="<% essayUrl %>" style="text-decoration: none"><% Character.valueOf('\u2693') %></a></h1>
+		<h1><% Entities.essayTitle(essayContent) %> <a href="<% essayUrl %>"><% Character.valueOf('\u2693') %></a></h1>
 		<h3><small>by</small> <a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a> <small><% formattedPublicationDate %></small></h3>
 		<p class="muted"><% essayContent.getExcerpt() %></p>
 		<div class="bodyText">
