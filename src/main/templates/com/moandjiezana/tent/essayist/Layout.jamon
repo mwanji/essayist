@@ -8,7 +8,6 @@ com.moandjiezana.tent.essayist.config.*;
 <%args>
 boolean showNav = true;
 String active = null;
-String title = "Essayist";
 </%args>
 
 <%def navItem>
@@ -22,7 +21,7 @@ String url;
 
 <html>
 	<head>
-		<title><% title %></title>
+		<title><% jamonContext.getConfig().getTitle() %></title>
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -82,7 +81,7 @@ String url;
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
-					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist <% Character.valueOf('\u03B1') %></a>
+					<a class="brand" href="<% jamonContext.contextPath() %>"><% jamonContext.getConfig().getTitle() %> <% Character.valueOf('\u03B1') %></a>
 					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">
