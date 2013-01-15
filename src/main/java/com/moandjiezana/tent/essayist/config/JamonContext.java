@@ -22,13 +22,16 @@ public class JamonContext {
   private final HttpServletRequest req;
   public final String currentUrl;
   private final EssayistSession session;
+  private final EssayistConfig config;
   
   @Inject
-  public JamonContext(EssayistSession session, TextTransformation textTransformation, Routes routes, HttpServletRequest req) {
+  public JamonContext(EssayistSession session, TextTransformation textTransformation,
+                      Routes routes, HttpServletRequest req, EssayistConfig config) {
     this.session = session;
     this.textTransformation = textTransformation;
     this.routes = routes;
     this.req = req;
+    this.config = config;
     this.contextPath = req.getContextPath();
     this.currentUrl = req.getRequestURL().toString();
   }
@@ -56,5 +59,9 @@ public class JamonContext {
     }
 
     return path;
+  }
+
+  public EssayistConfig getConfig(){
+      return config;
   }
 }

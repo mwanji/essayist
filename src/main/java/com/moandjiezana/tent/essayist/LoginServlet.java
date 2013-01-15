@@ -9,6 +9,7 @@ import com.moandjiezana.tent.client.apps.RegistrationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
+import com.moandjiezana.tent.essayist.config.EssayistConfig;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,15 +31,18 @@ public class LoginServlet extends HttpServlet {
   
   private final Users users;
   private final Templates templates;
+  private final EssayistConfig config;
   private final Essays essays;
   private Provider<EssayistSession> sessions;
 
   @Inject
-  public LoginServlet(Users users, Essays essays, Provider<EssayistSession> sessions, Templates jamonContext) {
+  public LoginServlet(Users users, Essays essays, Provider<EssayistSession> sessions,
+                      Templates jamonContext, EssayistConfig config) {
     this.users = users;
     this.essays = essays;
     this.sessions = sessions;
     this.templates = jamonContext;
+    this.config = config;
   }
   
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
@@ -118,7 +122,9 @@ public class LoginServlet extends HttpServlet {
     String afterAuthorizationUrl = baseUrl + "/accessToken";
     String afterLoginUrl = baseUrl;
     
-    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app for when you need more than 256 characters.", baseUrl, new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
+    RegistrationRequest registrationRequest = new RegistrationRequest(config.getTitle(),
+            "A blogging app for when you need more than 256 characters.", baseUrl,
+            new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
     
     return tentClient.register(registrationRequest);
   }
