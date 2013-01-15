@@ -59,6 +59,11 @@
 	</build>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava</artifactId>
+            <version>3.1</version>
+        </dependency>
 		<dependency>
 			<groupId>com.moandjiezana.tent</groupId>
 			<artifactId>tent-client</artifactId>

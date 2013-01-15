@@ -10,6 +10,7 @@ public class User {
   private RegistrationResponse registration;
   private AccessToken accessToken;
   private Long id;
+  private String domain;
   
   public User() {}
   
@@ -20,22 +21,28 @@ public class User {
   }
   
   public User(Profile profile) {
-    this(null, profile, null, null);
+    this(null, profile, null, null, null);
   }
   
   public User(Profile profile, AccessToken accessToken) {
-    this(null, profile, null, accessToken);
+    this(null, profile, null, accessToken, null);
   }
 
   public User(Profile profile, RegistrationResponse registration, AccessToken accessToken) {
-    this(null, profile, registration, accessToken);
+    this(null, profile, registration, accessToken, null);
   }
 
-  public User(Long id, Profile profile, RegistrationResponse registration, AccessToken accessToken) {
+    public User(Long id, Profile profile, RegistrationResponse registration, AccessToken accessToken) {
+        this(null, profile, registration, accessToken, null);
+
+    }
+
+  public User(Long id, Profile profile, RegistrationResponse registration, AccessToken accessToken, String domain) {
     this.id = id;
     this.profile = profile;
     this.registration = registration;
     this.accessToken = accessToken;
+    this.domain = domain;
   }
   
   public boolean owns(Post post) {
@@ -72,5 +79,13 @@ public class User {
   
   public void setRegistration(RegistrationResponse registration) {
     this.registration = registration;
+  }
+
+  public String getDomain() {
+    return domain;
+  }
+
+  public void setDomain(String domain) {
+    this.domain = domain;
   }
 }

@@ -9,6 +9,7 @@ import com.moandjiezana.essayist.utils.Tasks;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
 import com.moandjiezana.tent.client.users.Profile;
+import com.moandjiezana.tent.essayist.user.UserService;
 import com.moandjiezana.tent.oauth.AccessToken;
 
 import java.io.BufferedReader;
@@ -21,6 +22,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import fj.data.Option;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
@@ -30,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class Users {
+public class Users implements UserService {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(Users.class);
   
@@ -44,6 +46,46 @@ public class Users {
     this.queryRunner = queryRunner;
   }
 
+    private Option<User> getUser(Map<String, Object> map) {
+        if (map == null) {
+            return Option.none();
+        }
+
+        return Option.some(new User((Long) map.get("id"),
+                convert(map.get("profile"), Profile.class),
+                convert(map.get("registration"), RegistrationResponse.class),
+                convert(map.get("accessToken"), AccessToken.class),
+                map.get("domain").toString()));
+    }
+
+
+    @Override
+    public Option<User> getUserByDomain(final String domain) {
+
+        try {
+            Map<String, Object> map = queryRunner.query("SELECT * FROM AUTHORIZATIONS WHERE DOMAIN=?", new MapHandler(), domain);
+
+            return getUser(map);
+        } catch (SQLException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+
+    @Override
+    public Option<User> getUserByEntity(final String entity) {
+
+        try {
+            Map<String, Object> map = queryRunner.query("SELECT * FROM AUTHORIZATIONS WHERE ENTITY=?", new MapHandler(), entity);
+
+            return getUser(map);
+        } catch (SQLException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+
+
   public User getByEntityOrNull(String entity) {
     try {
       Map<String, Object> map = queryRunner.query("SELECT * FROM AUTHORIZATIONS WHERE ENTITY=?", new MapHandler(), entity);
@@ -51,13 +93,18 @@ public class Users {
       if (map == null) {
         return null;
       }
-      
-      return new User((Long) map.get("id"), convert(map.get("profile"), Profile.class), convert(map.get("registration"), RegistrationResponse.class), convert(map.get("accessToken"), AccessToken.class));
+
+      return new User((Long) map.get("id"),
+              convert(map.get("profile"), Profile.class),
+              convert(map.get("registration"), RegistrationResponse.class),
+              convert(map.get("accessToken"), AccessToken.class),
+              (String)map.get("domain"));
     } catch (SQLException e) {
       throw Throwables.propagate(e);
     }
   }
-  
+
+  @Override
   public List<User> getAll() {
     try {
       return queryRunner.query("select * from AUTHORIZATIONS", new BeanListHandler<User>(User.class, new BasicRowProcessor(new BeanProcessor() {
@@ -82,9 +129,11 @@ public class Users {
       String accessTokenJson = gson.toJson(user.getAccessToken());
       
       if (user.getId() != null) {
-        queryRunner.update("UPDATE AUTHORIZATIONS SET PROFILE=?, REGISTRATION=?, ACCESSTOKEN=? WHERE ID=?", profileJson, registrationJson, accessTokenJson, user.getId());
+        queryRunner.update("UPDATE AUTHORIZATIONS SET PROFILE=?, REGISTRATION=?, ACCESSTOKEN=?, DOMAIN=? WHERE ID=?",
+                profileJson, registrationJson, accessTokenJson, user.getDomain(), user.getId());
       } else {
-        queryRunner.update("INSERT INTO AUTHORIZATIONS(ENTITY, PROFILE, REGISTRATION, ACCESSTOKEN) VALUES(?,?,?,?)", user.getProfile().getCore().getEntity(), profileJson, registrationJson, accessTokenJson);
+        queryRunner.update("INSERT INTO AUTHORIZATIONS(ENTITY, PROFILE, REGISTRATION, ACCESSTOKEN, DOMAIN) VALUES(?,?,?,?,?)",
+                user.getProfile().getCore().getEntity(), profileJson, registrationJson, accessTokenJson, user.getDomain());
       }
     } catch (SQLException e) {
       throw Throwables.propagate(e);
@@ -130,4 +179,5 @@ public class Users {
     
     return gson.fromJson(s, objectClass);
   }
+
 }

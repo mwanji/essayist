@@ -9,6 +9,9 @@ import java.util.Properties;
  */
 public class EssayistConfig {
 
+    public static final String BASE_DOMAIN = "essayist.domain.base";
+
+
     private Properties properties;
 
     public EssayistConfig(Properties properties) {
@@ -23,4 +26,7 @@ public class EssayistConfig {
         return properties.getProperty("essayist.defaultLicense", "http://creativecommons.org/licenses/by/3.0/");
     }
 
+    public String getBaseDomain(String defaulDomain) {
+        return properties.getProperty(BASE_DOMAIN, defaulDomain);
+    }
 }

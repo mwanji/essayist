@@ -22,6 +22,7 @@ public class Migration_1 implements Migration {
         column("ENTITY", VARCHAR, notnull(), Define.length(1000)),
         column("PROFILE", LONGVARCHAR),
         column("REGISTRATION", LONGVARCHAR),
+        column("DOMAIN", VARCHAR, notnull(), Define.length(1000)), // TODO this is probably cheating but not sure how to do migration
         column("ACCESSTOKEN", LONGVARCHAR)));
   }
 
