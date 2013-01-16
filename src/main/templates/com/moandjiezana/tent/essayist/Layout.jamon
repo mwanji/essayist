@@ -26,7 +26,7 @@ String url;
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<% jamonContext.routes.assets("application.css", "bootstrap-2.1.1/css/bootstrap.min.css") #n %>
+		<% jamonContext.routes.webJar("bootstrap.min.css") #n %>
 		<link href="http://fonts.googleapis.com/css?family=PT+Serif" rel="stylesheet" type="text/css">
 		<link href="http://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet" type="text/css">
 		<style type="text/css">
@@ -63,13 +63,16 @@ String url;
 				word-break: break-all;
 			}
 		</style>
-		<% jamonContext.routes.asset("bootstrap-2.1.1/css/bootstrap-responsive.min.css") #n %>
+		<% jamonContext.routes.webJar("bootstrap-responsive.min.css") #n %>
+		<% jamonContext.routes.webJar( "underscore-min.js") #n %>
+		<% jamonContext.routes.webJar("spin.min.js") #n %>
+		<% jamonContext.routes.asset("essayist.js") #n %>
+		
 		<script>
 			var E = {
 				contextPath: "<% jamonContext.contextPath %>"
 			};
 		</script>
-		<% jamonContext.routes.assets("application.js", "underscore-1.4.2/underscore.min.js", "spin/spin.min.js", "essayist.js") #n %>
 		
 		<!--[if lt IE 9]>
 		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
