@@ -2,9 +2,18 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
 
-  <listener>
-    <listener-class>com.moandjiezana.tent.essayist.config.EssayistServletContextListener</listener-class>
-  </listener>
+	<listener>
+		<listener-class>com.moandjiezana.essayist.config.EssayistMerfServletContextListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>com.moandjiezana.tent.essayist.config.EssayistServletContextListener</listener-class>
+	</listener>
+
+	<filter-mapping>
+		<filter-name>MerfFilter</filter-name>
+		<url-pattern>/merf/*</url-pattern>
+	</filter-mapping>
 
 	<filter>
 		<filter-name>guiceFilter</filter-name>
@@ -15,5 +24,4 @@
 		<filter-name>guiceFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
 </web-app>

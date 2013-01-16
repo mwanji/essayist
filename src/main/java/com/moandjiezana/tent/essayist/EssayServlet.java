@@ -1,6 +1,7 @@
 package com.moandjiezana.tent.essayist;
 
 import com.google.common.base.Throwables;
+import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;

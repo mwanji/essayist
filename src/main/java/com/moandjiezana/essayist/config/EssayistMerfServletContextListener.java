@@ -1,25 +1,23 @@
-package com.moandjiezana.tent.essayist.config;
+package com.moandjiezana.essayist.config;
+
+import co.mewf.merf.Router;
+import co.mewf.merf.config.MerfFilter;
+import co.mewf.merf.config.MerfServletContextListener;
 
 import com.eroi.migrate.Configure;
 import com.eroi.migrate.Engine;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.inject.servlet.ServletModule;
+import com.moandjiezana.essayist.sessions.SessionController;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
-import com.moandjiezana.tent.essayist.AccessTokenServlet;
-import com.moandjiezana.tent.essayist.EssayActionServlet;
-import com.moandjiezana.tent.essayist.EssayServlet;
-import com.moandjiezana.tent.essayist.EssaysServlet;
-import com.moandjiezana.tent.essayist.GlobalFeedServlet;
-import com.moandjiezana.tent.essayist.MyFeedServlet;
-import com.moandjiezana.tent.essayist.PreviewServlet;
-import com.moandjiezana.tent.essayist.WriteServlet;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.auth.AuthenticationInterceptor;
+import com.moandjiezana.tent.essayist.config.EssayistServletContextListener;
+import com.moandjiezana.tent.essayist.config.GuiceRouter;
 import com.moandjiezana.tent.essayist.db.migrations.Migration_1;
 
 import java.io.IOException;
@@ -30,6 +28,8 @@ import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -37,14 +37,13 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EssayistServletContextListener extends GuiceServletContextListener {
+public class EssayistMerfServletContextListener extends MerfServletContextListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EssayistServletContextListener.class);
   private DataSource dataSource;
 
   @Override
-  protected Injector getInjector() {
-
+  protected Router createRouter() {
     Properties defaultProperties = new Properties();
     try {
       defaultProperties.load(getClass().getResourceAsStream("/essayist-defaults.properties"));
@@ -90,21 +89,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
 
     final QueryRunner queryRunner = new QueryRunner(dataSource);
 
-    return Guice.createInjector(new ServletModule() {
-      @Override
-      protected void configureServlets() {
-        serve("/accessToken").with(AccessTokenServlet.class);
-        serve("/read").with(MyFeedServlet.class);
-        serve("/global").with(GlobalFeedServlet.class);
-        serve("/write", "/write/*").with(WriteServlet.class);
-        serve("/preview").with(PreviewServlet.class);
-        serveRegex("/(.*)/essays").with(EssaysServlet.class);
-        serveRegex("/(.*)/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
-        serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
-        filter("/*").through(Utf8Filter.class);
-        filter("/*").through(HttpMethodFilter.class);
-      }
-    }, new AbstractModule() {
+    Injector injector = Guice.createInjector(new AbstractModule() {
       @Override
       protected void configure() {
         bind(QueryRunner.class).toInstance(queryRunner);
@@ -116,8 +101,24 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
 
         bindInterceptor(servletSubclassMatcher.and(authenticationAnnotationMatcher), new AuthenticationInterceptor.MethodOfAuthenticatedClassMatcher(), authenticationInterceptor);
         bindInterceptor(servletSubclassMatcher, authenticationAnnotationMatcher, authenticationInterceptor);
+
+        bind(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
+          @Override
+          public HttpServletRequest get() {
+            return MerfFilter.requestThreadLocal.get();
+          }
+        });
+
+        bind(HttpSession.class).toProvider(new Provider<HttpSession>() {
+          @Override
+          public HttpSession get() {
+            return MerfFilter.requestThreadLocal.get().getSession();
+          }
+        });
       }
     });
+
+    return new GuiceRouter().add(injector, SessionController.class);
   }
 
   @Override

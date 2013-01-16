@@ -1,5 +1,6 @@
 package com.moandjiezana.tent.essayist;
 
+import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.auth.AuthResult;

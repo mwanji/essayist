@@ -1,8 +1,8 @@
 package com.moandjiezana.tent.essayist.config;
 
 import com.google.common.base.Splitter;
+import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.tent.client.users.Profile;
-import com.moandjiezana.tent.essayist.EssayistSession;
 import com.moandjiezana.tent.essayist.User;
 import com.moandjiezana.tent.essayist.security.Csrf;
 import com.moandjiezana.tent.essayist.text.TextTransformation;

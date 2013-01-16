@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.moandjiezana.essayist.posts.Bookmark;
 import com.moandjiezana.essayist.posts.Favorite;
 import com.moandjiezana.essayist.posts.UserReactions;
+import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Mention;
 import com.moandjiezana.tent.client.posts.Post;

@@ -3,6 +3,7 @@ package com.moandjiezana.tent.essayist;
 import com.moandjiezana.essayist.posts.Bookmark;
 import com.moandjiezana.essayist.posts.EssayistMetadataContent;
 import com.moandjiezana.essayist.posts.Favorite;
+import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.apps.AuthorizationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationRequest;

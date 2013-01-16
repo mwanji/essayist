@@ -1,7 +1,6 @@
 package com.moandjiezana.tent.essayist.config;
 
 import com.google.common.base.Joiner;
-import com.google.inject.servlet.RequestScoped;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.essayist.tent.Entities;
 
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.webjars.AssetLocator;
 
-@RequestScoped
 public class Routes {
 
   private final HttpServletRequest req;

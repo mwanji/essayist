@@ -1,6 +1,7 @@
 package com.moandjiezana.tent.essayist;
 
 import com.moandjiezana.essayist.posts.EssayistMetadataContent;
+import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.essayist.utils.Tasks;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Mention;

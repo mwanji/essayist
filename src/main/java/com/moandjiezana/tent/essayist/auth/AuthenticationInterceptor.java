@@ -1,7 +1,7 @@
 package com.moandjiezana.tent.essayist.auth;
 
 import com.google.inject.matcher.Matcher;
-import com.moandjiezana.tent.essayist.EssayistSession;
+import com.moandjiezana.essayist.sessions.EssayistSession;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
