@@ -8,6 +8,7 @@ com.moandjiezana.tent.essayist.config.*;
 <%args>
 boolean showNav = true;
 String active = null;
+String title = "Essayist";
 </%args>
 
 <%def navItem>
