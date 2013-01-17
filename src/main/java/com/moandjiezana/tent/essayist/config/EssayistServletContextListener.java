@@ -82,13 +82,23 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         e.printStackTrace();
       }
     }
-    
-    final QueryRunner queryRunner = new QueryRunner(dataSource);
+      final EssayistConfig config = new EssayistConfig(properties);
+
+      final QueryRunner queryRunner = new QueryRunner(dataSource);
     
     return Guice.createInjector(new ServletModule() {
       @Override
       protected void configureServlets() {
-        serve("/", "/login").with(LoginServlet.class);
+
+        if(config.getDefaultEntity().isSome()){
+            serve("/").with(EssaysServlet.class);
+
+        } else {
+            serve("/").with(LoginServlet.class);
+
+        }
+
+         serve("/login").with(LoginServlet.class);
         serve("/logout").with(LogoutServlet.class);
         serve("/accessToken").with(AccessTokenServlet.class);
         serve("/read").with(MyFeedServlet.class);
@@ -106,7 +116,6 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
       @Override
       protected void configure() {
         bind(QueryRunner.class).toInstance(queryRunner);
-        EssayistConfig config = new EssayistConfig(properties);
         bind(EssayistConfig.class).toInstance(config);
         bind(UserService.class).to(Users.class);
 
