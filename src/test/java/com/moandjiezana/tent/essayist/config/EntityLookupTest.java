@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -41,7 +42,10 @@ public class EntityLookupTest {
     public void should_return_none_if_nothing_is_configured(){
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
+        when(request.getPathInfo()).thenReturn("/");
+
         Option<String> profile = lookup.getEntity(request);
+
         assertTrue(profile.isNone());
     }
 
@@ -50,8 +54,33 @@ public class EntityLookupTest {
         properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
+        when(request.getPathInfo()).thenReturn("/");
+
         Option<String> profile = lookup.getEntity(request);
         assertTrue(profile.isNone());
+    }
+
+    @Test
+    public void should_return_some_if_entity_in_path(){
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getPathInfo()).thenReturn("/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+
+        Option<String> profile = lookup.getEntity(request);
+
+        assertEquals("https://uns0b.tent.is", profile.some());
+    }
+
+    @Test
+    public void should_return_some_if_entity_in_path_to_base_domain(){
+        properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getPathInfo()).thenReturn("/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+
+        Option<String> profile = lookup.getEntity(request);
+
+        assertEquals("https://uns0b.tent.is", profile.some());
     }
 
     @Test

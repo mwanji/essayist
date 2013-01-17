@@ -28,6 +28,10 @@ public class EssayistSession {
     return getUser() != LOGGED_OUT;
   }
 
+  public boolean isEntity(String entity){
+    return isLoggedIn() && entity.equals(getUser().getProfile().getCore().getEntity());
+  }
+
   public User getUser() {
     return user;
   }

@@ -1,6 +1,7 @@
 package com.moandjiezana.tent.essayist.config;
 
 import com.moandjiezana.tent.essayist.User;
+import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.user.UserService;
 import fj.data.Option;
 import static fj.data.Option.none;
@@ -8,6 +9,7 @@ import static fj.data.Option.some;
 
 import com.moandjiezana.tent.client.users.Profile;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -21,6 +23,7 @@ public class EntityLookup {
     private EssayistConfig config;
     private UserService userService;
 
+    @Inject
     public EntityLookup(EssayistConfig config, UserService userService) {
         this.config = config;
         this.userService = userService;
@@ -32,7 +35,7 @@ public class EntityLookup {
         String baseDomain = config.getBaseDomain(serverName);
 
         if(serverName.equals(baseDomain)){
-            return none();
+            return getFromPath(request);
         } else {
             Option<User> user = userService.getUserByDomain(serverName);
             if(user.isSome()){
@@ -40,5 +43,17 @@ public class EntityLookup {
             }
             return none();
         }
+    }
+
+    private Option<String> getFromPath(HttpServletRequest request){
+        String pathInfo = request.getPathInfo();
+        String[] path = pathInfo.split("/");
+
+        if(path.length < 2){
+            return none();
+        }
+
+        String entity = Entities.expandFromUrl(path[1]);
+        return some(entity);
     }
 }

@@ -10,16 +10,7 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
-import com.moandjiezana.tent.essayist.AccessTokenServlet;
-import com.moandjiezana.tent.essayist.EssayActionServlet;
-import com.moandjiezana.tent.essayist.EssayServlet;
-import com.moandjiezana.tent.essayist.EssaysServlet;
-import com.moandjiezana.tent.essayist.GlobalFeedServlet;
-import com.moandjiezana.tent.essayist.LoginServlet;
-import com.moandjiezana.tent.essayist.LogoutServlet;
-import com.moandjiezana.tent.essayist.MyFeedServlet;
-import com.moandjiezana.tent.essayist.PreviewServlet;
-import com.moandjiezana.tent.essayist.WriteServlet;
+import com.moandjiezana.tent.essayist.*;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.auth.AuthenticationInterceptor;
 import com.moandjiezana.tent.essayist.db.migrations.Migration_1;
@@ -33,6 +24,7 @@ import java.util.Properties;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServlet;
 
+import com.moandjiezana.tent.essayist.user.UserService;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -113,8 +105,11 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
       @Override
       protected void configure() {
         bind(QueryRunner.class).toInstance(queryRunner);
-        bind(EssayistConfig.class).toInstance(new EssayistConfig(properties));
-        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor();
+        EssayistConfig config = new EssayistConfig(properties);
+        bind(EssayistConfig.class).toInstance(config);
+        bind(UserService.class).to(Users.class);
+
+          AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor();
         @SuppressWarnings("rawtypes")
         Matcher<Class> servletSubclassMatcher = Matchers.subclassesOf(HttpServlet.class);
         Matcher<AnnotatedElement> authenticationAnnotationMatcher = Matchers.annotatedWith(Authenticated.class);
