@@ -1,5 +1,7 @@
 package com.moandjiezana.tent.essayist.config;
 
+import fj.data.Option;
+
 import java.util.Properties;
 
 /**
@@ -10,6 +12,7 @@ import java.util.Properties;
 public class EssayistConfig {
 
     public static final String BASE_DOMAIN = "essayist.domain.base";
+    public static final String DEFAULT_ENTITY = "essayist.defaultEntity";
 
 
     private Properties properties;
@@ -28,5 +31,10 @@ public class EssayistConfig {
 
     public String getBaseDomain(String defaulDomain) {
         return properties.getProperty(BASE_DOMAIN, defaulDomain);
+    }
+
+    public Option<String> getDefaultEntity(){
+        String defaultEntity = properties.getProperty(DEFAULT_ENTITY);
+        return Option.fromString(defaultEntity);
     }
 }

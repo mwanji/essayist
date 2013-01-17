@@ -48,12 +48,12 @@ public class EntityLookup {
     private Option<String> getFromPath(HttpServletRequest request){
         String pathInfo = request.getPathInfo();
         String[] path = pathInfo.split("/");
-
         if(path.length < 2){
-            return none();
+            return config.getDefaultEntity();
         }
 
-        String entity = Entities.expandFromUrl(path[1]);
+
+        String entity = Entities.expandFromUrl(path[0]);
         return some(entity);
     }
 }

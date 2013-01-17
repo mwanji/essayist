@@ -64,7 +64,7 @@ public class EntityLookupTest {
     public void should_return_some_if_entity_in_path(){
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
 
         Option<String> profile = lookup.getEntity(request);
 
@@ -76,7 +76,7 @@ public class EntityLookupTest {
         properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
 
         Option<String> profile = lookup.getEntity(request);
 
@@ -109,6 +109,20 @@ public class EntityLookupTest {
         when(request.getServerName()).thenReturn("subdomain.localhost");
         Option<String> entity = lookup.getEntity(request);
         assertTrue(entity.isNone());
+
+    }
+
+    @Test
+    public void should_return_default_profile_as_fallback(){
+
+        properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getPathInfo()).thenReturn("");
+
+        Option<String> profile = lookup.getEntity(request);
+        assertEquals("http://pjesi.com", profile.some());
+
 
     }
 
