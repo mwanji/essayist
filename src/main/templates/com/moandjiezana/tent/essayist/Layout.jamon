@@ -95,7 +95,7 @@ String url;
 		        	</ul>
 					<%else>
 					<ul class="nav pull-right">
-						<& navItem: "Log in / Join with Tent"; "" &>
+						<& navItem: "Log in / Join with Tent"; "login" &>
 		        	</ul>
 		     		</%if>
 		     		</%if>
