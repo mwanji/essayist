@@ -47,6 +47,9 @@ public class EntityLookup {
 
     private Option<String> getFromPath(HttpServletRequest request){
         String pathInfo = request.getPathInfo();
+        if(pathInfo == null || !pathInfo.contains("/")){
+            return config.getDefaultEntity();
+        }
         String[] path = pathInfo.split("/");
         if(path.length < 2){
             return config.getDefaultEntity();

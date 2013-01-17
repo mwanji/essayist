@@ -126,4 +126,32 @@ public class EntityLookupTest {
 
     }
 
+    @Test
+    public void should_return_default_profile_as_fallback_on_null(){
+
+        properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+
+        Option<String> profile = lookup.getEntity(request);
+        assertEquals("http://pjesi.com", profile.some());
+
+
+    }
+
+    @Test
+    public void should_return_default_profile_as_fallback_on_essays(){
+
+        properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getPathInfo()).thenReturn("essays");
+
+
+        Option<String> profile = lookup.getEntity(request);
+        assertEquals("http://pjesi.com", profile.some());
+
+
+    }
+
 }

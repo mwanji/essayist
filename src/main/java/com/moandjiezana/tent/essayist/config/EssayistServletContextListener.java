@@ -95,6 +95,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serve("/global").with(GlobalFeedServlet.class);
         serve("/write", "/write/*").with(WriteServlet.class);
         serve("/preview").with(PreviewServlet.class);
+        serveRegex("/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
