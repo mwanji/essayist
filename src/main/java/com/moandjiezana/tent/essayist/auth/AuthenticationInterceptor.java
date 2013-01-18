@@ -1,46 +1,33 @@
 package com.moandjiezana.tent.essayist.auth;
 
+import co.mewf.merf.http.Responses;
+
 import com.google.inject.matcher.Matcher;
 import com.moandjiezana.essayist.sessions.EssayistSession;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 public class AuthenticationInterceptor implements MethodInterceptor {
 
+  @Inject
+  private Provider<EssayistSession> sessions;
+
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-    HttpServletRequest request = (HttpServletRequest) invocation.getArguments()[0];
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      
-      return refuse(invocation);
+    if (!sessions.get().isLoggedIn()) {
+      return Responses.redirect("/login");
     }
-    
-    Boolean sessionKey = (Boolean) request.getSession().getAttribute(EssayistSession.class.getName());
-    if (sessionKey == null || Boolean.FALSE.equals(sessionKey)) {
-      return refuse(invocation);
-    }
-    
+
     return invocation.proceed();
   }
-  
-  private Void refuse(MethodInvocation invocation) throws IOException {
-    HttpServletRequest request = (HttpServletRequest) invocation.getArguments()[0];
-    HttpServletResponse response = (HttpServletResponse) invocation.getArguments()[1];
-    response.sendRedirect(request.getContextPath());
 
-    return null;
-  }
-  
   public static class MethodOfAuthenticatedClassMatcher implements Matcher<Method> {
 
     @Override

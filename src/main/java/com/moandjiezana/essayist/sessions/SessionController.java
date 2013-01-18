@@ -2,6 +2,7 @@ package com.moandjiezana.essayist.sessions;
 
 import co.mewf.merf.Response;
 import co.mewf.merf.http.GET;
+import co.mewf.merf.http.POST;
 import co.mewf.merf.http.Responses;
 import co.mewf.merf.http.Url;
 
@@ -14,10 +15,12 @@ import com.moandjiezana.tent.client.apps.AuthorizationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
 import com.moandjiezana.tent.client.posts.Post;
+import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.Templates;
 import com.moandjiezana.tent.essayist.User;
 import com.moandjiezana.tent.essayist.Users;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
+import com.moandjiezana.tent.oauth.AccessToken;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,16 +38,14 @@ public class SessionController {
   private final Users users;
   private final Templates templates;
   private final HttpServletRequest req;
-  private final HttpServletResponse resp;
   private final EssayistSession session;
 
   @Inject
-  public SessionController(Users users, Templates jamonContext, EssayistSession session, HttpServletRequest req, HttpServletResponse resp) {
+  public SessionController(Users users, Templates jamonContext, EssayistSession session, HttpServletRequest req) {
     this.users = users;
     this.templates = jamonContext;
     this.session = session;
     this.req = req;
-    this.resp = resp;
   }
 
   @GET @Url("/")
@@ -54,20 +55,14 @@ public class SessionController {
 
   @GET @Url("/login")
   public Response loginOrRedirect() throws MalformedURLException {
-    AuthResult authResult = (AuthResult) req.getSession().getAttribute(req.getParameter("state"));
+    AuthResult authResult = session.consumeAuthResult();
     String errorParameter = req.getParameter("error");
 
     if (!session.isLoggedIn() && authResult == null && !"server_error".equals(errorParameter)) {
       return new JamonResponse(templates.login().makeRenderer());
     }
 
-    User user = session.getUser();
-
-    if (authResult != null) {
-      user = users.getByEntityOrNull(authResult.profile.getCore().getEntity());
-      session.setUser(user);
-      req.getSession().removeAttribute("state");
-    } else if ("server_error".equals(req.getParameter("error"))) {
+    if ("server_error".equals(req.getParameter("error"))) {
       String entity = (String) req.getSession().getAttribute("entity");
       users.delete(entity);
 
@@ -79,9 +74,72 @@ public class SessionController {
       return Responses.redirect(authorizationUrl);
     }
 
+    User user = session.getUser();
+
+    if (authResult != null) {
+      user = users.getByEntityOrNull(authResult.profile.getCore().getEntity());
+      session.setUser(user);
+    }
+
     if (user == null) {
       return Responses.status(HttpServletResponse.SC_BAD_REQUEST);
     }
+
+    return Responses.redirect("/read");
+  }
+
+  @POST @Url("/login")
+  public Response postLogin() throws MalformedURLException {
+    String entity = req.getParameter("entity");
+    if (entity.endsWith("/")) {
+      entity = entity.substring(0, entity.length() - 1);
+    }
+    User user = users.getByEntityOrNull(entity);
+
+    TentClient tentClient;
+    RegistrationResponse registrationResponse;
+    String redirectUri;
+
+    if (user != null && user.getRegistration() != null) {
+      tentClient = new TentClient(user.getProfile());
+      tentClient.getAsync().setAccessToken(user.getAccessToken());
+      tentClient.getAsync().setRegistrationResponse(user.getRegistration());
+      redirectUri = user.getRegistration().getRedirectUris()[1];
+      registrationResponse = user.getRegistration();
+    } else {
+      tentClient = new TentClient(entity);
+      registrationResponse = register(tentClient, req);
+      redirectUri = registrationResponse.getRedirectUris()[0];
+    }
+
+    String authorizationUrl = authorize(tentClient, registrationResponse, redirectUri, req);
+
+    return Responses.redirect(authorizationUrl);
+  }
+
+  @GET @Url("/accessToken")
+  public Response accessToken() {
+    AuthResult authResult = session.consumeAuthResult();
+
+    if (authResult == null) {
+      return Responses.status(HttpServletResponse.SC_FORBIDDEN, "No corresponding authentication request found.");
+    }
+
+    Profile profile = authResult.profile;
+    TentClient tentClient = new TentClient(profile);
+    tentClient.getAsync().setRegistrationResponse(authResult.registrationResponse);
+    AccessToken accessToken = tentClient.getAccessToken(authResult.registrationResponse, req.getParameter("code"));
+
+    User existingUser = users.getByEntityOrNull(profile.getCore().getEntity());
+    User user;
+    if (existingUser != null) {
+      user = new User(existingUser.getId(), profile, authResult.registrationResponse, accessToken);
+    } else {
+      user = new User(profile, authResult.registrationResponse, accessToken);
+    }
+
+    users.save(user);
+    session.setUser(user);
 
     return Responses.redirect("/read");
   }
@@ -105,8 +163,8 @@ public class SessionController {
     scopes.put("read_posts", "Read Essays and your reactions to Essays.");
 
     URL url = new URL(req.getRequestURL().toString());
-    String baseUrl = url.getProtocol() + "://" + url.getAuthority() + req.getContextPath();
-    String afterAuthorizationUrl = baseUrl + "/accessToken";
+    String baseUrl = url.getProtocol() + "://" + url.getAuthority() + req.getContextPath() + "/merf/";
+    String afterAuthorizationUrl = baseUrl + "accessToken";
     String afterLoginUrl = baseUrl;
 
     RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app for when you need more than 256 characters.", baseUrl, new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
@@ -120,6 +178,9 @@ public class SessionController {
     authorizationRequest.setTentPostTypes(Post.Types.essay("v0.1.0"), Post.Types.status("v0.1.0"), Post.Types.photo("v0.1.0"), Post.Types.repost("v0.1.0"), EssayistMetadataContent.URI, Bookmark.URI, Favorite.URI);
     authorizationRequest.setState(UUID.randomUUID().toString());
     String authorizationUrl = tentClient.buildAuthorizationUrl(authorizationRequest);
+    if (!authorizationUrl.endsWith("/")) {
+      authorizationUrl += "/";
+    }
 
     AuthResult authResult = new AuthResult();
     authResult.profile = tentClient.getProfile();

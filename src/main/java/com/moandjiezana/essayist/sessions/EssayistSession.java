@@ -1,16 +1,20 @@
 package com.moandjiezana.essayist.sessions;
 
 import com.moandjiezana.tent.essayist.User;
+import com.moandjiezana.tent.essayist.auth.AuthResult;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class EssayistSession {
   private HttpSession httpSession;
+  private HttpServletRequest request;
 
   @Inject
-  public EssayistSession(HttpSession httpSession) {
+  public EssayistSession(HttpSession httpSession, HttpServletRequest request) {
     this.httpSession = httpSession;
+    this.request = request;
   }
 
   public boolean isLoggedIn() {
@@ -23,5 +27,11 @@ public class EssayistSession {
 
   public void setUser(User user) {
     httpSession.setAttribute(User.class.getName(), user);
+  }
+
+  public AuthResult consumeAuthResult() {
+    AuthResult authResult = (AuthResult) httpSession.getAttribute(request.getParameter("state"));
+    httpSession.removeAttribute("state");
+    return authResult;
   }
 }
