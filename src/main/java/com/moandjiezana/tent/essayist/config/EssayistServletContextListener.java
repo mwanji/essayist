@@ -10,12 +10,9 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
-import com.moandjiezana.tent.essayist.AccessTokenServlet;
 import com.moandjiezana.tent.essayist.EssayActionServlet;
 import com.moandjiezana.tent.essayist.EssayServlet;
 import com.moandjiezana.tent.essayist.EssaysServlet;
-import com.moandjiezana.tent.essayist.GlobalFeedServlet;
-import com.moandjiezana.tent.essayist.MyFeedServlet;
 import com.moandjiezana.tent.essayist.PreviewServlet;
 import com.moandjiezana.tent.essayist.WriteServlet;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
@@ -93,16 +90,11 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
     return Guice.createInjector(new ServletModule() {
       @Override
       protected void configureServlets() {
-        serve("/accessToken").with(AccessTokenServlet.class);
-        serve("/read").with(MyFeedServlet.class);
-        serve("/global").with(GlobalFeedServlet.class);
         serve("/write", "/write/*").with(WriteServlet.class);
         serve("/preview").with(PreviewServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
-        filter("/*").through(Utf8Filter.class);
-        filter("/*").through(HttpMethodFilter.class);
       }
     }, new AbstractModule() {
       @Override
