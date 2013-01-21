@@ -4,6 +4,7 @@ import com.moandjiezana.essayist.posts.Bookmark;
 import com.moandjiezana.essayist.posts.EssayistMetadataContent;
 import com.moandjiezana.essayist.posts.Favorite;
 import com.moandjiezana.tent.client.TentClient;
+import com.moandjiezana.tent.client.apps.App;
 import com.moandjiezana.tent.client.apps.AuthorizationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
@@ -44,7 +45,8 @@ public class LoginServlet extends HttpServlet {
     this.templates = jamonContext;
     this.config = config;
   }
-  
+
+  @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
     if (req.getSession(false) != null) {
       User user = (User) req.getSession().getAttribute(User.class.getName());
@@ -97,8 +99,18 @@ public class LoginServlet extends HttpServlet {
       tentClient = new TentClient(user.getProfile());
       tentClient.getAsync().setAccessToken(user.getAccessToken());
       tentClient.getAsync().setRegistrationResponse(user.getRegistration());
-      redirectUri = user.getRegistration().getRedirectUris()[1];
-      registrationResponse = user.getRegistration();
+
+      App app = tentClient.getApp();
+
+      if (app != null && app.getAuthorizations().length > 0) {
+        redirectUri = user.getRegistration().getRedirectUris()[1];
+        registrationResponse = user.getRegistration();
+      } else {
+        tentClient = new TentClient(entity);
+        registrationResponse = register(tentClient, req);
+        redirectUri = registrationResponse.getRedirectUris()[0];
+      }
+
     } else {
       tentClient = new TentClient(entity);
       registrationResponse = register(tentClient, req);
