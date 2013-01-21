@@ -11,6 +11,7 @@ import com.moandjiezana.essayist.posts.Bookmark;
 import com.moandjiezana.essayist.posts.EssayistMetadataContent;
 import com.moandjiezana.essayist.posts.Favorite;
 import com.moandjiezana.tent.client.TentClient;
+import com.moandjiezana.tent.client.apps.App;
 import com.moandjiezana.tent.client.apps.AuthorizationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
@@ -104,17 +105,18 @@ public class SessionController {
       tentClient = new TentClient(user.getProfile());
       tentClient.getAsync().setAccessToken(user.getAccessToken());
       tentClient.getAsync().setRegistrationResponse(user.getRegistration());
-      redirectUri = user.getRegistration().getRedirectUris()[1];
-      registrationResponse = user.getRegistration();
-    } else {
-      tentClient = new TentClient(entity);
-      registrationResponse = register(tentClient, req);
-      redirectUri = registrationResponse.getRedirectUris()[0];
+      App app = tentClient.getApp();
+
+      if (app != null && app.getAuthorizations().length > 0) {
+        redirectUri = user.getRegistration().getRedirectUris()[1];
+        registrationResponse = user.getRegistration();
+        String authorizationUrl = authorize(tentClient, registrationResponse, redirectUri, req);
+
+        return Responses.redirect(authorizationUrl);
+      }
     }
 
-    String authorizationUrl = authorize(tentClient, registrationResponse, redirectUri, req);
-
-    return Responses.redirect(authorizationUrl);
+    return register(entity);
   }
 
   @GET @Url("/accessToken")
@@ -152,7 +154,15 @@ public class SessionController {
       session.invalidate();
     }
 
-    return Responses.redirect(req.getContextPath());
+    return Responses.redirect("/");
+  }
+
+  private Response register(String entity) throws MalformedURLException {
+    TentClient tentClient = new TentClient(entity);
+    RegistrationResponse registrationResponse = register(tentClient, req);
+    String authorizationUrl = authorize(tentClient, registrationResponse, registrationResponse.getRedirectUris()[0], req);
+
+    return Responses.redirect(authorizationUrl);
   }
 
   private RegistrationResponse register(TentClient tentClient, HttpServletRequest req) throws MalformedURLException {
