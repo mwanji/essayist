@@ -14,7 +14,6 @@ import com.moandjiezana.tent.essayist.EssayActionServlet;
 import com.moandjiezana.tent.essayist.EssayServlet;
 import com.moandjiezana.tent.essayist.EssaysServlet;
 import com.moandjiezana.tent.essayist.PreviewServlet;
-import com.moandjiezana.tent.essayist.WriteServlet;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.auth.AuthenticationInterceptor;
 import com.moandjiezana.tent.essayist.db.migrations.Migration_1;
@@ -90,7 +89,6 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
     return Guice.createInjector(new ServletModule() {
       @Override
       protected void configureServlets() {
-        serve("/write", "/write/*").with(WriteServlet.class);
         serve("/preview").with(PreviewServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);

@@ -56,7 +56,7 @@ public class Routes {
   }
 
   public String essay(Post essay) {
-    return req.getContextPath() + "/" + Entities.getForUrl(essay.getEntity()) + "/essay/" + essay.getId();
+    return "/" + Entities.getForUrl(essay.getEntity()) + "/essay/" + essay.getId();
   }
 
   public String comment(Post essay) {
