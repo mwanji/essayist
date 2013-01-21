@@ -29,7 +29,7 @@ public class JamonContext {
     this.textTransformation = textTransformation;
     this.routes = routes;
     this.req = req;
-    this.contextPath = req.getContextPath() + "/merf";
+    this.contextPath = req.getContextPath();
     this.currentUrl = req.getRequestURL().toString();
   }
 

@@ -82,7 +82,7 @@ public class SessionController {
       session.setUser(user);
     }
 
-    if (user == null) {
+    if (!session.isLoggedIn()) {
       return Responses.status(HttpServletResponse.SC_BAD_REQUEST);
     }
 
@@ -173,7 +173,7 @@ public class SessionController {
     scopes.put("read_posts", "Read Essays and your reactions to Essays.");
 
     URL url = new URL(req.getRequestURL().toString());
-    String baseUrl = url.getProtocol() + "://" + url.getAuthority() + req.getContextPath() + "/merf/";
+    String baseUrl = url.getProtocol() + "://" + url.getAuthority() + req.getContextPath() + "/";
     String afterAuthorizationUrl = baseUrl + "accessToken";
     String afterLoginUrl = baseUrl;
 

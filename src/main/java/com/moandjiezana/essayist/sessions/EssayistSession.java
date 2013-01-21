@@ -1,5 +1,6 @@
 package com.moandjiezana.essayist.sessions;
 
+import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.essayist.User;
 import com.moandjiezana.tent.essayist.auth.AuthResult;
 
@@ -10,6 +11,13 @@ import javax.servlet.http.HttpSession;
 public class EssayistSession {
   private HttpSession httpSession;
   private HttpServletRequest request;
+
+  private static User GUEST = new User() {
+    @Override
+    public boolean owns(Post post) {
+      return false;
+    };
+  };
 
   @Inject
   public EssayistSession(HttpSession httpSession, HttpServletRequest request) {
@@ -22,7 +30,8 @@ public class EssayistSession {
   }
 
   public User getUser() {
-    return (User) httpSession.getAttribute(User.class.getName());
+    User user = (User) httpSession.getAttribute(User.class.getName());
+    return user != null ? user : GUEST;
   }
 
   public void setUser(User user) {

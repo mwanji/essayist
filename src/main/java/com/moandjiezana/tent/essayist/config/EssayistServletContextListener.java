@@ -11,7 +11,6 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
 import com.moandjiezana.tent.essayist.EssayActionServlet;
-import com.moandjiezana.tent.essayist.EssayServlet;
 import com.moandjiezana.tent.essayist.EssaysServlet;
 import com.moandjiezana.tent.essayist.PreviewServlet;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
@@ -92,7 +91,7 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serve("/preview").with(PreviewServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
-        serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
+//        serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
       }
     }, new AbstractModule() {
       @Override

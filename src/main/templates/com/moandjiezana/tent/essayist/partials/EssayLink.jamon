@@ -30,13 +30,13 @@ String formattedPublicationDate = dateFormat.format(new Date(essay.getPublishedA
 		</div>
 		</%if>
 		<div class="span10">
-			<h3><a href="<% jamonContext.routes.essay(essay) %>" data-essay="link"><% Entities.essayTitle(essayContent) %></a></h3>
-			<%if showProfile %><a href="<% jamonContext.contextPath %>/<% entityForUrl %>/essays"><% entityName %></a></%if> <% formattedPublicationDate %>
+			<h3><a href="<% jamonContext.routes.essayPath(essay) %>" data-essay="link"><% Entities.essayTitle(essayContent) %></a></h3>
+			<%if showProfile %><a href="<% jamonContext.routes.essaysPath(essay.getEntity()) %>"><% entityName %></a></%if> <% formattedPublicationDate %>
 			<p class="excerpt"><% essayContent.getExcerpt() %></p>
 			<%if jamonContext.getCurrentUser().owns(essay) %>
 			<div>
 				<a href="<% jamonContext.contextPath %>/write/<% essay.getId() %>" class="btn"><i class="icon-pencil"></i> Edit</a>
-				<form action="<% jamonContext.routes.essay(essay) %>" method="post" style="display: inline">
+				<form action="<% jamonContext.routes.essayPath(essay) %>" method="post" style="display: inline">
 					<button class="btn btn-danger"><i class="icon-trash icon-white"></i> Delete</button>
 					<input type="hidden" name="_method" value="DELETE" />
 				</form>

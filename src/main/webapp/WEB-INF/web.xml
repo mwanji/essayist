@@ -6,24 +6,24 @@
     <listener-class>com.moandjiezana.essayist.config.EssayistMerfServletContextListener</listener-class>
   </listener>
 
-  <listener>
-    <listener-class>com.moandjiezana.tent.essayist.config.EssayistServletContextListener</listener-class>
-  </listener>
+<!--   <listener> -->
+<!--     <listener-class>com.moandjiezana.tent.essayist.config.EssayistServletContextListener</listener-class> -->
+<!--   </listener> -->
 
   <filter>
     <filter-name>Utf8Filter</filter-name>
     <filter-class>com.moandjiezana.tent.essayist.config.Utf8Filter</filter-class>
   </filter>
 
-  <filter-mapping>
-    <filter-name>Utf8Filter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
   <filter>
     <filter-name>HttpMethodFilter</filter-name>
     <filter-class>com.moandjiezana.tent.essayist.config.HttpMethodFilter</filter-class>
   </filter>
+
+  <filter-mapping>
+    <filter-name>Utf8Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <filter-mapping>
     <filter-name>HttpMethodFilter</filter-name>
@@ -32,16 +32,6 @@
 
   <filter-mapping>
     <filter-name>MerfFilter</filter-name>
-    <url-pattern>/merf/*</url-pattern>
-  </filter-mapping>
-
-  <filter>
-    <filter-name>guiceFilter</filter-name>
-    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>guiceFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 </web-app>
