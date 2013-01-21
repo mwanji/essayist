@@ -37,4 +37,9 @@ public class EssayistConfig {
         String defaultEntity = properties.getProperty(DEFAULT_ENTITY);
         return Option.fromString(defaultEntity);
     }
+
+    public boolean isDefaultEntity(String entity){
+        Option<String> defaultEntity = getDefaultEntity();
+        return defaultEntity.isSome() && defaultEntity.some().equals(entity);
+    }
 }

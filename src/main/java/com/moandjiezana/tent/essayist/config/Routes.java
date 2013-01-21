@@ -15,10 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 public class Routes {
 
   private final HttpServletRequest req;
+  private final EssayistConfig config;
 
-  @Inject
-  public Routes(HttpServletRequest req) {
+    @Inject
+  public Routes(HttpServletRequest req, EssayistConfig config) {
     this.req = req;
+    this.config = config;
   }
   
   public String asset(String asset) {
@@ -44,7 +46,22 @@ public class Routes {
   }
   
   public String essay(Post essay) {
-    return req.getContextPath() + "/" + Entities.getForUrl(essay.getEntity()) + "/essay/" + essay.getId();
+      return getEssaysUrl(essay);
+    //return req.getContextPath() + "/" + Entities.getForUrl(essay.getEntity()) + "/essay/" + essay.getId();
+  }
+
+  private String getEssaysUrl(Post essay){
+        StringBuilder builder = new StringBuilder(req.getContextPath());
+
+        if(!config.isDefaultEntity(essay.getEntity())){
+            builder.append("/");
+            builder.append(Entities.getForUrl(essay.getEntity()));
+        }
+
+        builder.append("/essay/");
+      builder.append(essay.getId());
+
+        return builder.toString();
   }
   
   public String comment(Post essay) {

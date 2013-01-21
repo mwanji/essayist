@@ -23,15 +23,18 @@ public class JamonContext {
   public final String currentUrl;
   private final EssayistSession session;
   private final EssayistConfig config;
+  private final EntityLookup entityLookup;
   
   @Inject
   public JamonContext(EssayistSession session, TextTransformation textTransformation,
-                      Routes routes, HttpServletRequest req, EssayistConfig config) {
+                      Routes routes, HttpServletRequest req, EssayistConfig config,
+                      EntityLookup entityLookup) {
     this.session = session;
     this.textTransformation = textTransformation;
     this.routes = routes;
     this.req = req;
     this.config = config;
+    this.entityLookup = entityLookup;
     this.contextPath = req.getContextPath();
     this.currentUrl = req.getRequestURL().toString();
   }
@@ -50,6 +53,19 @@ public class JamonContext {
   
   public String contextPath() {
     return contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
+  }
+
+  public String getEssaysUrl(String entity){
+      StringBuilder builder = new StringBuilder(contextPath());
+
+      if(!config.isDefaultEntity(entity)){
+          builder.append("/");
+          builder.append(entity);
+      }
+
+      builder.append("/essays");
+
+      return builder.toString();
   }
   
   public String getLastPathSegment() {

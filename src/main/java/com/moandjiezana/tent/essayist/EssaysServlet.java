@@ -6,7 +6,6 @@ import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.config.EntityLookup;
-import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.text.TextTransformation;
 import fj.data.Option;
 

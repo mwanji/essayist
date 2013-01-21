@@ -17,7 +17,7 @@ final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
 final EssayContent essayContent = essay.getContentAs(EssayContent.class);
 String entityForUrl = Entities.getForUrl(essay.getEntity());
 String entityName = Entities.getName(profile, essay.getEntity());
-String authorPageUrl = jamonContext.contextPath + "/" + entityForUrl + "/essays";
+String authorPageUrl = jamonContext.getEssaysUrl(essay.getEntity());
 String formattedPublicationDate = dateFormat.format(new Date(essay.getPublishedAt() * 1000));
 </%java>
 <div data-essay="container" data-essay-author="<% entityForUrl %>" data-essay-id="<% essay.getId() %>">
