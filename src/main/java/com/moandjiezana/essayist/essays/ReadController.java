@@ -2,6 +2,7 @@ package com.moandjiezana.essayist.essays;
 
 import co.mewf.merf.Response;
 import co.mewf.merf.http.GET;
+import co.mewf.merf.http.Responses;
 import co.mewf.merf.http.Url;
 
 import com.moandjiezana.essayist.auth.Authenticated;
@@ -11,6 +12,7 @@ import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.essayist.users.Entities;
 import com.moandjiezana.essayist.users.User;
 import com.moandjiezana.essayist.users.Users;
+import com.moandjiezana.essayist.views.Routes;
 import com.moandjiezana.essayist.views.Templates;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
@@ -31,15 +33,17 @@ public class ReadController {
 
   private final Users users;
   private final EssayistSession session;
+  private final Routes routes;
   private final Csrf csrf;
   private final Templates templates;
   private final HttpServletRequest req;
   private final Essays essays;
 
   @Inject
-  public ReadController(Users users, Essays essays, EssayistSession session, Csrf csrf, Templates templates, HttpServletRequest req) {
+  public ReadController(Users users, Essays essays, Routes routes, EssayistSession session, Csrf csrf, Templates templates, HttpServletRequest req) {
     this.users = users;
     this.essays = essays;
+    this.routes = routes;
     this.session = session;
     this.csrf = csrf;
     this.templates = templates;
@@ -136,6 +140,11 @@ public class ReadController {
     }
 
     return new JamonResponse(templates.read().setEssays(essays).makeRenderer(profiles));
+  }
+
+  @GET @Url("/search/author")
+  public Response findAuthor() {
+    return Responses.redirect(routes.essays(Entities.getForUrl(req.getParameter("entity"))));
   }
 
   private TentClient getTentClientFromSessionOrUrl(String entity) {

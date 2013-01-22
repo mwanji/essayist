@@ -63,8 +63,12 @@ public class Routes {
     return req.getContextPath() + essay(essay);
   }
 
+  public String essays(String entity) {
+    return "/" + Entities.getForUrl(entity) + "/essays";
+  }
+
   public String essaysPath(String entity) {
-    return req.getContextPath() + "/" + Entities.getForUrl(entity) + "/essays";
+    return req.getContextPath() + essays(entity);
   }
 
   public String comment(Post essay) {

@@ -19,7 +19,7 @@
 			</p>
 		</div>
 		<div class="span6">
-			<form action="<% jamonContext.contextPath %>/read" method="post" class="form-inline">
+			<form action="<% jamonContext.contextPath %>/search/author" method="get" class="form-inline">
 				<div>
 					<input type="url" name="entity" required="required" placeholder="https://another.tent.address" />
 					<input type="submit" value="read" class="btn" />
@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<%else>
-		<form action="<% jamonContext.contextPath %>/read" method="post" class="form-inline">
+		<form action="<% jamonContext.contextPath %>/search/author" method="get" class="form-inline">
 			<div>
 				<input type="url" name="entity" required="required" placeholder="https://another.tent.address" />
 				<input type="submit" value="read" class="btn" />
