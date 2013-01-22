@@ -12,8 +12,10 @@ import com.moandjiezana.tent.client.posts.content.Repost;
 import com.moandjiezana.tent.client.posts.content.StatusContent;
 import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
+import com.moandjiezana.tent.essayist.config.EntityLookup;
 import com.moandjiezana.tent.essayist.config.Routes;
 import com.moandjiezana.tent.essayist.tent.Entities;
+import fj.data.Option;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,13 +36,18 @@ public class EssayActionServlet extends HttpServlet {
   private final Provider<Routes> routes;
   private Users users;
   private Templates templates;
+  private final EntityLookup entityLookup;
 
-  @Inject
-  public EssayActionServlet(Users users, Provider<Routes> routes, Provider<EssayistSession> sessions, Templates templates) {
+
+    @Inject
+  public EssayActionServlet(Users users, Provider<Routes> routes,
+                            Provider<EssayistSession> sessions,
+                            Templates templates, EntityLookup entityLookup) {
     this.users = users;
     this.routes = routes;
     this.sessions = sessions;
     this.templates = templates;
+    this.entityLookup = entityLookup;
   }
   
   @Override
@@ -137,9 +144,12 @@ public class EssayActionServlet extends HttpServlet {
   
   private String[] getEntityAndIdAndAction(HttpServletRequest req) {
     String[] parts = req.getPathInfo().split("/");
-    String authorEntity = Entities.expandFromUrl(parts[0]);
-    String essayId = parts[2];
-    String action = parts[3];
+    Option<String> optionalEntity = entityLookup.getEntity(req);
+    // TODO 404 if not found
+
+    String authorEntity = optionalEntity.some();
+    String essayId = parts[parts.length-2];
+    String action = parts[parts.length-1];
     
     return new String[] { authorEntity, essayId, action };
   }

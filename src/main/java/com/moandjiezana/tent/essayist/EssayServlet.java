@@ -5,9 +5,11 @@ import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.users.Profile;
+import com.moandjiezana.tent.essayist.config.EntityLookup;
 import com.moandjiezana.tent.essayist.security.Csrf;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
+import fj.data.Option;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,21 +29,30 @@ public class EssayServlet extends HttpServlet {
   private final Users users;
   private final Provider<EssayistSession> sessions;
   private final Csrf csrf;
+    private final EntityLookup entityLookup;
+
 
   @Inject
-  public EssayServlet(Users users, Provider<EssayistSession> sessions, Templates templates, Csrf csrf) {
+  public EssayServlet(Users users, Provider<EssayistSession> sessions,
+                      Templates templates, Csrf csrf, EntityLookup entityLookup) {
     this.users = users;
     this.sessions = sessions;
     this.templates = templates;
     this.csrf = csrf;
+    this.entityLookup = entityLookup;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Option<String> optionalEntity = entityLookup.getEntity(req);
+    // TODO 404 if not found
+    String authorEntity = optionalEntity.some();
+
+
     String[] parts = req.getPathInfo().split("/essay/");
-    String authorEntity = Entities.expandFromUrl(parts[0]);
-    String essayId = parts[1];
-    
+    String essayId = parts[parts.length - 1];
+
+
     User author = users.getByEntityOrNull(authorEntity);
 
     TentClient tentClient;

@@ -98,18 +98,23 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
 
         }
 
-         serve("/login").with(LoginServlet.class);
+        serve("/login").with(LoginServlet.class);
         serve("/logout").with(LogoutServlet.class);
         serve("/accessToken").with(AccessTokenServlet.class);
         serve("/read").with(MyFeedServlet.class);
         serve("/global").with(GlobalFeedServlet.class);
         serve("/write", "/write/*").with(WriteServlet.class);
         serve("/preview").with(PreviewServlet.class);
-        serveRegex("/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essays").with(EssaysServlet.class);
         serveRegex("/(.*)/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
         serveRegex("/(.*)/essay/(.*)").with(EssayServlet.class);
-        filter("/*").through(Utf8Filter.class);
+
+          // TODO update the regex above
+        serveRegex("/essays").with(EssaysServlet.class);
+        serveRegex("/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
+        serveRegex("/essay/(.*)").with(EssayServlet.class);
+
+          filter("/*").through(Utf8Filter.class);
         filter("/*").through(HttpMethodFilter.class);
       }
     }, new AbstractModule() {
