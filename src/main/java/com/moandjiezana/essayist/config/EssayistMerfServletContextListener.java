@@ -10,7 +10,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
-import com.moandjiezana.essayist.feeds.FeedController;
 import com.moandjiezana.essayist.sessions.SessionController;
 import com.moandjiezana.essayist.users.ReactionsController;
 import com.moandjiezana.essayist.users.ReadEssayController;
@@ -100,7 +99,7 @@ public class EssayistMerfServletContextListener extends MerfServletContextListen
       }
     };
 
-    return new GuiceRouter(module).add(SessionController.class, FeedController.class, WritePostController.class, ReadEssayController.class, ReactionsController.class);
+    return new GuiceRouter(module).add(SessionController.class, WritePostController.class, ReadEssayController.class, ReactionsController.class);
   }
 
   @Override

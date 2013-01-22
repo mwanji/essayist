@@ -17,6 +17,11 @@ public class EssayistSession {
     public boolean owns(Post post) {
       return false;
     };
+
+    @Override
+    public boolean isEntity(String entity) {
+      return false;
+    };
   };
 
   @Inject

@@ -10,19 +10,19 @@ public class User {
   private RegistrationResponse registration;
   private AccessToken accessToken;
   private Long id;
-  
+
   public User() {}
-  
+
   public User(String entity) {
     this.profile = new Profile();
     this.profile.setCore(new Profile.Core());
     this.profile.getCore().setEntity(entity);
   }
-  
+
   public User(Profile profile) {
     this(null, profile, null, null);
   }
-  
+
   public User(Profile profile, AccessToken accessToken) {
     this(null, profile, null, accessToken);
   }
@@ -37,7 +37,7 @@ public class User {
     this.registration = registration;
     this.accessToken = accessToken;
   }
-  
+
   public boolean owns(Post post) {
     return profile.getCore().getEntity().equals(post.getEntity());
   }
@@ -45,7 +45,7 @@ public class User {
   public Long getId() {
     return id;
   }
-  
+
   public void setId(Long id) {
     this.id = id;
   }
@@ -53,7 +53,7 @@ public class User {
   public Profile getProfile() {
     return profile;
   }
-  
+
   public void setProfile(Profile profile) {
     this.profile = profile;
   }
@@ -61,7 +61,7 @@ public class User {
   public AccessToken getAccessToken() {
     return accessToken;
   }
-  
+
   public void setAccessToken(AccessToken accessToken) {
     this.accessToken = accessToken;
   }
@@ -69,8 +69,12 @@ public class User {
   public RegistrationResponse getRegistration() {
     return registration;
   }
-  
+
   public void setRegistration(RegistrationResponse registration) {
     this.registration = registration;
+  }
+
+  public boolean isEntity(String entity) {
+    return profile.getCore().getEntity().equals(entity);
   }
 }
