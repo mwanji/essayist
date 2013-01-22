@@ -150,7 +150,7 @@ public class EssayActionServlet extends HttpServlet {
   }
   
   private String[] getEntityAndIdAndAction(HttpServletRequest req) {
-    String[] parts = req.getPathInfo().split("/");
+    String[] parts = entityLookup.getRequestPath(req).split("/");
     Option<String> optionalEntity = entityLookup.getEntity(req);
     // TODO 404 if not found
 

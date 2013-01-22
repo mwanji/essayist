@@ -4,6 +4,7 @@ import com.moandjiezana.tent.essayist.User;
 import com.moandjiezana.tent.essayist.user.UserService;
 import fj.data.Option;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,11 +40,17 @@ public class EntityLookupTest {
 
     }
 
+    private void setPath(HttpServletRequest request, String path){
+        when(request.getPathInfo()).thenReturn(path);
+        when(request.getRequestURI()).thenReturn(path);
+        when(request.getContextPath()).thenReturn("");
+    }
+
     @Test
     public void should_return_none_if_nothing_is_configured(){
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("/");
+        setPath(request, "/");
 
         Option<String> profile = lookup.getEntity(request);
 
@@ -55,7 +62,7 @@ public class EntityLookupTest {
         properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("/");
+        setPath(request, "/");
 
         Option<String> profile = lookup.getEntity(request);
         assertTrue(profile.isNone());
@@ -65,7 +72,8 @@ public class EntityLookupTest {
     public void should_return_some_if_entity_in_path(){
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+        setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+
 
         Option<String> profile = lookup.getEntity(request);
 
@@ -77,7 +85,7 @@ public class EntityLookupTest {
         properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+        setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
 
         Option<String> profile = lookup.getEntity(request);
 
@@ -119,7 +127,8 @@ public class EntityLookupTest {
         properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("");
+        setPath(request, "/");
+
 
         Option<String> profile = lookup.getEntity(request);
         assertEquals("http://pjesi.com", profile.some());
@@ -133,6 +142,7 @@ public class EntityLookupTest {
         properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
+        setPath(request, "/");
 
         Option<String> profile = lookup.getEntity(request);
         assertEquals("http://pjesi.com", profile.some());
@@ -146,7 +156,7 @@ public class EntityLookupTest {
         properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
-        when(request.getPathInfo()).thenReturn("essays");
+        setPath(request, "/essays");
 
 
         Option<String> profile = lookup.getEntity(request);
@@ -158,10 +168,12 @@ public class EntityLookupTest {
     @Test
     public void should_parse_essay_url_for_root(){
 
+        properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
+
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
 
-        when(request.getPathInfo()).thenReturn("essay/IpGExQrfkZkKOdMCb4nLHQ");
+        setPath(request, "/essay/IpGExQrfkZkKOdMCb4nLHQ");
 
 
         TentRequest tent = lookup.getTentRequest(request).some();
@@ -173,10 +185,12 @@ public class EntityLookupTest {
     @Test
     public void should_parse_essay_url_for_root_with_action(){
 
+        properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
+
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
 
-        when(request.getPathInfo()).thenReturn("essay/IpGExQrfkZkKOdMCb4nLHQ/favorite");
+        setPath(request, "/essay/IpGExQrfkZkKOdMCb4nLHQ/favorite");
 
 
         TentRequest tent = lookup.getTentRequest(request).some();
@@ -194,7 +208,7 @@ public class EntityLookupTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
 
-        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+        setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
 
 
         TentRequest tent = lookup.getTentRequest(request).some();
@@ -213,7 +227,7 @@ public class EntityLookupTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("localhost");
 
-        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A/favorite");
+        setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A/favorite");
 
 
         TentRequest tent = lookup.getTentRequest(request).some();
@@ -224,6 +238,7 @@ public class EntityLookupTest {
     }
 
     @Test
+    @Ignore // irrelevant when using requestURI
     public void should_parse_essay_url_for_short_pathinfo(){
 
         properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
@@ -232,8 +247,7 @@ public class EntityLookupTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("pjesi.com");
 
-        when(request.getPathInfo()).thenReturn("2QpItzoWxwS3OxMd4Mjg1A");
-
+        setPath(request, "/2QpItzoWxwS3OxMd4Mjg1A");
 
         TentRequest tent = lookup.getTentRequest(request).some();
         assertEquals("http://pjesi.com", tent.getEntity());

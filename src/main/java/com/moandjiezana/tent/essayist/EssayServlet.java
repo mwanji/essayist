@@ -96,7 +96,7 @@ public class EssayServlet extends HttpServlet {
   
   @Override
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String[] parts = req.getPathInfo().split("/essay/");
+    String[] parts = entityLookup.getRequestPath(req).split("/essay/");
     String authorEntity = parts[0];
     String fullAuthorEntity = Entities.expandFromUrl(authorEntity);
     
