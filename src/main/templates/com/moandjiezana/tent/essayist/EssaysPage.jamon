@@ -2,8 +2,7 @@
 java.util.*;
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.users.Profile;
-com.moandjiezana.tent.client.posts.content.*;
-com.moandjiezana.tent.essayist.tent.*;
+com.moandjiezana.essayist.users.*;
 com.google.common.base.Strings;
 </%import>
 <%args>

@@ -2,9 +2,7 @@
 com.moandjiezana.tent.client.users.Profile;
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.posts.content.EssayContent;
-com.moandjiezana.tent.client.posts.content.StatusContent;
-com.moandjiezana.tent.essayist.tent.*;
-com.moandjiezana.essayist.posts.*;
+com.moandjiezana.essayist.users.*;
 java.text.SimpleDateFormat;
 java.util.*;
 </%import>
@@ -17,7 +15,6 @@ List<Post> reactions = null;
 <%java>
 final EssayContent content = essay.getContentAs(EssayContent.class);
 final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
-final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd MMMM yyyy HH:mm ZZZZ");
 </%java>
 <&| Layout; active = active; title = Entities.essayTitle(content) &>
 	<& partials/Essay; essay=essay; entityForUrl=Entities.getForUrl(essay.getEntity()); entityName=Entities.getName(profile); essayId=essay.getId(); formattedPublicationDate=dateFormat.format(new Date(essay.getPublishedAt() * 1000)); display=true; &> 

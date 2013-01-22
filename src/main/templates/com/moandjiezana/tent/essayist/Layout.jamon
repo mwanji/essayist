@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 
 <%import>
-com.moandjiezana.tent.essayist.tent.*;
-com.moandjiezana.tent.essayist.config.*;
+com.moandjiezana.essayist.users.*;
 </%import>
 <%frag body/>
 <%args>

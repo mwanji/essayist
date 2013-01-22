@@ -1,8 +1,8 @@
 <%import>
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.posts.content.*;
-com.moandjiezana.essayist.posts.*;
-com.moandjiezana.tent.essayist.tent.*;
+com.moandjiezana.essayist.tent.posts.*;
+com.moandjiezana.essayist.users.*;
 java.util.*;
 java.text.SimpleDateFormat;
 </%import>

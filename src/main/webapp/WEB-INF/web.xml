@@ -3,21 +3,17 @@
   version="3.0">
 
   <listener>
-    <listener-class>com.moandjiezana.essayist.config.EssayistMerfServletContextListener</listener-class>
+    <listener-class>com.moandjiezana.essayist.config.EssayistServletContextListener</listener-class>
   </listener>
-
-<!--   <listener> -->
-<!--     <listener-class>com.moandjiezana.tent.essayist.config.EssayistServletContextListener</listener-class> -->
-<!--   </listener> -->
 
   <filter>
     <filter-name>Utf8Filter</filter-name>
-    <filter-class>com.moandjiezana.tent.essayist.config.Utf8Filter</filter-class>
+    <filter-class>com.moandjiezana.essayist.config.Utf8Filter</filter-class>
   </filter>
 
   <filter>
     <filter-name>HttpMethodFilter</filter-name>
-    <filter-class>com.moandjiezana.tent.essayist.config.HttpMethodFilter</filter-class>
+    <filter-class>com.moandjiezana.essayist.config.HttpMethodFilter</filter-class>
   </filter>
 
   <filter-mapping>

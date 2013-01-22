@@ -1,8 +1,8 @@
 package com.moandjiezana.essayist.sessions;
 
+import com.moandjiezana.essayist.auth.AuthResult;
+import com.moandjiezana.essayist.users.User;
 import com.moandjiezana.tent.client.posts.Post;
-import com.moandjiezana.tent.essayist.User;
-import com.moandjiezana.tent.essayist.auth.AuthResult;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;

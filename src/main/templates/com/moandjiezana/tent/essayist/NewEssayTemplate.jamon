@@ -1,9 +1,7 @@
 <%import>
-java.util.*;
 com.moandjiezana.tent.client.posts.*;
 com.moandjiezana.tent.client.posts.content.*;
-com.moandjiezana.tent.essayist.tent.*;
-com.moandjiezana.essayist.posts.*;
+com.moandjiezana.essayist.tent.posts.*;
 </%import>
 <%args>
 Post essay = null;

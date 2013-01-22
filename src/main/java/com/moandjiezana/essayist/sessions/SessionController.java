@@ -6,10 +6,14 @@ import co.mewf.merf.http.POST;
 import co.mewf.merf.http.Responses;
 import co.mewf.merf.http.Url;
 
+import com.moandjiezana.essayist.auth.AuthResult;
 import com.moandjiezana.essayist.merf.JamonResponse;
-import com.moandjiezana.essayist.posts.Bookmark;
-import com.moandjiezana.essayist.posts.EssayistMetadataContent;
-import com.moandjiezana.essayist.posts.Favorite;
+import com.moandjiezana.essayist.tent.posts.Bookmark;
+import com.moandjiezana.essayist.tent.posts.EssayistMetadataContent;
+import com.moandjiezana.essayist.tent.posts.Favorite;
+import com.moandjiezana.essayist.users.User;
+import com.moandjiezana.essayist.users.Users;
+import com.moandjiezana.essayist.views.Templates;
 import com.moandjiezana.tent.client.TentClient;
 import com.moandjiezana.tent.client.apps.App;
 import com.moandjiezana.tent.client.apps.AuthorizationRequest;
@@ -17,10 +21,6 @@ import com.moandjiezana.tent.client.apps.RegistrationRequest;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.users.Profile;
-import com.moandjiezana.tent.essayist.Templates;
-import com.moandjiezana.tent.essayist.User;
-import com.moandjiezana.tent.essayist.Users;
-import com.moandjiezana.tent.essayist.auth.AuthResult;
 import com.moandjiezana.tent.oauth.AccessToken;
 
 import java.net.MalformedURLException;
