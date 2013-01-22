@@ -12,6 +12,7 @@ import java.util.Properties;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -153,5 +154,74 @@ public class EntityLookupTest {
 
 
     }
+
+    @Test
+    public void should_parse_essay_url_for_root(){
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+
+        when(request.getPathInfo()).thenReturn("essay/IpGExQrfkZkKOdMCb4nLHQ");
+
+
+        TentRequest tent = lookup.getTentRequest(request).some();
+        assertEquals("IpGExQrfkZkKOdMCb4nLHQ", tent.getPost());
+        assertNull(tent.getAction());
+
+    }
+
+    @Test
+    public void should_parse_essay_url_for_root_with_action(){
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+
+        when(request.getPathInfo()).thenReturn("essay/IpGExQrfkZkKOdMCb4nLHQ/favorite");
+
+
+        TentRequest tent = lookup.getTentRequest(request).some();
+        assertEquals("IpGExQrfkZkKOdMCb4nLHQ", tent.getPost());
+        assertEquals("favorite", tent.getAction());
+
+    }
+
+    @Test
+    public void should_parse_essay_url_for_entity(){
+
+        properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
+
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+
+        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
+
+
+        TentRequest tent = lookup.getTentRequest(request).some();
+        assertEquals("https://uns0b.tent.is", tent.getEntity());
+        assertEquals("2QpItzoWxwS3OxMd4Mjg1A", tent.getPost());
+        assertNull(tent.getAction());
+
+    }
+
+    @Test
+    public void should_parse_essay_url_for_entity_with_action(){
+
+        properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
+
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("localhost");
+
+        when(request.getPathInfo()).thenReturn("uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A/favorite");
+
+
+        TentRequest tent = lookup.getTentRequest(request).some();
+        assertEquals("https://uns0b.tent.is", tent.getEntity());
+        assertEquals("2QpItzoWxwS3OxMd4Mjg1A", tent.getPost());
+        assertEquals("favorite", tent.getAction());
+
+    }
+
 
 }

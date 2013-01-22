@@ -11,6 +11,9 @@ import com.moandjiezana.tent.client.users.Profile;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: pjesi
@@ -19,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class EntityLookup {
 
-
     private EssayistConfig config;
     private UserService userService;
 
@@ -27,6 +29,32 @@ public class EntityLookup {
     public EntityLookup(EssayistConfig config, UserService userService) {
         this.config = config;
         this.userService = userService;
+    }
+
+    public Option<TentRequest> getTentRequest(HttpServletRequest request){
+        Option<String> entity = getEntity(request);
+        if(entity.isNone()){
+            return none();
+        }
+
+        TentRequest.Builder builder = new TentRequest.Builder();
+        builder.entity(entity.some());
+
+        StringTokenizer st = new StringTokenizer(request.getPathInfo(), "/");
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if(token.equals("essay")){
+                break;
+            }
+        }
+        if(st.hasMoreTokens()){
+            builder.post(st.nextToken());
+        }
+        if(st.hasMoreTokens()){
+            builder.action(st.nextToken());
+        }
+        return some(builder.build());
+
     }
 
     public Option<String> getEntity(HttpServletRequest request){
