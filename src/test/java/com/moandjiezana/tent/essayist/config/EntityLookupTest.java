@@ -223,5 +223,24 @@ public class EntityLookupTest {
 
     }
 
+    @Test
+    public void should_parse_essay_url_for_short_pathinfo(){
+
+        properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
+
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getServerName()).thenReturn("pjesi.com");
+
+        when(request.getPathInfo()).thenReturn("2QpItzoWxwS3OxMd4Mjg1A");
+
+
+        TentRequest tent = lookup.getTentRequest(request).some();
+        assertEquals("http://pjesi.com", tent.getEntity());
+        assertEquals("2QpItzoWxwS3OxMd4Mjg1A", tent.getPost());
+
+    }
+
+
 
 }

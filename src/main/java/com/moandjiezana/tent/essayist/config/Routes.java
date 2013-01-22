@@ -59,7 +59,7 @@ public class Routes {
         }
 
         builder.append("/essay/");
-      builder.append(essay.getId());
+        builder.append(essay.getId());
 
         return builder.toString();
   }

@@ -6,6 +6,7 @@ import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.users.Profile;
 import com.moandjiezana.tent.essayist.config.EntityLookup;
+import com.moandjiezana.tent.essayist.config.TentRequest;
 import com.moandjiezana.tent.essayist.security.Csrf;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
@@ -29,7 +30,7 @@ public class EssayServlet extends HttpServlet {
   private final Users users;
   private final Provider<EssayistSession> sessions;
   private final Csrf csrf;
-    private final EntityLookup entityLookup;
+  private final EntityLookup entityLookup;
 
 
   @Inject
@@ -44,13 +45,14 @@ public class EssayServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    Option<String> optionalEntity = entityLookup.getEntity(req);
-    // TODO 404 if not found
-    String authorEntity = optionalEntity.some();
+
+    TentRequest tentRequest = entityLookup.getTentRequest(req)
+            .some(); // TODO 404 if not found
 
 
-    String[] parts = req.getPathInfo().split("/essay/");
-    String essayId = parts[parts.length - 1];
+
+    String authorEntity = tentRequest.getEntity();
+    String essayId = tentRequest.getPost();
 
 
     User author = users.getByEntityOrNull(authorEntity);

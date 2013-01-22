@@ -14,6 +14,7 @@ import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.config.EntityLookup;
 import com.moandjiezana.tent.essayist.config.Routes;
+import com.moandjiezana.tent.essayist.config.TentRequest;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import fj.data.Option;
 
@@ -51,11 +52,17 @@ public class EssayActionServlet extends HttpServlet {
   }
   
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String[] urlParts = getEntityAndIdAndAction(req);
-    String authorEntity = req.getParameter("entity") != null ? req.getParameter("entity") : urlParts[0];
-    String postId = urlParts[1];
-    String action = urlParts[2];
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+          throws ServletException, IOException {
+
+    TentRequest tentRequest = entityLookup.getTentRequest(req)
+              .some(); // TODO 404 if not found
+
+    String authorEntity = req.getParameter("entity") != null ? req.getParameter("entity") :
+            tentRequest.getEntity();
+
+    String postId = tentRequest.getPost();
+    String action = tentRequest.getAction();
 
     
     if ("user".equals(action)) {

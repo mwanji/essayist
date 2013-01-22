@@ -41,14 +41,17 @@ public class EntityLookup {
         builder.entity(entity.some());
 
         StringTokenizer st = new StringTokenizer(request.getPathInfo(), "/");
+        String token = null;
         while (st.hasMoreTokens()) {
-            String token = st.nextToken();
+            token = st.nextToken();
             if(token.equals("essay")){
                 break;
             }
         }
         if(st.hasMoreTokens()){
             builder.post(st.nextToken());
+        } else {
+            builder.post(token);
         }
         if(st.hasMoreTokens()){
             builder.action(st.nextToken());
