@@ -9,6 +9,7 @@ import co.mewf.merf.http.Responses;
 import co.mewf.merf.http.Url;
 
 import com.google.common.base.Throwables;
+import com.google.common.io.CharStreams;
 import com.moandjiezana.essayist.merf.JamonResponse;
 import com.moandjiezana.essayist.posts.EssayistMetadataContent;
 import com.moandjiezana.essayist.sessions.EssayistSession;
@@ -143,6 +144,19 @@ public class WritePostController {
     }
 
     return Responses.redirect("/" + Entities.getForUrl(entity) + "/essays");
+  }
+
+  @POST @Url("/preview")
+  public Response preview() throws IOException {
+    String body = CharStreams.toString(req.getReader());
+    final String essay = textTransformation.transformEssay(body);
+
+    return new Response() {
+      @Override
+      public void write(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.getWriter().write(essay);
+      }
+    };
   }
 
   private Post newPost() {

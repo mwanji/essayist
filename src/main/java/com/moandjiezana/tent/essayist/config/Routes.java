@@ -68,6 +68,6 @@ public class Routes {
   }
 
   public String comment(Post essay) {
-    return essay(essay) + "/status";
+    return essayPath(essay) + "/status";
   }
 }
