@@ -53,8 +53,9 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
     } catch (Exception e) {
       LOGGER.warn("Could not find essayist.properties in root folder. Using essayist-defaults.properties");
     }
-    
+
     PoolProperties poolProperties = new PoolProperties();
+
     poolProperties.setUsername(properties.getProperty("db.username"));
     poolProperties.setPassword(properties.getProperty("db.password"));
     poolProperties.setUrl(properties.getProperty("db.url"));
@@ -113,6 +114,10 @@ public class EssayistServletContextListener extends GuiceServletContextListener 
         serveRegex("/essays").with(EssaysServlet.class);
         serveRegex("/essay/(.*)/(status|favorite|bookmark|repost|reactions|user)").with(EssayActionServlet.class);
         serveRegex("/essay/(.*)").with(EssayServlet.class);
+
+          serveRegex("/settings").with(SettingsServlet.class);
+
+
 
           filter("/*").through(Utf8Filter.class);
         filter("/*").through(HttpMethodFilter.class);

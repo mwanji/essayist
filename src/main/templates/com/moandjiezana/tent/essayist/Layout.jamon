@@ -91,6 +91,8 @@ String url;
 						<& navItem: "Written"; Entities.getForUrl(jamonContext.getSessionProfile().getCore().getEntity()) + "/essays" &>
 		        	</ul>
 					<ul class="nav pull-right">
+						<& navItem: "Settings"; "settings"; &>
+
 						<& navItem: "Log out"; "logout"; &>
 		        	</ul>
 					<%else>

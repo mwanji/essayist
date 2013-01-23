@@ -1,0 +1,35 @@
+<%import>
+java.util.*;
+com.moandjiezana.tent.client.posts.*;
+com.moandjiezana.tent.client.posts.content.*;
+com.moandjiezana.tent.essayist.tent.*;
+com.moandjiezana.essayist.posts.*;
+</%import>
+<%args>
+String domain;
+</%args>
+<%java>
+
+</%java>
+
+<&| Layout &>
+<div class="row">
+	<div class="span12">
+		<form action="/settings" method="post" class="form-horizontal">
+			<div class="control-group">
+				<label class="control-label">
+					Domain
+				</label>
+				<div class="controls">
+					<input type="text" name="domain" value="<%if domain != null %><% domain %></%if>" class="span8" />
+				</div>
+			</div>
+
+			<div class="form-actions">
+                <button type="submit" class="btn btn-success"><i class="icon-globe icon-white"></i> Save</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+</&>

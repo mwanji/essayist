@@ -36,7 +36,7 @@ public class AuthenticationInterceptor implements MethodInterceptor {
   private Void refuse(MethodInvocation invocation) throws IOException {
     HttpServletRequest request = (HttpServletRequest) invocation.getArguments()[0];
     HttpServletResponse response = (HttpServletResponse) invocation.getArguments()[1];
-    response.sendRedirect(request.getContextPath());
+    response.sendRedirect(request.getContextPath() + "/login");
 
     return null;
   }

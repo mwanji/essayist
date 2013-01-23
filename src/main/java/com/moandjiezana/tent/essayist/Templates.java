@@ -33,6 +33,10 @@ public class Templates {
     return new NewEssayTemplate().setJamonContext(jamonContext.get());
   }
 
+    public SettingsPage settings() {
+        return new SettingsPage().setJamonContext(jamonContext.get());
+    }
+
   public ReadPage read() {
     return new ReadPage().setJamonContext(jamonContext.get());
   }
