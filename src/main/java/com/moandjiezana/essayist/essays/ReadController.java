@@ -98,12 +98,11 @@ public class ReadController {
   public Response getEssays(String authorEntity) {
     String fullAuthorEntity = Entities.expandFromUrl(authorEntity);
     TentClient tentClient = getTentClientFromSessionOrUrl(fullAuthorEntity);
-
+    Profile profile = tentClient.getProfile();
     String active = session.getUser().isEntity(fullAuthorEntity) ? "Written" : "My Feed";
-
     List<Post> essays = tentClient.getPosts(new PostQuery().postTypes(Post.Types.essay("v0.1.0")).entity(fullAuthorEntity));
 
-    return new JamonResponse(templates.essays(active).makeRenderer(essays, tentClient.getProfile()));
+    return new JamonResponse(templates.essays(active).setTitle(Entities.getName(profile)).makeRenderer(essays, profile));
   }
 
   @Authenticated

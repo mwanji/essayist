@@ -9,8 +9,9 @@ com.google.common.base.Strings;
 List<Post> essays;
 Profile profile;
 String active = "My Feed";
+String title = null;
 </%args>
-<&| Layout; active = active; &>
+<&| Layout; active = active; title = title &>
 	<div class="row" data-essay="intro">
 		<div class="span2">
 			<%if profile.getBasic() != null && profile.getBasic().getAvatarUrl() != null %>
