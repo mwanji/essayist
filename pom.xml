@@ -13,6 +13,13 @@
 	</properties>
 
 	<repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/groups/public/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
 		<repository>
 			<id>com.moandjiezana.builds</id>
 			<url>http://moandjiezana.com/builds</url>
