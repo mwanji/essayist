@@ -11,11 +11,11 @@ public class EssayistConfig {
     }
 
     public String getTitle(){
-        return  properties.getProperty("essayist.title", "Essayist1");
+        return  properties.getProperty("essayist.title");
     }
 
     public String getLicense(){
-        return properties.getProperty("essayist.license", "http://creativecommons.org/licenses/by/3.0/");
+        return properties.getProperty("essayist.license");
     }
 
 }
