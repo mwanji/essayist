@@ -1,17 +1,16 @@
 package com.moandjiezana.tent.essayist;
 
-import com.moandjiezana.essayist.utils.Tasks;
-import com.moandjiezana.tent.essayist.db.DbSetup;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import com.google.common.base.Optional;
 import com.moandjiezana.tent.essayist.db.DbTest;
-import fj.data.Option;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * User: pjesi
@@ -23,6 +22,7 @@ public class UsersTest extends DbTest {
 
     private Users users;
 
+    @Override
     @Before
     public void setup(){
 
@@ -31,6 +31,7 @@ public class UsersTest extends DbTest {
 
     }
 
+    @Override
     @After
     public void tearDown(){
         super.tearDown();
@@ -49,8 +50,8 @@ public class UsersTest extends DbTest {
         User user = new User("http://pjesi.com");
         users.save(user);
 
-        Option<User> pjesi = users.getUserByEntity("http://pjesi.com");
-        assertTrue(pjesi.isSome());
+        Optional<User> pjesi = users.getUserByEntity("http://pjesi.com");
+        assertTrue(pjesi.isPresent());
 
     }
 
@@ -60,8 +61,8 @@ public class UsersTest extends DbTest {
         user.setDomain("essays.pjesi.com");
         users.save(user);
 
-        Option<User> pjesi = users.getUserByDomain("essays.pjesi.com");
-        assertTrue(pjesi.isSome());
+        Optional<User> pjesi = users.getUserByDomain("essays.pjesi.com");
+        assertTrue(pjesi.isPresent());
 
     }
 

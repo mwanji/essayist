@@ -10,7 +10,6 @@ import com.moandjiezana.tent.essayist.config.TentRequest;
 import com.moandjiezana.tent.essayist.security.Csrf;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.tent.EssayistPostContent;
-import fj.data.Option;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Singleton
 public class EssayServlet extends HttpServlet {
-  
+
   private final Templates templates;
   private final Users users;
   private final Provider<EssayistSession> sessions;
@@ -47,7 +46,7 @@ public class EssayServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
     TentRequest tentRequest = entityLookup.getTentRequest(req)
-            .some(); // TODO 404 if not found
+            .get(); // TODO 404 if not found
 
 
 
@@ -58,7 +57,7 @@ public class EssayServlet extends HttpServlet {
     User author = users.getByEntityOrNull(authorEntity);
 
     TentClient tentClient;
-    
+
     User user = sessions.get().getUser();
     /*if (sessions.get().isLoggedIn()) {
       tentClient = new TentClient(user.getProfile());
@@ -73,12 +72,12 @@ public class EssayServlet extends HttpServlet {
       author = new User(profile);
       users.save(author);
     }
-    
+
     Post post = tentClient.getPost(essayId);
-    
+
     EssayistPostContent essayContent = post.getContentAs(EssayistPostContent.class);
     essayContent.setBody(csrf.permissive(essayContent.getBody()));
-    
+
     EssayPage essayPage = templates.essay();
     if (user.owns(post)) {
       essayPage.setActive("Written");
@@ -90,23 +89,23 @@ public class EssayServlet extends HttpServlet {
       List<Post> reactions = tentClient.getPosts(new PostQuery().mentionedPost(essayId));
       essayPage.setReactions(reactions);
     }
-    
+
     essayPage.render(resp.getWriter(), post, author.getProfile());
   }
-  
+
   @Override
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String[] parts = entityLookup.getRequestPath(req).split("/essay/");
     String authorEntity = parts[0];
     String fullAuthorEntity = Entities.expandFromUrl(authorEntity);
-    
+
     User user = sessions.get().getUser();
-    
+
     if (!fullAuthorEntity.equals(user.getProfile().getCore().getEntity())) {
       resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not permitted to delete this Essay.");
       return;
     }
-    
+
     TentClient tentClient = new TentClient(user.getProfile());
     tentClient.getAsync().setAccessToken(user.getAccessToken());
     tentClient.getAsync().setRegistrationResponse(user.getRegistration());
@@ -116,10 +115,10 @@ public class EssayServlet extends HttpServlet {
     } catch (Exception e) {
       Throwables.propagate(Throwables.getRootCause(e));
     }
-    
+
     resp.sendRedirect(req.getContextPath() + "/" + authorEntity + "/essays");
   }
-  
+
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

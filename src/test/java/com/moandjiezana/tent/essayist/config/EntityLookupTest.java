@@ -1,22 +1,24 @@
 package com.moandjiezana.tent.essayist.config;
 
-import com.moandjiezana.tent.essayist.User;
-import com.moandjiezana.tent.essayist.user.UserService;
-import fj.data.Option;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Properties;
-
-import static fj.data.Option.none;
-import static fj.data.Option.some;
+import static com.google.common.base.Optional.of;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import com.google.common.base.Optional;
+import com.moandjiezana.tent.essayist.User;
+import com.moandjiezana.tent.essayist.user.UserService;
+
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * User: pjesi
@@ -52,9 +54,9 @@ public class EntityLookupTest {
         when(request.getServerName()).thenReturn("localhost");
         setPath(request, "/");
 
-        Option<String> profile = lookup.getEntity(request);
+        Optional<String> profile = lookup.getEntity(request);
 
-        assertTrue(profile.isNone());
+        assertFalse(profile.isPresent());
     }
 
     @Test
@@ -64,8 +66,8 @@ public class EntityLookupTest {
         when(request.getServerName()).thenReturn("localhost");
         setPath(request, "/");
 
-        Option<String> profile = lookup.getEntity(request);
-        assertTrue(profile.isNone());
+        Optional<String> profile = lookup.getEntity(request);
+        assertFalse(profile.isPresent());
     }
 
     @Test
@@ -75,9 +77,9 @@ public class EntityLookupTest {
         setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
 
 
-        Option<String> profile = lookup.getEntity(request);
+        Optional<String> profile = lookup.getEntity(request);
 
-        assertEquals("https://uns0b.tent.is", profile.some());
+        assertEquals("https://uns0b.tent.is", profile.get());
     }
 
     @Test
@@ -87,9 +89,9 @@ public class EntityLookupTest {
         when(request.getServerName()).thenReturn("localhost");
         setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
 
-        Option<String> profile = lookup.getEntity(request);
+        Optional<String> profile = lookup.getEntity(request);
 
-        assertEquals("https://uns0b.tent.is", profile.some());
+        assertEquals("https://uns0b.tent.is", profile.get());
     }
 
     @Test
@@ -97,13 +99,13 @@ public class EntityLookupTest {
 
         User user = new User("http://pjesi.com");
         when(userService.getUserByDomain("subdomain.localhost"))
-                .thenReturn(some(user));
+                .thenReturn(of(user));
 
         properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("subdomain.localhost");
-        Option<String> entity = lookup.getEntity(request);
-        assertTrue(entity.isSome());
+        Optional<String> entity = lookup.getEntity(request);
+        assertTrue(entity.isPresent());
     }
 
     @Test
@@ -111,13 +113,13 @@ public class EntityLookupTest {
 
 
         when(userService.getUserByDomain("subdomain.localhost"))
-                .thenReturn(Option.<User>none());
+                .thenReturn(Optional.<User>absent());
 
         properties.setProperty(EssayistConfig.BASE_DOMAIN, "localhost");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getServerName()).thenReturn("subdomain.localhost");
-        Option<String> entity = lookup.getEntity(request);
-        assertTrue(entity.isNone());
+        Optional<String> entity = lookup.getEntity(request);
+        assertFalse(entity.isPresent());
 
     }
 
@@ -130,8 +132,8 @@ public class EntityLookupTest {
         setPath(request, "/");
 
 
-        Option<String> profile = lookup.getEntity(request);
-        assertEquals("http://pjesi.com", profile.some());
+        Optional<String> profile = lookup.getEntity(request);
+        assertEquals("http://pjesi.com", profile.get());
 
 
     }
@@ -144,8 +146,8 @@ public class EntityLookupTest {
         when(request.getServerName()).thenReturn("localhost");
         setPath(request, "/");
 
-        Option<String> profile = lookup.getEntity(request);
-        assertEquals("http://pjesi.com", profile.some());
+        Optional<String> profile = lookup.getEntity(request);
+        assertEquals("http://pjesi.com", profile.get());
 
 
     }
@@ -159,8 +161,8 @@ public class EntityLookupTest {
         setPath(request, "/essays");
 
 
-        Option<String> profile = lookup.getEntity(request);
-        assertEquals("http://pjesi.com", profile.some());
+        Optional<String> profile = lookup.getEntity(request);
+        assertEquals("http://pjesi.com", profile.get());
 
 
     }
@@ -176,7 +178,7 @@ public class EntityLookupTest {
         setPath(request, "/essay/IpGExQrfkZkKOdMCb4nLHQ");
 
 
-        TentRequest tent = lookup.getTentRequest(request).some();
+        TentRequest tent = lookup.getTentRequest(request).get();
         assertEquals("IpGExQrfkZkKOdMCb4nLHQ", tent.getPost());
         assertNull(tent.getAction());
 
@@ -193,7 +195,7 @@ public class EntityLookupTest {
         setPath(request, "/essay/IpGExQrfkZkKOdMCb4nLHQ/favorite");
 
 
-        TentRequest tent = lookup.getTentRequest(request).some();
+        TentRequest tent = lookup.getTentRequest(request).get();
         assertEquals("IpGExQrfkZkKOdMCb4nLHQ", tent.getPost());
         assertEquals("favorite", tent.getAction());
 
@@ -211,7 +213,7 @@ public class EntityLookupTest {
         setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A");
 
 
-        TentRequest tent = lookup.getTentRequest(request).some();
+        TentRequest tent = lookup.getTentRequest(request).get();
         assertEquals("https://uns0b.tent.is", tent.getEntity());
         assertEquals("2QpItzoWxwS3OxMd4Mjg1A", tent.getPost());
         assertNull(tent.getAction());
@@ -230,7 +232,7 @@ public class EntityLookupTest {
         setPath(request, "/uns0b.tent.is/essay/2QpItzoWxwS3OxMd4Mjg1A/favorite");
 
 
-        TentRequest tent = lookup.getTentRequest(request).some();
+        TentRequest tent = lookup.getTentRequest(request).get();
         assertEquals("https://uns0b.tent.is", tent.getEntity());
         assertEquals("2QpItzoWxwS3OxMd4Mjg1A", tent.getPost());
         assertEquals("favorite", tent.getAction());
@@ -249,7 +251,7 @@ public class EntityLookupTest {
 
         setPath(request, "/2QpItzoWxwS3OxMd4Mjg1A");
 
-        TentRequest tent = lookup.getTentRequest(request).some();
+        TentRequest tent = lookup.getTentRequest(request).get();
         assertEquals("http://pjesi.com", tent.getEntity());
         assertEquals("2QpItzoWxwS3OxMd4Mjg1A", tent.getPost());
 

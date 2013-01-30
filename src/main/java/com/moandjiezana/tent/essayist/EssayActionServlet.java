@@ -1,5 +1,6 @@
 package com.moandjiezana.tent.essayist;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.moandjiezana.essayist.posts.Bookmark;
 import com.moandjiezana.essayist.posts.Favorite;
@@ -15,8 +16,6 @@ import com.moandjiezana.tent.essayist.auth.Authenticated;
 import com.moandjiezana.tent.essayist.config.EntityLookup;
 import com.moandjiezana.tent.essayist.config.Routes;
 import com.moandjiezana.tent.essayist.config.TentRequest;
-import com.moandjiezana.tent.essayist.tent.Entities;
-import fj.data.Option;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Singleton
 public class EssayActionServlet extends HttpServlet {
-  
+
   private final Provider<EssayistSession> sessions;
   private final Provider<Routes> routes;
   private Users users;
@@ -50,13 +49,13 @@ public class EssayActionServlet extends HttpServlet {
     this.templates = templates;
     this.entityLookup = entityLookup;
   }
-  
+
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
 
     TentRequest tentRequest = entityLookup.getTentRequest(req)
-              .some(); // TODO 404 if not found
+              .get(); // TODO 404 if not found
 
     String authorEntity = req.getParameter("entity") != null ? req.getParameter("entity") :
             tentRequest.getEntity();
@@ -64,7 +63,7 @@ public class EssayActionServlet extends HttpServlet {
     String postId = tentRequest.getPost();
     String action = tentRequest.getAction();
 
-    
+
     if ("user".equals(action)) {
       User loggedUser = sessions.get().getUser();
       String loggedEntity = loggedUser.getProfile().getCore().getEntity();
@@ -103,16 +102,16 @@ public class EssayActionServlet extends HttpServlet {
     String authorEntity = entityAndId[0];
     String essayId = entityAndId[1];
     String action = entityAndId[2];
-    
+
     Post essay = new Post();
     essay.setEntity(authorEntity);
     essay.setId(essayId);
-    
+
     User user = sessions.get().getUser();
     TentClient tentClient = new TentClient(user.getProfile());
     tentClient.getAsync().setAccessToken(user.getAccessToken());
     tentClient.getAsync().setRegistrationResponse(user.getRegistration());
-    
+
     Post post = new Post();
     post.setEntity(user.getProfile().getCore().getEntity());
     post.setMentions(new Mention[] { new Mention(authorEntity, essayId) });
@@ -123,13 +122,13 @@ public class EssayActionServlet extends HttpServlet {
 
     if ("status".equals(action)) {
       String commentText = req.getParameter("comment");
-      
+
       if (Strings.isNullOrEmpty(commentText)) {
         resp.sendRedirect(routes.get().essay(essay));
-        
+
         return;
       }
-      
+
       commentText = commentText.substring(0, Math.min(commentText.length(), 256));
       post.setContent(new StatusContent(commentText));
     } else if ("favorite".equals(action)) {
@@ -145,19 +144,19 @@ public class EssayActionServlet extends HttpServlet {
     }
 
     tentClient.write(post);
-    
+
     resp.sendRedirect(routes.get().essay(essay));
   }
-  
+
   private String[] getEntityAndIdAndAction(HttpServletRequest req) {
     String[] parts = entityLookup.getRequestPath(req).split("/");
-    Option<String> optionalEntity = entityLookup.getEntity(req);
+    Optional<String> optionalEntity = entityLookup.getEntity(req);
     // TODO 404 if not found
 
-    String authorEntity = optionalEntity.some();
+    String authorEntity = optionalEntity.get();
     String essayId = parts[parts.length-2];
     String action = parts[parts.length-1];
-    
+
     return new String[] { authorEntity, essayId, action };
   }
 }

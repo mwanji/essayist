@@ -1,12 +1,12 @@
 package com.moandjiezana.tent.essayist.config;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * User: pjesi
@@ -26,14 +26,14 @@ public class EssayistConfigTest {
 
     @Test
     public void should_return_no_default_entity(){
-        assertTrue(config.getDefaultEntity().isNone());
+        assertFalse(config.getDefaultEntity().isPresent());
 
     }
 
     @Test
     public void should_return_default_entity(){
         properties.setProperty(EssayistConfig.DEFAULT_ENTITY, "http://pjesi.com");
-        assertEquals("http://pjesi.com",config.getDefaultEntity().some());
+        assertEquals("http://pjesi.com",config.getDefaultEntity().get());
     }
 
 }

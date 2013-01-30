@@ -1,19 +1,17 @@
 package com.moandjiezana.tent.essayist.config;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+
+import com.google.common.base.Optional;
 import com.moandjiezana.tent.essayist.User;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.user.UserService;
-import fj.data.Option;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
 
-import com.moandjiezana.tent.client.users.Profile;
+import java.util.StringTokenizer;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * User: pjesi
@@ -37,14 +35,14 @@ public class EntityLookup {
         return path;
     }
 
-    public Option<TentRequest> getTentRequest(HttpServletRequest request){
-        Option<String> entity = getEntity(request);
-        if(entity.isNone()){
-            return none();
+    public Optional<TentRequest> getTentRequest(HttpServletRequest request){
+      Optional<String> entity = getEntity(request);
+        if(!entity.isPresent()){
+            return absent();
         }
 
         TentRequest.Builder builder = new TentRequest.Builder();
-        builder.entity(entity.some());
+        builder.entity(entity.get());
 
         StringTokenizer st = new StringTokenizer(getRequestPath(request), "/");
         String token = null;
@@ -62,11 +60,11 @@ public class EntityLookup {
         if(st.hasMoreTokens()){
             builder.action(st.nextToken());
         }
-        return some(builder.build());
+        return of(builder.build());
 
     }
 
-    public Option<String> getEntity(HttpServletRequest request){
+    public Optional<String> getEntity(HttpServletRequest request){
 
         String serverName = request.getServerName();
         String baseDomain = config.getBaseDomain(serverName);
@@ -74,15 +72,15 @@ public class EntityLookup {
         if(serverName.equals(baseDomain)){
             return getFromPath(request);
         } else {
-            Option<User> user = userService.getUserByDomain(serverName);
-            if(user.isSome()){
-                return some(user.some().getProfile().getCore().getEntity());
+          Optional<User> user = userService.getUserByDomain(serverName);
+            if(user.isPresent()){
+                return of(user.get().getProfile().getCore().getEntity());
             }
-            return none();
+            return absent();
         }
     }
 
-    private Option<String> getFromPath(HttpServletRequest request){
+    private Optional<String> getFromPath(HttpServletRequest request){
         String pathInfo = getRequestPath(request);
         String[] path = pathInfo.split("/");
         boolean isEssay = pathInfo.contains("/essay");
@@ -96,10 +94,10 @@ public class EntityLookup {
 
         if(isEssay){
             String entity = Entities.expandFromUrl(path[1]);
-            return some(entity);
+            return of(entity);
         }
 
-        return none();
+        return absent();
 
         //String entity = Entities.expandFromUrl(path[1]);
         //return some(entity);
