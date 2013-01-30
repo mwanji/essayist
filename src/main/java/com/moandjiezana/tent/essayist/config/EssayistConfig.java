@@ -29,8 +29,8 @@ public class EssayistConfig {
         return properties.getProperty("essayist.defaultLicense", "http://creativecommons.org/licenses/by/3.0/");
     }
 
-    public String getBaseDomain(String defaulDomain) {
-        return properties.getProperty(BASE_DOMAIN, defaulDomain);
+    public String getBaseDomain(String defaultDomain) {
+        return properties.getProperty(BASE_DOMAIN, defaultDomain);
     }
 
     public Optional<String> getDefaultEntity(){
