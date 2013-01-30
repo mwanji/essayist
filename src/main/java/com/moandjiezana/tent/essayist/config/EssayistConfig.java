@@ -15,7 +15,6 @@ public class EssayistConfig {
     }
 
     public String getLicense(){
-        return properties.getProperty("essayist.license");
+        return properties.getProperty("essayist.defaultLicense");
     }
-
 }
