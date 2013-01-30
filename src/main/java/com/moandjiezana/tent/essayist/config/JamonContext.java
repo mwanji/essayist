@@ -13,42 +13,45 @@ import javax.servlet.http.HttpServletRequest;
 public class JamonContext {
 
   private static final Splitter SLASH = Splitter.on('/').omitEmptyStrings();
-  
+
   public final String contextPath;
   public final Routes routes;
   public final Csrf csrf = new Csrf();
   public final TextTransformation textTransformation;
-  
+
   private final HttpServletRequest req;
   public final String currentUrl;
   private final EssayistSession session;
-  
+  public final EssayistConfig config;
+
   @Inject
-  public JamonContext(EssayistSession session, TextTransformation textTransformation, Routes routes, HttpServletRequest req) {
+  public JamonContext(EssayistSession session, TextTransformation textTransformation,
+                      Routes routes, HttpServletRequest req, EssayistConfig config) {
     this.session = session;
     this.textTransformation = textTransformation;
     this.routes = routes;
     this.req = req;
+    this.config = config;
     this.contextPath = req.getContextPath();
     this.currentUrl = req.getRequestURL().toString();
   }
-  
+
   public boolean isLoggedIn() {
     return session.isLoggedIn();
   }
-  
+
   public Profile getSessionProfile() {
     return getCurrentUser().getProfile();
   }
-  
+
   public User getCurrentUser() {
     return session.getUser();
   }
-  
+
   public String contextPath() {
     return contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
   }
-  
+
   public String getLastPathSegment() {
     String path = "";
     for (String part : SLASH.split(req.getRequestURI())) {

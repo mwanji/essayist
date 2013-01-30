@@ -9,6 +9,7 @@ import com.moandjiezana.tent.client.posts.PostQuery;
 import com.moandjiezana.tent.client.posts.content.EssayContent;
 import com.moandjiezana.tent.client.users.Permissions;
 import com.moandjiezana.tent.essayist.auth.Authenticated;
+import com.moandjiezana.tent.essayist.config.EssayistConfig;
 import com.moandjiezana.tent.essayist.config.Routes;
 import com.moandjiezana.tent.essayist.tent.Entities;
 import com.moandjiezana.tent.essayist.text.TextTransformation;
@@ -33,14 +34,17 @@ public class WriteServlet extends HttpServlet {
   private Tasks tasks;
   private Provider<Routes> routes;
   private TextTransformation textTransformation;
+  private EssayistConfig config;
 
   @Inject
-  public WriteServlet(TextTransformation textTransformation, Provider<EssayistSession> sessions, Templates templates, Provider<Routes> routes, Tasks tasks) {
+  public WriteServlet(TextTransformation textTransformation, Provider<EssayistSession> sessions,
+                      Templates templates, Provider<Routes> routes, Tasks tasks, EssayistConfig config) {
     this.textTransformation = textTransformation;
     this.sessions = sessions;
     this.templates = templates;
     this.routes = routes;
     this.tasks = tasks;
+    this.config = config;
   }
 
   @Override
@@ -127,7 +131,7 @@ public class WriteServlet extends HttpServlet {
     Permissions permissions = new Permissions();
     permissions.setPublic(true);
     post.setPermissions(permissions);
-    post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
+    post.setLicenses(new String[] { config.getLicense() });
     return post;
   }
 
