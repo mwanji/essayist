@@ -11,6 +11,7 @@ import co.mewf.merf.http.Url;
 import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 import com.moandjiezana.essayist.auth.Authenticated;
+import com.moandjiezana.essayist.config.EssayistConfig;
 import com.moandjiezana.essayist.merf.JamonResponse;
 import com.moandjiezana.essayist.sessions.EssayistSession;
 import com.moandjiezana.essayist.tent.posts.EssayistMetadataContent;
@@ -42,14 +43,16 @@ public class WriteController {
   private final Routes route;
   private final TextTransformation textTransformation;
   private final HttpServletRequest req;
+  private final EssayistConfig config;
 
   @Inject
-  public WriteController(HttpServletRequest req, TextTransformation textTransformation, EssayistSession session, Templates templates, Routes route) {
+  public WriteController(HttpServletRequest req, TextTransformation textTransformation, EssayistSession session, Templates templates, Routes route, EssayistConfig config) {
     this.req = req;
     this.textTransformation = textTransformation;
     this.session = session;
     this.templates = templates;
     this.route = route;
+    this.config = config;
   }
 
   @GET @Url("/write")
@@ -165,7 +168,7 @@ public class WriteController {
     Permissions permissions = new Permissions();
     permissions.setPublic(true);
     post.setPermissions(permissions);
-    post.setLicenses(new String[] { "http://creativecommons.org/licenses/by/3.0/" });
+    post.setLicenses(new String[] { config.getLicense() });
     return post;
   }
 

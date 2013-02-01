@@ -7,6 +7,7 @@ import co.mewf.merf.http.Responses;
 import co.mewf.merf.http.Url;
 
 import com.moandjiezana.essayist.auth.AuthResult;
+import com.moandjiezana.essayist.config.EssayistConfig;
 import com.moandjiezana.essayist.merf.JamonResponse;
 import com.moandjiezana.essayist.tent.posts.Bookmark;
 import com.moandjiezana.essayist.tent.posts.EssayistMetadataContent;
@@ -40,12 +41,14 @@ public class SessionController {
   private final Templates templates;
   private final HttpServletRequest req;
   private final EssayistSession session;
+  private final EssayistConfig config;
 
   @Inject
-  public SessionController(Users users, Templates jamonContext, EssayistSession session, HttpServletRequest req) {
+  public SessionController(Users users, Templates jamonContext, EssayistSession session, EssayistConfig config, HttpServletRequest req) {
     this.users = users;
     this.templates = jamonContext;
     this.session = session;
+    this.config = config;
     this.req = req;
   }
 
@@ -177,7 +180,7 @@ public class SessionController {
     String afterAuthorizationUrl = baseUrl + "accessToken";
     String afterLoginUrl = baseUrl;
 
-    RegistrationRequest registrationRequest = new RegistrationRequest("Essayist", "A blogging app for when you need more than 256 characters.", baseUrl, new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
+    RegistrationRequest registrationRequest = new RegistrationRequest(config.getTitle(), "A blogging app for when you need more than 256 characters.", baseUrl, new String [] { afterAuthorizationUrl, afterLoginUrl }, scopes);
 
     return tentClient.register(registrationRequest);
   }

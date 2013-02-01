@@ -10,7 +10,7 @@ String active = null;
 String title = null;
 </%args>
 <%java>
-String defaultTitle = "Essayist";
+String defaultTitle = jamonContext.config.getTitle();
 </%java>
 <%def navItem>
 <%args>
@@ -86,7 +86,7 @@ String url;
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
-					<a class="brand" href="<% jamonContext.contextPath() %>">Essayist <% Character.valueOf('\u03B1') %></a>
+					<a class="brand" href="<% jamonContext.contextPath() %>"><% jamonContext.config.getTitle() %> <% Character.valueOf('\u03B1') %></a>
 					<%if showNav %>
 					<%if jamonContext.isLoggedIn() %>
 					<ul class="nav">

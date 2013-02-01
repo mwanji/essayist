@@ -47,7 +47,7 @@ public class EssayistServletContextListener extends MerfServletContextListener {
       throw Throwables.propagate(e);
     }
 
-    Properties properties = new Properties(defaultProperties);
+    final Properties properties = new Properties(defaultProperties);
     try {
       properties.load(getClass().getResourceAsStream("/essayist.properties"));
     } catch (Exception e) {
@@ -89,6 +89,7 @@ public class EssayistServletContextListener extends MerfServletContextListener {
       @Override
       protected void configure() {
         bind(QueryRunner.class).toInstance(queryRunner);
+        bind(EssayistConfig.class).toInstance(new EssayistConfig(properties));
 
         AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor();
         requestInjection(authenticationInterceptor);
