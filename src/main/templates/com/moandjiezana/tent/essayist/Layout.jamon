@@ -12,6 +12,7 @@ String title = null;
 <%java>
 String defaultTitle = jamonContext.config.getTitle();
 </%java>
+
 <%def navItem>
 <%args>
 String label;
@@ -95,6 +96,7 @@ String url;
 						<& navItem: "Written"; Entities.getForUrl(jamonContext.getSessionProfile().getCore().getEntity()) + "/essays" &>
 		        	</ul>
 					<ul class="nav pull-right">
+						<& navItem: "Settings"; "settings" &>
 						<& navItem: "Log out"; "logout"; &>
 		        	</ul>
 					<%else>

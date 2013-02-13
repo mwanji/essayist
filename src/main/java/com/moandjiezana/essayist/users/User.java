@@ -1,5 +1,6 @@
 package com.moandjiezana.essayist.users;
 
+import com.google.common.base.Strings;
 import com.moandjiezana.tent.client.apps.RegistrationResponse;
 import com.moandjiezana.tent.client.posts.Post;
 import com.moandjiezana.tent.client.users.Profile;
@@ -10,6 +11,7 @@ public class User {
   private RegistrationResponse registration;
   private AccessToken accessToken;
   private Long id;
+  private String domain;
 
   public User() {}
 
@@ -32,10 +34,15 @@ public class User {
   }
 
   public User(Long id, Profile profile, RegistrationResponse registration, AccessToken accessToken) {
+    this(id, profile, registration, accessToken, null);
+  }
+
+  public User(Long id, Profile profile, RegistrationResponse registration, AccessToken accessToken, String domain) {
     this.id = id;
     this.profile = profile;
     this.registration = registration;
     this.accessToken = accessToken;
+    this.domain = domain;
   }
 
   public boolean owns(Post post) {
@@ -76,5 +83,17 @@ public class User {
 
   public boolean isEntity(String entity) {
     return profile.getCore().getEntity().equals(entity);
+  }
+
+  public boolean hasCustomDomain() {
+    return !Strings.isNullOrEmpty(domain);
+  }
+
+  public String getDomain() {
+    return domain;
+  }
+
+  public void setDomain(String domain) {
+    this.domain = domain;
   }
 }

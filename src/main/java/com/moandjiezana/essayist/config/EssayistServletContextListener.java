@@ -17,6 +17,7 @@ import com.moandjiezana.essayist.essays.ReactController;
 import com.moandjiezana.essayist.essays.ReadController;
 import com.moandjiezana.essayist.essays.WriteController;
 import com.moandjiezana.essayist.sessions.SessionController;
+import com.moandjiezana.essayist.sessions.SettingsController;
 import com.moandjiezana.tent.client.internal.com.google.common.base.Throwables;
 
 import java.io.IOException;
@@ -99,7 +100,7 @@ public class EssayistServletContextListener extends MerfServletContextListener {
       }
     };
 
-    return new GuiceRouter(module).add(SessionController.class, WriteController.class, ReadController.class, ReactController.class);
+    return new GuiceRouter(module).add(SessionController.class, WriteController.class, ReadController.class, ReactController.class, SettingsController.class);
   }
 
   @Override

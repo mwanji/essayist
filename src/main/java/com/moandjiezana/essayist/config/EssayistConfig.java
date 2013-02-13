@@ -25,6 +25,10 @@ public class EssayistConfig {
       return properties.getProperty(DEFAULT_LICENSE);
   }
 
+  public boolean hasCustomDomain() {
+    return false;
+  }
+
   public String getBaseDomain(String defaultDomain) {
       return properties.getProperty(BASE_DOMAIN, defaultDomain);
   }

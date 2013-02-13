@@ -1,5 +1,9 @@
 package com.moandjiezana.essayist.users;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+
+import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 import com.google.gson.FieldNamingPolicy;
@@ -31,42 +35,82 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class Users {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(Users.class);
-  
+
   private final QueryRunner queryRunner;
   private final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
   private Tasks tasks;
-  
+
   @Inject
   public Users(Tasks tasks, QueryRunner queryRunner) {
     this.tasks = tasks;
     this.queryRunner = queryRunner;
   }
 
+    private Optional<User> getUser(Map<String, Object> map) {
+        if (map == null) {
+            return absent();
+        }
+
+        return of(new User((Long) map.get("id"),
+                convert(map.get("profile"), Profile.class),
+                convert(map.get("registration"), RegistrationResponse.class),
+                convert(map.get("accessToken"), AccessToken.class),
+                map.get("domain").toString()));
+    }
+
+    public Optional<User> getUserByDomain(final String domain) {
+
+        try {
+            Map<String, Object> map = queryRunner.query("SELECT * FROM AUTHORIZATIONS WHERE DOMAIN=?", new MapHandler(), domain);
+
+            return getUser(map);
+        } catch (SQLException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    public Optional<User> getUserByEntity(final String entity) {
+
+        try {
+            Map<String, Object> map = queryRunner.query("SELECT * FROM AUTHORIZATIONS WHERE ENTITY=?", new MapHandler(), entity);
+
+            return getUser(map);
+        } catch (SQLException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+
+
   public User getByEntityOrNull(String entity) {
     try {
       Map<String, Object> map = queryRunner.query("SELECT * FROM AUTHORIZATIONS WHERE ENTITY=?", new MapHandler(), entity);
-      
+
       if (map == null) {
         return null;
       }
-      
-      return new User((Long) map.get("id"), convert(map.get("profile"), Profile.class), convert(map.get("registration"), RegistrationResponse.class), convert(map.get("accessToken"), AccessToken.class));
+
+      return new User((Long) map.get("id"),
+              convert(map.get("profile"), Profile.class),
+              convert(map.get("registration"), RegistrationResponse.class),
+              convert(map.get("accessToken"), AccessToken.class),
+              (String)map.get("domain"));
     } catch (SQLException e) {
       throw Throwables.propagate(e);
     }
   }
-  
+
   public List<User> getAll() {
     try {
       return queryRunner.query("select * from AUTHORIZATIONS", new BeanListHandler<User>(User.class, new BasicRowProcessor(new BeanProcessor() {
         @Override
         protected Object processColumn(ResultSet rs, int index, Class<?> propType) throws SQLException {
-          if (Long.class.equals(propType)) {
+          if (Long.class.equals(propType) || String.class.equals(propType)) {
             return super.processColumn(rs, index, propType);
           }
-          
+
           return gson.fromJson(rs.getString(index), propType);
         }
       })));
@@ -74,17 +118,19 @@ public class Users {
       throw Throwables.propagate(e);
     }
   }
-  
+
   public void save(User user) {
     try {
       String profileJson = gson.toJson(user.getProfile());
       String registrationJson = gson.toJson(user.getRegistration());
       String accessTokenJson = gson.toJson(user.getAccessToken());
-      
+
       if (user.getId() != null) {
-        queryRunner.update("UPDATE AUTHORIZATIONS SET PROFILE=?, REGISTRATION=?, ACCESSTOKEN=? WHERE ID=?", profileJson, registrationJson, accessTokenJson, user.getId());
+        queryRunner.update("UPDATE AUTHORIZATIONS SET PROFILE=?, REGISTRATION=?, ACCESSTOKEN=?, DOMAIN=? WHERE ID=?",
+                profileJson, registrationJson, accessTokenJson, user.getDomain(), user.getId());
       } else {
-        queryRunner.update("INSERT INTO AUTHORIZATIONS(ENTITY, PROFILE, REGISTRATION, ACCESSTOKEN) VALUES(?,?,?,?)", user.getProfile().getCore().getEntity(), profileJson, registrationJson, accessTokenJson);
+        queryRunner.update("INSERT INTO AUTHORIZATIONS(ENTITY, PROFILE, REGISTRATION, ACCESSTOKEN, DOMAIN) VALUES(?,?,?,?,?)",
+                user.getProfile().getCore().getEntity(), profileJson, registrationJson, accessTokenJson, user.getDomain());
       }
     } catch (SQLException e) {
       throw Throwables.propagate(e);
@@ -98,7 +144,7 @@ public class Users {
       throw Throwables.propagate(e);
     }
   }
-  
+
   public void fetch(final String entity) {
     tasks.run(new Runnable() {
       @Override
@@ -112,22 +158,21 @@ public class Users {
       }
     });
   }
-  
+
   private <T> T convert(Object value, Class<T> objectClass) {
     String s;
     if (value instanceof String) {
       s = (String) value;
     } else {
       Clob clob = (Clob) value;
-      
+
       try {
         s = CharStreams.toString(new BufferedReader(clob.getCharacterStream()));
       } catch (Exception e) {
         throw Throwables.propagate(e);
       }
     }
-    
-    
+
     return gson.fromJson(s, objectClass);
   }
 }

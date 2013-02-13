@@ -1,0 +1,31 @@
+<%import>
+com.moandjiezana.essayist.users.User;
+</%import>
+<%args>
+User user;
+</%args>
+<%java>
+
+</%java>
+
+<&| Layout; active = "Settings" &>
+<div class="row">
+	<div class="span12">
+		<form action="" method="post" class="form-horizontal">
+			<div class="control-group">
+				<label class="control-label">
+					Domain
+				</label>
+				<div class="controls">
+					<input type="text" name="domain" value="<%if user.getDomain() != null %><% user.getDomain() %></%if>" class="span8" />
+				</div>
+			</div>
+
+			<div class="form-actions">
+                <button type="submit" class="btn btn-success"><i class="icon-globe icon-white"></i> Save</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+</&>
