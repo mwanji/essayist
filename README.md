@@ -17,6 +17,10 @@ A blogging app for the tent.io protocol. A public instance is available here: ht
 1. Put a file called essayist.properties in the src/main/resources folder. `essayist-example.properties` shows what can be configured. `essayist-defaults.properties` provides a number of defaults.
 1. If using your own database, create an empty database corresponding to the value of db.url
 
+### Heroku
+
+You must commit `essayist.properties` to `heroku/master`, so make sure to remove it from `.gitignore` (otherwise, Essayist falls back to an in-memory DB). Copy the JDBC settings you can find on the app's page to the appropriate properties.
+
 ## Developers
 
 ### Metadata post type
